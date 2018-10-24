@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>District Cost Rework</Name>
+    <Guid>0b45e0c0-6570-4204-8354-e39e85b9755a</Guid>
+    <ProjectGuid>d33bf38c-5679-4ea6-8894-e03406cdd4b7</ProjectGuid>
+    <ModVersion>1</ModVersion>
+    <Teaser>Reworks district cost to be based on number of districts already built rather than game (tech/civic) progression.</Teaser>
+    <Description>Reworks district cost to be based on the number of districts of that type previously built in your empire as well as the number of specialty districts  (of any type) already present in the city.</Description>
+    <Authors>FiatAccompli</Authors>
+    <SpecialThanks>
+    </SpecialThanks>
+    <AffectsSavedGames>true</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <AssemblyName>DistrictPriceRework</AssemblyName>
+    <RootNamespace>DistrictPriceRework</RootNamespace>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="DistrictCosts"><File priority="10100">DistrictCosts.sql</File><File>Reyna.sql</File></UpdateDatabase><UpdateText id="DistrictCosts_Text"><File>Reyna_Text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Deploy' ">
+    <OutputPath>bin\Deploy\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Copy Scripts' ">
+    <OutputPath>bin\Copy Scripts\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="DistrictCosts.sql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Reyna_Text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Reyna.sql">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>

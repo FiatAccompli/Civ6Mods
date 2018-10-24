@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Attrition Distance</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+    <string>ApplyUnitAttrition</string>
+    <string>ModalLensPanel</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls>
+    <StringControlData>
+      <Name>Attrition Set</Name>
+      <GetFunction>function()
+	return g_TunerUnitAttritionSetName or 'UNIT_ATTRITION_SET_ANCIENT_DEFAULT';
+end</GetFunction>
+      <SetFunction>function(value)
+  g_TunerUnitAttritionSetName = value;
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>44</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Distance Multiplier</Name>
+      <GetFunction>function()
+	return g_TunerDistanceMultiplier or 1;
+end</GetFunction>
+      <SetFunction>function(value)
+ g_TunerDistanceMultiplier = value;
+end</SetFunction>
+      <Location>
+        <X>340</X>
+        <Y>45</Y>
+      </Location>
+      <DefaultValue>1</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>10</X>
+        <Y>79</Y>
+      </Location>
+      <Size>
+        <Width>202</Width>
+        <Height>462</Height>
+      </Size>
+      <Name>PlayerID:60;Player Name:60</Name>
+      <PopulateList>function()
+  if (g_TunerSelectedPlayer == nil) then
+    g_TunerSelectedPlayer = 0;
+  end
+	
+  local listItems = {};
+  local i = 1;
+  local aPlayers = PlayerManager.GetAlive();
+  for _, pPlayer in ipairs(aPlayers) do
+    local pPlayerConfig = PlayerConfigurations[pPlayer:GetID()];
+    local str = tostring(pPlayer:GetID()) .. ";";
+    str = str .. Locale.Lookup(pPlayerConfig:GetPlayerName());
+				
+    listItems[i] = str;
+    i = i + 1;
+  end
+	
+  return listItems;
+end
+      </PopulateList>
+      <OnSelection>function(selection)
+  local selectedPlayerIDStr = string.match(selection, "%d+");
+  g_TunerSelectedPlayer = tonumber(selectedPlayerIDStr);
+end
+        </OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>220</X>
+        <Y>77</Y>
+      </Location>
+      <Size>
+        <Width>1631</Width>
+        <Height>911</Height>
+      </Size>
+      <Name>Distances</Name>
+      <PopulateList>function()
+  include("AttritionMaps.lua");
+  local distances = MakeAttritionDistanceCalculator(Players[g_TunerSelectedPlayer], 
+      GameInfo.UA_UnitAttritionSets[g_TunerUnitAttritionSetName or 'UNIT_ATTRITION_SET_ANCIENT_DEFAULT']).distances;
+  local width, height = Map.GetGridSize();
+  local results = {};
+  for y = height - 1, 0, -1 do
+    local row = ""; 
+    if (y % 2) == 1 then
+      row = row .. "_"
+    end
+    for x = 0, width - 1 do
+      local plot = Map.GetPlot(x, y);
+      local distance = math.floor(distances[plot:GetIndex()] * (g_TunerDistanceMultiplier or 10));
+      distance = math.min(distance, 999);
+      if distance &lt; 10 then 
+        row = row .. " __" .. distance;
+      elseif distance &lt; 100 then
+        row = row .. " _" .. distance;
+      else
+        row = row .. " " .. distance;
+      end
+    end
+    table.insert(results, row);
+	end
+  return results;
+end
+      </PopulateList>
+      <OnSelection>function(selection)
+
+end
+      </OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

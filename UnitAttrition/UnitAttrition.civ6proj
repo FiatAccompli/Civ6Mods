@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>Unit Attrition</Name>
+    <Guid>f5197089-ef46-4d38-9242-9135add0877b</Guid>
+    <ProjectGuid>8b28bfdb-9d30-451d-b53b-b4fc682f1ac7</ProjectGuid>
+    <ModVersion>1</ModVersion>
+    <Teaser>Units have attrition.</Teaser>
+    <Description>Look at the text.</Description>
+    <Authors>FiatAccompli</Authors>
+    <SpecialThanks>
+    </SpecialThanks>
+    <AffectsSavedGames>true</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <AssemblyName>UnitAttrition</AssemblyName>
+    <RootNamespace>UnitAttrition</RootNamespace>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="AttritionLenses"><Properties><LoadOrder>10</LoadOrder><Context>InGame</Context></Properties><File>UI/ModLens_Attrition.lua</File><File>UI/ModLens_AttritionDistance.lua</File></ImportFiles><UpdateDatabase id="UnitAttritionData"><File>Database/UnitAttrition.sql</File></UpdateDatabase><UpdateText id="UnitAttritionText"><File>Text/Lense_Text.xml</File></UpdateText><AddGameplayScripts id="UnitAttritionGameplayScript"><Properties><LoadOrder>9</LoadOrder></Properties><File>Scripts/ApplyUnitAttrition.lua</File></AddGameplayScripts><ImportFiles id="UnitAttritionSupport"><Properties><LoadOrder>5</LoadOrder><Context>InGame</Context></Properties><File>Scripts/AttritionMaps.lua</File><File>Scripts/BinaryHeap.lua</File><File>Scripts/DistanceCalculator.lua</File><File>Scripts/PlotIterators2.lua</File></ImportFiles><UpdateDatabase id="AttritionLensColors"><File>UI/AttritionLensColors.sql</File></UpdateDatabase><AddUserInterfaces id="DiplomacyHelper"><Properties><Context>InGame</Context></Properties><File>Scripts/DiplomacyHelper.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Copy Scripts' ">
+    <OutputPath>bin\Copy Scripts\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Mod.Art.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\UnitAttrition.sql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="LiveTuner\AttritionDistance.ltp">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Scripts\ApplyUnitAttrition.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Scripts\AttritionMaps.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Scripts\DiplomacyHelper.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Scripts\BinaryHeap.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Scripts\DiplomacyHelper.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Scripts\DistanceCalculator.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Scripts\PlotIterators2.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Text\Lense_Text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\AttritionLensColors.sql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\ModLens_AttritionDistance.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\ModLens_Attrition.lua">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database" />
+    <Folder Include="LiveTuner" />
+    <Folder Include="Scripts" />
+    <Folder Include="Text" />
+    <Folder Include="UI" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>

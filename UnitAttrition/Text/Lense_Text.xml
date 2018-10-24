@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+	<LocalizedText>
+		<Row Language="en_US" Tag="LOC_HUD_UNIT_ATTRITION_LENS">
+			<Text>Unit Attrition</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_HUD_UNIT_ATTRITION_LENS_TOOLTIP">
+			<Text>Unit Attrition or something I guess.</Text>
+		</Row>
+		
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_5">
+			<Text>5 HP per turn</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_10">
+			<Text>10 HP per turn</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_15">
+			<Text>15 HP per turn</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_20">
+			<Text>20 HP per turn</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_25">
+			<Text>25 HP per turn</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_GT_25">
+			<Text>26+ HP per turn</Text>
+		</Row>
+
+		<Row Language="en_US" Tag="LOC_HUD_UNIT_ATTRITION_DISTANCE_LENS">
+			<Text>Attrition Distance</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_HUD_UNIT_ATTRITION_DISTANCE_LENS_TOOLTIP">
+			<Text>Calculated supply distance for unit attrition.</Text>
+		</Row>
+
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_UNREACHABLE">
+			<Text>Unreachable</Text>
+		</Row>
+		
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_0">
+			<Text>0</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_1">
+			<Text>1</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_2">
+			<Text>2</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_3">
+			<Text>3</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_4">
+			<Text>4</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_5">
+			<Text>5</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_6">
+			<Text>6</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_7">
+			<Text>7</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_8">
+			<Text>8</Text>
+		</Row>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_DISTANCE_9">
+			<Text>9</Text>
+		</Row>
+	</LocalizedText>
+</GameData>
