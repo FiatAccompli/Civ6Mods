@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>Faster Roads</Name>
+    <Guid>f4ec1a94-2912-4261-a1c1-c3f0893087d9</Guid>
+    <ProjectGuid>7562de76-162e-4ce4-a042-fa2b7fa0c46b</ProjectGuid>
+    <ModVersion>1</ModVersion>
+    <Teaser>Reduces the movement costs of roads in all eras</Teaser>
+    <Description>Reduces the movement costs of roads in all eras.  In early eras this makes the choice of which roads you build have a more meaningful impact.  In the late game reduced road costs enable armies to more quickly respond to your needs - either in attack or defense.
+
+Ancient roads continue to cost 1 movement point per hex, regardless of terrain.
+Classical roads changed from 1 to 0.5 movement points per hex (and moved forward one era from base game) to make the impact of early roads more meaningful.
+Industrial roads changed from 0.75 to 0.333 movement points to simulate the impact of faster forms of transportation (primarily railroads).
+Modern roads changed from 0.5 to 0.25 movements points per hex.</Description>
+    <AffectsSavedGames>true</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="FasterRoads"><File>FasterRoutes.sql</File></UpdateDatabase></InGameActions>]]></InGameActionData>
+    <AssemblyName>FasterRoads</AssemblyName>
+    <RootNamespace>FasterRoads</RootNamespace>
+    <Authors>FiatAccompli</Authors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Copy Scripts' ">
+    <OutputPath>bin\Copy Scripts\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="FasterRoutes.sql">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>
