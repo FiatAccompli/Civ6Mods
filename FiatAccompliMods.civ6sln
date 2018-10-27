@@ -13,32 +13,18 @@ Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "UnitAttrition", "UnitAttrit
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Copy Scripts|Civ6 = Copy Scripts|Civ6
 		Default|Civ6 = Default|Civ6
-		Deploy|Civ6 = Deploy|Civ6
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D33BF38C-5679-4EA6-8894-E03406CDD4B7}.Copy Scripts|Civ6.ActiveCfg = Copy Scripts|Civ6
 		{D33BF38C-5679-4EA6-8894-E03406CDD4B7}.Default|Civ6.ActiveCfg = Default|Civ6
 		{D33BF38C-5679-4EA6-8894-E03406CDD4B7}.Default|Civ6.Build.0 = Default|Civ6
-		{D33BF38C-5679-4EA6-8894-E03406CDD4B7}.Deploy|Civ6.ActiveCfg = Deploy|Civ6
-		{D33BF38C-5679-4EA6-8894-E03406CDD4B7}.Deploy|Civ6.Build.0 = Deploy|Civ6
-		{7562DE76-162E-4CE4-A042-FA2B7FA0C46B}.Copy Scripts|Civ6.ActiveCfg = Copy Scripts|Civ6
 		{7562DE76-162E-4CE4-A042-FA2B7FA0C46B}.Default|Civ6.ActiveCfg = Default|Civ6
 		{7562DE76-162E-4CE4-A042-FA2B7FA0C46B}.Default|Civ6.Build.0 = Default|Civ6
-		{7562DE76-162E-4CE4-A042-FA2B7FA0C46B}.Deploy|Civ6.ActiveCfg = Default|Civ6
-		{7562DE76-162E-4CE4-A042-FA2B7FA0C46B}.Deploy|Civ6.Build.0 = Default|Civ6
-		{CC682A3F-651F-4560-AB49-00CE82D31963}.Copy Scripts|Civ6.ActiveCfg = Copy Scripts|Civ6
 		{CC682A3F-651F-4560-AB49-00CE82D31963}.Default|Civ6.ActiveCfg = Default|Civ6
 		{CC682A3F-651F-4560-AB49-00CE82D31963}.Default|Civ6.Build.0 = Default|Civ6
-		{CC682A3F-651F-4560-AB49-00CE82D31963}.Deploy|Civ6.ActiveCfg = Default|Civ6
-		{CC682A3F-651F-4560-AB49-00CE82D31963}.Deploy|Civ6.Build.0 = Default|Civ6
-		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Copy Scripts|Civ6.ActiveCfg = Copy Scripts|Civ6
 		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Default|Civ6.ActiveCfg = Default|Civ6
 		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Default|Civ6.Build.0 = Default|Civ6
 		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Default|Civ6.Deploy.0 = Default|Civ6
-		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Deploy|Civ6.ActiveCfg = Default|Civ6
-		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Deploy|Civ6.Build.0 = Default|Civ6
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

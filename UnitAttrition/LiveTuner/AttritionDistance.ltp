@@ -22,7 +22,7 @@ end</GetFunction>
 end</SetFunction>
       <Location>
         <X>10</X>
-        <Y>44</Y>
+        <Y>30</Y>
       </Location>
     </StringControlData>
   </StringControls>
@@ -37,7 +37,7 @@ end</GetFunction>
 end</SetFunction>
       <Location>
         <X>340</X>
-        <Y>45</Y>
+        <Y>31</Y>
       </Location>
       <DefaultValue>1</DefaultValue>
     </IntegerControlData>
@@ -51,7 +51,7 @@ end</SetFunction>
     <SelectionListData>
       <Location>
         <X>10</X>
-        <Y>79</Y>
+        <Y>65</Y>
       </Location>
       <Size>
         <Width>202</Width>
@@ -88,7 +88,7 @@ end
     <SelectionListData>
       <Location>
         <X>220</X>
-        <Y>77</Y>
+        <Y>63</Y>
       </Location>
       <Size>
         <Width>1631</Width>
@@ -97,8 +97,10 @@ end
       <Name>Distances</Name>
       <PopulateList>function()
   include("AttritionMaps.lua");
-  local distances = MakeAttritionDistanceCalculator(Players[g_TunerSelectedPlayer], 
-      GameInfo.UA_UnitAttritionSets[g_TunerUnitAttritionSetName or 'UNIT_ATTRITION_SET_ANCIENT_DEFAULT']).distances;
+	 local attritionMaps = AttritionMaps:new(Players[g_TunerSelectedPlayer], 
+      GameInfo.UA_UnitAttritionSets[g_TunerUnitAttritionSetName or 'UNIT_ATTRITION_SET_ANCIENT_DEFAULT']);
+--  local distances = attritionMaps.distanceCalculator.distances;
+	local distances = attritionMaps:GetAttritionMapForFormationClass('FORMATION_CLASS_LAND_COMBAT');
   local width, height = Map.GetGridSize();
   local results = {};
   for y = height - 1, 0, -1 do
@@ -108,7 +110,7 @@ end
     end
     for x = 0, width - 1 do
       local plot = Map.GetPlot(x, y);
-      local distance = math.floor(distances[plot:GetIndex()] * (g_TunerDistanceMultiplier or 10));
+      local distance = math.floor(distances[plot:GetIndex()] * (g_TunerDistanceMultiplier or 1));
       distance = math.min(distance, 999);
       if distance &lt; 10 then 
         row = row .. " __" .. distance;

@@ -25,8 +25,8 @@ THE SOFTWARE.
 
 -- heap construction ---------------------------------------------------------
 
-heap = {}
-heap.__index = heap
+Heap = {}
+Heap.__index = Heap
 
 
 local function default_comparison(k1, k2)
@@ -34,7 +34,7 @@ local function default_comparison(k1, k2)
 end
 
 
-function heap:new(comparison)
+function Heap:new(comparison)
   return setmetatable(
     { length = 0, comparison = comparison or default_comparison }, self)
 end
@@ -42,20 +42,20 @@ end
 
 -- info ----------------------------------------------------------------------
 
-function heap:NextKey()
+function Heap:NextKey()
   assert(self.length > 0, "The heap is empty")
   return self[1].key
 end
 
 
-function heap:IsEmpty()
+function Heap:IsEmpty()
   return self.length == 0
 end
 
 
 -- insertion and popping -----------------------------------------------------
 
-function heap:Insert(k, v)
+function Heap:Insert(k, v)
   assert(k, "You can't insert nil into a heap")
 
   local cmp = self.comparison
@@ -84,7 +84,7 @@ function heap:Insert(k, v)
 end
 
 
-function heap:Pop()
+function Heap:Pop()
   assert(self.length > 0, "The heap is empty")
 
   local cmp = self.comparison
@@ -122,7 +122,7 @@ end
 
 -- checking ------------------------------------------------------------------
 
-function heap:Check()
+function Heap:Check()
   local cmp = self.comparison
   local i = 1
   while true do
@@ -137,7 +137,7 @@ end
 
 -- pretty printing -----------------------------------------------------------
 
-function heap:Write(f, tostring_func)
+function Heap:Write(f, tostring_func)
   f = f or io.stdout
   tostring_func = tostring_func or tostring
 

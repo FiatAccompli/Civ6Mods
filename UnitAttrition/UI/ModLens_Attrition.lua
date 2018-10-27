@@ -1,71 +1,66 @@
--- File must be named ModLens_XYZ in order for MoreLenses to find it.
+-- File must be named ModLens_XYZ in order for MoreLenses/CQUI to find it.
+-- Lense that shows attrition per turn for the local player, both by shading and by writing the 
+-- exact amount of attrition in each hex.
 
 include("AttritionMaps")
-include("DistanceCalculator")
 
 local LENS_NAME = "UA_UNIT_ATTRITION"
-local ML_LENS_LAYER = LensLayers.HEX_COLORING_APPEAL_LEVEL
 
--- ===========================================================================
--- Attrition Lens Support
--- ===========================================================================
-
-local function plotHasBarbCamp(plot)
-    local improvementInfo = GameInfo.Improvements[plot:GetImprovementType()];
-    if improvementInfo ~= nil and improvementInfo.ImprovementType == "IMPROVEMENT_BARBARIAN_CAMP" then
-        return true;
-    end
-    return false;
-end
-
--- ===========================================================================
--- Exported functions
--- ===========================================================================
-
-local function OnGetColorPlotTable()
+local function GetColorPlotTable()
   local plotCount = Map.GetPlotCount();
-  local localPlayer   :number = Game.GetLocalPlayer();
-  local localPlayerVis:table = PlayersVisibility[localPlayer];
+  local localPlayerId = Game.GetLocalPlayer();
+  local visibility = PlayerVisibilityManager.GetPlayerVisibility(localPlayerId);
 
+  local color0 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_0");
   local color5 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_5");
 	local color10 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_10");
 	local color15 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_15");
 	local color20 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_20");
-	local color25 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_25");
-	local colorGT25 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_GT_25");
+	local colorGT20 = UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_GT_20");
   local colorPlot:table = {};
-	
-  --local distanceMap = CalculateAttritionDistanceMap(0, nil);
 
+  colorPlot[color0] = {}
   colorPlot[color5] = {}
 	colorPlot[color10] = {}
 	colorPlot[color15] = {}
 	colorPlot[color20] = {}
-	colorPlot[color25] = {}
-	colorPlot[colorGT25] = {}
+	--colorPlot[color25] = {}
+  colorPlot[colorGT20] = {}
 
-	colorPlotList = {colorPlot[color5], colorPlot[color10], colorPlot[color15], colorPlot[color20], colorPlot[color25], colorPlot[colorGT25]};
+  local colorPlotList = {colorPlot[color0], colorPlot[color5], colorPlot[color10], colorPlot[color15], colorPlot[color20], colorPlot[colorGT20]};
 
-    for i = 0, plotCount - 1, 1 do
-        --local pPlot:table = Map.GetPlotByIndex(i);
-        --if localPlayerVis:IsRevealed(pPlot:GetX(), pPlot:GetY()) and plotHasBarbCamp(pPlot) then
-		--end
-		--if distanceMap[i] then
-        --    table.insert(colorPlot[BarbarianColor], i);
-		--end
-		table.insert(colorPlotList[(i % 6) + 1], i);
-		local plot = Map.GetPlotByIndex(i);
-		UI.AddWorldViewText(0, "Id: " .. i, plot:GetX(), plot:GetY(), 0);
+  local attritionMaps = AttritionMaps:new(Players[localPlayerId]);
+  local attritionRates = attritionMaps:GetAttritionMapForFormationClass("FORMATION_CLASS_LAND_COMBAT");
+
+  local numBuckets = #colorPlotList;
+  UILens.ClearLayerHexes(LensLayers.NUMBERS);
+
+  for i = 0, plotCount - 1 do
+    local attritionRate = attritionRates[i];
+    local plot = Map.GetPlotByIndex(i);
+    if visibility:IsRevealed(plot:GetX(), plot:GetY()) then
+      UI.AddNumberToPath(attritionRate, i);
+      table.insert(colorPlotList[math.min(math.ceil(attritionRate/5), numBuckets - 1) + 1], i);
     end
+  end
 
-    return colorPlot
+  return colorPlot
+end
+
+local function Toggle()
+  UILens.ClearLayerHexes(LensLayers.NUMBERS);
+end
+
+local function OnClose()
+  UILens.ClearLayerHexes(LensLayers.NUMBERS);
 end
 
 local AttritionLensEntry = {
     LensButtonText = "LOC_HUD_UNIT_ATTRITION_LENS",
     LensButtonTooltip = "LOC_HUD_UNIT_ATTRITION_LENS_TOOLTIP",
     Initialize = nil,
-    GetColorPlotTable = OnGetColorPlotTable
+    OnToggle = Toggle,
+    GetColorPlotTable = GetColorPlotTable
 }
 
 -- minimappanel.lua
@@ -75,14 +70,16 @@ end
 
 -- modallenspanel.lua
 if g_ModLensModalPanel ~= nil then
-    g_ModLensModalPanel[LENS_NAME] = {}
-    g_ModLensModalPanel[LENS_NAME].LensTextKey = "LOC_HUD_UNIT_ATTRITION_LENS"
-    g_ModLensModalPanel[LENS_NAME].Legend = {
-        {"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_5", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_5")},
-		{"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_10", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_10")},
+  g_ModLensModalPanel[LENS_NAME] = {}
+  g_ModLensModalPanel[LENS_NAME].LensTextKey = "LOC_HUD_UNIT_ATTRITION_LENS"
+  g_ModLensModalPanel[LENS_NAME].Legend = {
+    {"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_0", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_0")},
+    {"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_5", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_5")},
+  	{"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_10", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_10")},
 		{"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_15", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_15")},
 		{"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_20", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_20")},
-		{"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_25", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_25")},
-		{"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_GT_25", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_GT_25")},
-    }
+		{"LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_GT_20", UI.GetColorValue("COLOR_UNIT_ATTRITION_LENS_RATE_GT_20")},
+  };
 end
+
+LuaEvents.ML_CloseLensPanels.Add(OnClose);

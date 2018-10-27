@@ -1,7 +1,7 @@
 -- File must be named ModLens_XYZ in order for MoreLenses to find it.
--- Adds a lens that shows the computed distance for attrition.  More for debugging than for anything else.
+-- Adds a lens that shows the computed distance for attrition calculations.  Not very helpful, so disabled by default.
 
-include("AttritionMaps.lua")
+include("AttritionMaps")
 
 local ENABLED = true;
 local LENS_NAME = "UA_UNIT_ATTRITION_DISTANCE"
@@ -24,9 +24,9 @@ end
 -- ===========================================================================
 
 local function OnGetColorPlotTable()
-    local plotCount = Map.GetPlotCount();
-    local localPlayer:number = Game.GetLocalPlayer();
-    local localPlayerVis:table = PlayersVisibility[localPlayer];
+  local plotCount = Map.GetPlotCount();
+  local localPlayer:number = Game.GetLocalPlayer();
+  local localPlayerVis:table = PlayersVisibility[localPlayer];
 
 	local colorPlot = {};
 	local colorPlotList = {};
@@ -35,21 +35,21 @@ local function OnGetColorPlotTable()
 	  local color = UI.GetColorValue("COLOR_UNIT_ATTRITION_DISTANCE_LENS_" .. i);
 	  colorPlot[color] = {};
 	  colorPlotList[i] = colorPlot[color];
-    end
+  end
 	colorPlot[UI.GetColorValue("COLOR_UNIT_ATTRITION_DISTANCE_LENS_UNREACHABLE")] = unreachable;
 
 	local player = Players[localPlayer];
-	local distances = CalculateAttritionDistanceMap(player, GameInfo.Eras[player:GetEra()].DefaultUnitAttritionSet);
+	local distances = AttritionMaps:new(player).distanceCalculator.distances;
 
-    for i = 0, plotCount - 1 do
-	  if distances[i] >= UA_ATTRITION_MAX_DISTANCE then
+  for i = 0, plotCount - 1 do
+	  if distances[i] >= DistanceCalculator.UNREACHABLE_DISTANCE then
 	    table.insert(unreachable, i);
 	  else
-		table.insert(colorPlotList[(distances[i] % NUM_COLORS)], i);
+		table.insert(colorPlotList[math.floor((distances[i] % NUM_COLORS))], i);
 	  end
-    end
+  end
 
-    return colorPlot
+  return colorPlot
 end
 
 local AttritionLensEntry = {

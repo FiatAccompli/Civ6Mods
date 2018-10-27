@@ -12,12 +12,14 @@
 ## alternate "build" command that allows editing the lua code in Modbuddy and then doing a very quick 
 ## "build" to get it running in Civ6.
 
-## This can be configured as an external tool (Tools > External Tools) with settings
+## This can be configured as an external tool (Tools > External Tools) in Modbuddy with settings
 ## Name: Quick Build Lua Scripts
 ## Command: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
 ## Arguments: -file "$(SolutionDir)CopyCiv6ModsLuaFiles.ps1" -From "$(SolutionDir)"
 
-## Unfortunately there doesn't seem to be a way to get 
+## Unfortunately there doesn't seem to be a generic way to get the Civ6 path within Modbuddy.
+## So if you've got it somewhere besides the default you'll need to specify it by adding a -To argument
+## to the external tools arguments above.
 if ($to -eq "") {
   $to = Join-Path $env:USERPROFILE "Documents\My Games\Sid Meier's Civilization VI\Mods"
 }
@@ -26,7 +28,7 @@ $matches = Get-ChildItem -Path $from -Recurse -Include "*.lua"
           
 $matches | Copy-Item -Destination {
             $destination = Join-Path $to $_.FullName.Substring($from.length)
-            Write-Host $_.FullName "\tto\t" $destination
+            Write-Host $_.FullName "to" $destination
             $destination
            }
 

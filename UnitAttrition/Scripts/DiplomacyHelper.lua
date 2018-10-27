@@ -18,7 +18,7 @@ DiplomacyInfo = {}
 DiplomacyInfo.__index = DiplomacyInfo
 
 function DiplomacyInfo:new(playerId)
-  local info = setmetatable({playerId = playerId, openBorders = {}, diploStates = {}, allianceTypes = {}}, DiplomacyInfo);
+  local info = setmetatable({playerId = playerId, openBorders = {}, diploStates = {}, allianceTypes = {}, suzerain = -1}, DiplomacyInfo);
   info:RefreshAll();
   return info;
 end
@@ -35,13 +35,18 @@ function DiplomacyInfo:GetAllianceType(otherPlayerId)
   return self.allianceTypes[otherPlayerId];
 end
 
+function DiplomacyInfo:IsSuzerain(minorId)
+  return ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(minorId).suzerain == self.playerId;
+end
+
 function DiplomacyInfo:Refresh(otherPlayer)
   local otherPlayerId = otherPlayer:GetID();
   local player = Players[self.playerId];
   local diplomacy = player:GetDiplomacy();
   self.openBorders[otherPlayerId] = diplomacy:HasOpenBordersFrom(otherPlayerId);
   self.diploStates[otherPlayerId] = player:GetDiplomaticAI():GetDiplomaticStateIndex(otherPlayerId);
-  self.allianceTypes[otherPlayerId] = diplomacy:GetAllianceType(otherPlayerId)
+  self.allianceTypes[otherPlayerId] = diplomacy:GetAllianceType(otherPlayerId);
+  self.suzerain = player:GetInfluence():GetSuzerain();
 end
 
 function DiplomacyInfo:RefreshAll()
@@ -50,7 +55,7 @@ function DiplomacyInfo:RefreshAll()
   end
 end
 
-InitializeDiplomacyInfos = function()
+local function InitializeDiplomacyInfos()
   ExposedMembers.DiplomacyHelper.diploInfos = {}; 
   for _, player in ipairs(Game.GetPlayers()) do 
     ExposedMembers.DiplomacyHelper.diploInfos[player:GetID()] = DiplomacyInfo:new(player:GetID())
@@ -61,14 +66,29 @@ local function OnPlayerTurnActivated(playerId)
   ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(playerId):RefreshAll();
 end
 
+local function OnDiplomacyRelationshipChanged(player1, player2)
+  ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player1):Refresh(Players[player2]);
+  ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player2):Refresh(Players[player1]);
+end
+
+local function OnDiplomacyDealEnacted(player1, player2)
+  ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player1):Refresh(Players[player2]);
+  ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player2):Refresh(Players[player1]);
+end
+
+local function OnInfluenceGiven(cityState, player)
+  ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(cityState):Refresh(Players[player]);
+end
+
 -- Load up all data when a game is loaded.
-Events.LoadGameViewStateDone.Add(InitializeDiplomacyInfos)
--- And refresh it for a player whenever their turn starts.  This is mostly for safety as the data
--- should be in-sync if we're correctly hooked to every event that could update it.
-Events.PlayerTurnActivated.Add(OnPlayerTurnActivated)
+Events.LoadGameViewStateDone.Add(InitializeDiplomacyInfos);
+-- Refresh data when a turn starts.
+Events.PlayerTurnActivated.Add(OnPlayerTurnActivated);
+-- And when a deal or relationship changes
+Events.DiplomacyDealEnacted.Add(OnDiplomacyRelationshipChanged);
+Events.DiplomacyRelationshipChanged.Add(OnDiplomacyRelationshipChanged);
+Events.InfluenceGiven.Add(OnInfluenceGiven);
 
-
---Events.AllianceEnded.Add
---Events.CivicCompleted.Add
---Events.DiplomacyDealEnacted.Add
---Events.DiplomacyRelationshipChanged.Add
+-- Initialize.  Necessary if making edits to this file and having it hotloaded when a game is already running.
+-- Otherwise initialization is handled in the LoadGameViewStateDone event.
+InitializeDiplomacyInfos();

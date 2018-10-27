@@ -1,10 +1,10 @@
--- Search utiltiies for finding shortest path distances on civ 6 maps using Djikstra's algorithm.
+-- Search utility for finding shortest path distances on civ 6 maps using uniform cost search.
 
 include("BinaryHeap")
 include("SupportFunctions")
 include("PlotIterators2")
 
-local UNREACHABLE_DISTANCE = 100000;
+local UNREACHABLE_DISTANCE = 1000000;
 local NO_PREVIOUS_PLOT = -1;
 
 local ADJACENT_PLOT_DIRECTIONS = {
@@ -23,6 +23,8 @@ local CONSTANT_PLOT_DISTANCE_CALCULATOR = function(plot, direction)
   return 1;
 end
 
+-- Creates a new DistanceCalculator instance where the distance from a plot to its adjacent plot is calculated by 
+-- plotDistanceCalculator(plot, adjacentPlot, direction).
 function DistanceCalculator:new(plotDistanceCalculator)
   local distances = {};
   local previousPlots = {};
@@ -35,12 +37,16 @@ function DistanceCalculator:new(plotDistanceCalculator)
                        distances = distances,
                        previousPlots = previousPlots,
                        startedDistanceCalculations = false,
-                       plotQueue = heap:new()}, 
-                      DistanceCalculator)
+                       plotQueue = Heap:new()}, 
+                      self)
 end
 
+-- Adds a plot as a starting point of the search with implied initial cost to get to the plot.
+-- (Another way of looking at it is that the true start node for path finding is off the map and calling this 
+-- adds an edge from it to <plot> of length <initialDistance>.)
 function DistanceCalculator:AddStartPlot(plot, initialDistance)
-  assert(not startedDistanceCalculations, "Can not add plot after starting to compute distances");
+  assert(not self.startedDistanceCalculations, "Can not add plot after starting to compute distances");
+  initialDistance = initialDistance or 0;
 
   local plotIndex = plot:GetIndex();
 
@@ -69,26 +75,32 @@ function DistanceCalculator:ComputeForAllPlots()
         -- Skip plots that fall off the edge of the world.
         if nextPlot ~= nil then
           local nextPlotIndex = nextPlot:GetIndex();
-          local increment = self.plotDistanceCalculator(plot, nextPlot, direction);
-          assert(increment >= 0, "calculated plot distance is negative");
-          local nextPlotDistance = distance + increment;
-          -- As well as skipping the plot if it is unreachable from here.
-          if nextPlotDistance < UNREACHABLE_DISTANCE then
-            if nextPlotDistance < self.distances[nextPlotIndex] then
-              self.distances[nextPlotIndex] = nextPlotDistance;
-              self.previousPlots[nextPlotIndex] = plotIndex;
-              self.plotQueue:Insert(nextPlotDistance, nextPlot);
-            end
-          end 
+          -- Also skip doing distance calculation (which might be somewhat expensive) when 
+          -- we know it will not be better than what we already have for a plot.
+          if distance < self.distances[nextPlotIndex] then
+            local increment = self.plotDistanceCalculator(plot, nextPlot, direction);
+            assert(increment >= 0, "calculated plot distance is negative");
+            local nextPlotDistance = distance + increment;
+
+            -- Also skip the plot if it is unreachable from the current one.
+            if nextPlotDistance < UNREACHABLE_DISTANCE then
+              if nextPlotDistance < self.distances[nextPlotIndex] then
+                self.distances[nextPlotIndex] = nextPlotDistance;
+                self.previousPlots[nextPlotIndex] = plotIndex;
+                self.plotQueue:Insert(nextPlotDistance, nextPlot);
+              end
+            end 
+          end
         end
       end
     end
   end
 end
 
+-- Show computed paths/distances on screen in world view.  (Must be in ui script context to use).
 function DistanceCalculator:DebugShowOnWorldMap(distanceMultiplier)
-  -- Since numbers on the world map are always whole numbers, multiply each distance so that fractional parts are 
-  -- visible (e.g. roads use a fraction of a movement point in later eras).
+  -- Since UI.AddNumberToPath only shows the whole part of the number, multiply each distance 
+  -- so that fractional parts are visible (e.g. roads use a fraction of a movement point in later eras).
   distanceMultiplier = distanceMultiplier or 10;
 
   UILens.SetActive(LensLayers.TRADE_ROUTE);

@@ -7,24 +7,24 @@
 		<Row Language="en_US" Tag="LOC_HUD_UNIT_ATTRITION_LENS_TOOLTIP">
 			<Text>Unit Attrition or something I guess.</Text>
 		</Row>
-		
+
+        <Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_0">
+            <Text>No attrition</Text>
+        </Row>
 		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_5">
-			<Text>5 HP per turn</Text>
+			<Text>1-5 HP per turn</Text>
 		</Row>
 		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_10">
-			<Text>10 HP per turn</Text>
+			<Text>5-10 HP per turn</Text>
 		</Row>
 		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_15">
-			<Text>15 HP per turn</Text>
+			<Text>11-15 HP per turn</Text>
 		</Row>
 		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_20">
-			<Text>20 HP per turn</Text>
+			<Text>16-20 HP per turn</Text>
 		</Row>
-		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_25">
-			<Text>25 HP per turn</Text>
-		</Row>
-		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_GT_25">
-			<Text>26+ HP per turn</Text>
+		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_GT_20">
+			<Text>21+ HP per turn</Text>
 		</Row>
 
 		<Row Language="en_US" Tag="LOC_HUD_UNIT_ATTRITION_DISTANCE_LENS">
