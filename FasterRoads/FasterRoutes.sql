@@ -1,4 +1,4 @@
--- It's the default, but let's 
+-- It's the default, but be explicit about it.
 UPDATE Routes SET MovementCost = 1 WHERE RouteType = 'ROUTE_ANCIENT_ROAD';
 
 -- Move to classical era.  The Romans had major roads in BCE and there were no substantial improvements 

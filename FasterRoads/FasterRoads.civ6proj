@@ -2,11 +2,11 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
-    <Name>Faster Roads</Name>
+    <Name>LOC_FASTER_ROADS_MOD_NAME</Name>
     <Guid>f4ec1a94-2912-4261-a1c1-c3f0893087d9</Guid>
     <ProjectGuid>7562de76-162e-4ce4-a042-fa2b7fa0c46b</ProjectGuid>
     <ModVersion>1</ModVersion>
-    <Teaser>Reduces the movement costs of roads in all eras</Teaser>
+    <Teaser>LOC_FASTER_ROADS_TEASER</Teaser>
     <Description>Reduces the movement costs of roads in all eras.  In early eras this makes the choice of which roads you build have a more meaningful impact.  In the late game reduced road costs enable armies to more quickly respond to your needs - either in attack or defense.
 
 Ancient roads continue to cost 1 movement point per hex, regardless of terrain.
@@ -17,7 +17,7 @@ Modern roads changed from 0.5 to 0.25 movements points per hex.</Description>
     <SupportsSinglePlayer>true</SupportsSinglePlayer>
     <SupportsMultiplayer>true</SupportsMultiplayer>
     <SupportsHotSeat>true</SupportsHotSeat>
-    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="FasterRoads"><File>FasterRoutes.sql</File></UpdateDatabase></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="FasterRoads"><Properties><LoadOrder>10200</LoadOrder></Properties><File>FasterRoutes.sql</File></UpdateDatabase></InGameActions>]]></InGameActionData>
     <AssemblyName>FasterRoads</AssemblyName>
     <RootNamespace>FasterRoads</RootNamespace>
     <Authors>FiatAccompli</Authors>
@@ -30,6 +30,9 @@ Modern roads changed from 0.5 to 0.25 movements points per hex.</Description>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="FasterRoutes.sql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="modinfo_fixer.xml">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

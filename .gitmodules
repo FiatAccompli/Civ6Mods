@@ -1,0 +1,6 @@
+[submodule "MapTacks"]
+	path = MapTacks
+	url = https://github.com/bszonye/civ6-maptacks.git
+[submodule "MapTacksPlus"]
+	path = MapTacksPlus
+	url = https://github.com/FiatAccompli/civ6-maptacks.git
