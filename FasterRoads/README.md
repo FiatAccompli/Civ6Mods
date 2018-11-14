@@ -1,6 +1,6 @@
 ## Faster Roads v1.0.0
 
-A mod that changes the movement costs of roads in order to make the existence of roadsir existence (or lack
+A mod that changes the movement costs of roads in order to make the existence of roads (or lack
 thereof) more impactful in the early game and to facilitate faster unit movement in the late game.
 
 * Ancient roads cost 1 movement point per hex regardless of terrain.
