@@ -2,16 +2,12 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
-    <Name>Constant Harvest Yields</Name>
+    <Name>LOC_CONSTANT_HARVEST_YIELDS_MOD_NAME</Name>
     <Guid>2b914697-3d70-4f92-a9e5-ef9f3609cef4</Guid>
     <ProjectGuid>cc682a3f-651f-4560-ab49-00ce82d31963</ProjectGuid>
-    <ModVersion>1</ModVersion>
-    <Teaser>Stops harvests yields from scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</Teaser>
-    <Description>Changes harvest yields to no longer scale with tech/civic progress.  Yields from terrain harvests are fixed at a value that is roughly the same as harvesting at the start of the classical era in an unmodded game.  Harvest yields for bonus resources are fixed at a value that is roughly the same as harvesting at the start of the medieval era in an unmodded game.
-
-As removing harvest yield scaling significantly reduces the use of Magnus' Groundbreaker promotion (+50% to harvest yields) it has been replaced with a new promotion.  Supply Chain Manager adds +1 production to industrial zone buildings with a regional production effect and adds +3 range to the area of effect of industrial zone buildings.  Since this promotion is not useful until the mid game the Surplus Logistics promotion is made Magnus's default promotion (but is nerfed to only provide +1 food to trade routes ending in the city).
-
-Because making harvest yields constant requires changing a global parameter that also effects district cost scaling it is recommended to also use a mod that changes how district costs are handled.</Description>
+    <ModVersion>100</ModVersion>
+    <Teaser>LOC_CONSTANT_HARVEST_YIELDS_TEASER</Teaser>
+    <Description>Changes harvest yields to no longer scale with tech/civic progress.  Yields from terrain harvests are fixed at a value that is roughly the same as harvesting at the middle of the classical era.  Harvest yields for bonus resources are fixed at a value that is roughly the same as harvesting at the middle of the medieval era.[NEWLINE][NEWLINE]As removing harvest yield scaling significantly reduces the use of Magnus' Groundbreaker promotion (+50% to harvest yields) (and because that promotion is rather op) it has been replaced with a new promotion: Supply Chain Manager adds +1 production to industrial zone buildings with a regional production effect and adds +3 range to the area of effect of industrial zone buildings.  As this promotion is not useful until the mid game the Surplus Logistics promotion is made Magnus's default promotion (but is nerfed to only provide +1 food to trade routes ending in the city).[NEWLINE][NEWLINE][COLOR:255,128,0,255]Because making harvest yields constant requires changing a global parameter that also effects district cost scaling it is recommended to also use a mod that changes how district costs are handled.[ENDCOLOR]</Description>
     <Authors>FiatAccompli</Authors>
     <SpecialThanks>
     </SpecialThanks>
@@ -21,7 +17,7 @@ Because making harvest yields constant requires changing a global parameter that
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>ConstantHarvestYields</AssemblyName>
     <RootNamespace>ConstantHarvestYields</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="ConstantHarvestYields"><File>Magnus.sql</File><File>ConstantHarvestYields.sql</File></UpdateDatabase><UpdateText id="ConstantHarvestYieldsText"><File>ConstantHarvestYields_Text.sql</File></UpdateText></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="ConstantHarvestYields"><Properties><LoadOrder>10200</LoadOrder></Properties><File>Magnus.sql</File><File>ConstantHarvestYields.sql</File></UpdateDatabase><UpdateText id="ConstantHarvestYieldsText"><File>ConstantHarvestYields_Text.sql</File></UpdateText></InGameActions>]]></InGameActionData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>
@@ -37,6 +33,9 @@ Because making harvest yields constant requires changing a global parameter that
       <SubType>Content</SubType>
     </Content>
     <Content Include="ConstantHarvestYields_Text.sql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="modinfo_fixer.xml">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

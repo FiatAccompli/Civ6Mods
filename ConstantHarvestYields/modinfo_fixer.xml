@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
+  <xsl:strip-space elements="*"/>
+  
+  <xsl:template match="/Mod/Properties">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+    <LocalizedText>
+      <Text id="LOC_CONSTANT_HARVEST_YIELDS_MOD_NAME">
+        <en_US>Constant Harvest Yields</en_US>
+        <de_DE>Constant Harvest Yields</de_DE>
+        <es_ES>Constant Harvest Yields</es_ES>
+        <fr_FR>Constant Harvest Yields</fr_FR>
+        <it_IT>Constant Harvest Yields</it_IT>
+        <pl_PL>Constant Harvest Yields</pl_PL>
+        <pt_BR>Constant Harvest Yields</pt_BR>
+        <ru_RU>Constant Harvest Yields</ru_RU>
+        <ja_JP>Constant Harvest Yields</ja_JP>
+        <ko_KR>Constant Harvest Yields</ko_KR>
+        <zh_Hans_CN>Constant Harvest Yields</zh_Hans_CN>
+        <zh_Hant_HK>Constant Harvest Yields</zh_Hant_HK>
+      </Text>
+      <Text id="LOC_CONSTANT_HARVEST_YIELDS_TEASER">
+        <en_US>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</en_US>
+        <de_DE>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</de_DE>
+        <es_ES>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</es_ES>
+        <fr_FR>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</fr_FR>
+        <it_IT>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</it_IT>
+        <pl_PL>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</pl_PL>
+        <pt_BR>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</pt_BR>
+        <ru_RU>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</ru_RU>
+        <ja_JP>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</ja_JP>
+        <ko_KR>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</ko_KR>
+        <zh_Hans_CN>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</zh_Hans_CN>
+        <zh_Hant_HK>Makes harvest yields constant rather than scaling with game (tech/civic) progress.  Replaces Magnus' Groundbreaker promotion.</zh_Hant_HK>
+      </Text>
+    </LocalizedText>
+  </xsl:template>
+
+  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
+  <xsl:template match="/Mod/LocalizedText"/>
+
+  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
+       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
+  <xsl:template match="@priority">
+    <xsl:attribute name="Priority">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
+  </xsl:template>
+
+  <!--Identity template, provides default behavior that copies all content into the output -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>
