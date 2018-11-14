@@ -43,7 +43,7 @@
   <xsl:template match="/Mod/LocalizedText"/>
 
   <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
-     Because I guess even the most cursory testing is unnecessary for Firaxis. -->
+       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
   <xsl:template match="@priority">
     <xsl:attribute name="Priority">
       <xsl:value-of select="."/>
