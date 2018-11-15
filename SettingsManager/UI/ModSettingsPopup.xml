@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Context Name="ModSettingsPopup" >
+    <Container Style="FullScreenVignetteConsumer"/>
+    <Box ID="MainGrid" Style="ShellBGBox">
+        <Container ID="MainWindow" Style="ShellWindowContainer">
+            <Container ID="Header" Style="ShellHeaderContainer">
+                <Grid Style="ShellHeaderButtonGrid">
+                    <GridButton ID="WindowCloseButton" Style="ShellButtonOrnateFlat" Anchor="R,C" Offset="1,0" String="LOC_MULTIPLAYER_BACK"/>
+                </Grid>
+                <Label ID="WindowTitle" Style="ShellHeader" Anchor="C,C" String="{LOC_MOD_SETTINGS_MANAGER_MOD_SETTINGS:upper}"/>
+            </Container>
+
+            <Grid Style="SubContainer4" Size="parent-10,670" Anchor="C,T" Color="7,28,50" Offset="0,55">
+                <!--Options Tabs-->
+                <Grid Style="SubContainerFill" Size="210,parent-6" Offset="3,3" Color="6,36,57,150">
+                    <Grid Style="SubContainer3" Size="parent-6,parent-6" Anchor="C,C" Color="13,70,82,255">
+                            <ScrollPanel Style="FoBar" ID="TabScrollPanel" Size="parent, parent-30" AutoScrollBar="1" Vertical="1" Anchor="L,T">
+                                <Stack ID="CategoriesStack" StackGrowth="Down" Anchor="C,T" Padding="10"/>
+                            </ScrollPanel>
+                        <GridButton ID="ShowDefaultSql" Size="150,22" Style="ShellButton" Anchor="C,B" Offset="0,2" 
+                                    String="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL" ToolTip="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL_TOOLTIP"/>
+                        <!--<GridButton ID="ResetButton" Size="150,22" Style="ShellButton" Anchor="C,B" Offset="0,2" 
+                                    String="LOC_SETUP_RESTORE_DEFAULT" ToolTip="LOC_SETUP_RESTORE_DEFAULT_TT"/>-->
+                    </Grid>
+                </Grid>
+                <Container Anchor="R,T" Size="parent-215,parent-6">
+                    <Stack ID="TabsStack" StackGrowth="Down" Anchor ="R,T" Offset="0,0">
+                        <Stack ID="DefaultSqlTab" Hidden="1" Size="parent, parent" Padding="10" StackGrowth="Down">
+                            <Label Size="parent, 100" Offset="0, 10" String="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_INSTRUCTIONS" Style="ShellOptionText" Anchor="C,C" />
+                            <Grid Style="EditTextArea" Size="parent-20,29" Offset="0,0" Anchor="C,T">
+                                <EditBox ID="SqlText" Size="parent-26, 23" Anchor="C,C" EditMode="1" Style="TreeOptionText" MaxLength="100000" String="This is the sql"/>
+                            </Grid>
+                        </Stack>
+                    </Stack>
+                </Container>
+                <GridButton ID="ConfirmButton" Style="ButtonConfirm"  AnchorSide="I,O" Anchor="C,B" String="LOC_GENERIC_CONFIRM_BUTTON" Size="300,41" Offset="0,5"/>
+            </Grid>
+        </Container>
+    </Box>
+
+    <Instance Name="CategoryLabel">
+        <GridButton ID="Label" Style="ShellTabSmall" Size="parent,32"/>
+    </Instance>
+
+    <!-- Holds the settings for a single category. -->
+    <Instance Name="SettingTab">
+        <Container ID="Tab" Size="parent,parent">
+            <ScrollPanel Offset="20,3" Size="parent-20,parent" AutoScrollBar="1" Vertical="1" Anchor="R,T">
+                <ScrollBar Style="Slider_Blue" Anchor="R,C" AnchorSide="O,I"/>
+                <Stack ID="SettingsStack" Anchor="R,T" StackGrowth="Down" Padding="3" Offset="150,50">
+                </Stack>
+            </ScrollPanel>
+        </Container>
+    </Instance>
+
+    <!-- UI for each type of setting. -->
+    <Instance Name="BooleanSetting">
+        <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="5">
+            <GridButton ID="SettingCheckbox" Anchor="L,C" Offset="0,0" Size="300,24" Style="CheckBoxControl"/>
+        </Stack>
+    </Instance>
+
+    <Instance Name="SelectSetting">
+        <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="5">
+            <Stack StackGrowth="Left">
+                <PullDown ID="SettingPulldown" Style="PullDownBlue" Anchor="R,C" ScrollThreshold="400" Size="300,24" Offset="0,0" SpaceForScroll="0"/>
+                <Label String=":" Style="ShellOptionText" Anchor="R,C"/>
+                <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
+            </Stack>
+        </Stack>
+    </Instance>
+
+    <Instance Name="RangeSetting">
+        <Stack ID="Setting" Anchor="R,T" StackGrowth="Down" Padding="0">
+            <Stack StackGrowth="Left">
+                <Slider ID="SettingSlider" Style="SliderControl" Anchor="C,B" Size="300,13" SpaceForScroll="0"/>
+                <Label String=":" Style="ShellOptionText"/>
+                <Label ID="SettingName" Style="ShellOptionText" />
+            </Stack>
+            <Container Size="300,13" Anchor="R,T">
+                <Label ID="DisplayValue" Style="ShellOptionText" Anchor="C,T"/>
+            </Container>
+        </Stack>
+    </Instance>
+
+    <Instance Name="TextSetting">
+        <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="5">
+            <Stack StackGrowth="Left">
+                <Grid Style="EditTextArea" CallOnChar="1" Size="300,30" InnerPadding="6,6" Anchor="C,T">
+                    <EditBox ID="SettingText" Style="FontNormal14" FontStyle="stroke" Size="parent-12,parent-12" Anchor="C,C" EditMode="1" MaxLength="1000"/>
+                </Grid>
+                <Label String=":" Style="ShellOptionText" Anchor="R,C"/>
+                <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
+            </Stack>
+        </Stack>
+    </Instance>
+</Context>

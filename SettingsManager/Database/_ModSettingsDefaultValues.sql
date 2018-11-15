@@ -1,0 +1,1 @@
+-- Paste the text from the game here and save as ModSettingsDefaultValues.sql (remove the initial underscore from the current file name).

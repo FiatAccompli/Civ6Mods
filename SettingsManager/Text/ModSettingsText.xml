@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <LocalizedText>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_MOD_SETTINGS">
+      <Text>Mod Settings</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL">
+      <Text>Show Saveable Config</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL_TOOLTIP">
+      <Text>Shows settings configuration and instructions that can be saved to make the current settings the default for all games.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_INSTRUCTIONS">
+      <Text>To save the current settings as the default for all games copy the following contents[NEWLINE](left click in text, then CTRL-A and CTRL-C to copy) and save the copied text in[NEWLINE]STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/ModSettingsDefaultValues.sql[NEWLINE]or the equivalent if Mod Settings Manager was installed locally.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_PREAMBLE">
+      <Text>-- Save this text in STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/ModSettingsDefaultValues.sql</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_NO_SETTINGS_NON_DEFAULT_VALUES">
+      <Text>No settings have non default values</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULT_RANGE_SETTING_VALUE_FORMATTER">
+      <Text>{1_Value : number #;-#}</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_PERCENT_RANGE_SETTING_VALUE_FORMATTER">
+      <Text>{1_Value : number #}%</Text>
+    </Row>
+  </LocalizedText>
+</GameData>
