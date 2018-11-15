@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>Settings Manager Example</Name>
+    <Guid>1f2b5c23-a47c-486c-bbc3-cc4e78fc8b5c</Guid>
+    <ProjectGuid>6987ebd7-a8c0-4bdb-aa76-34a0021a1925</ProjectGuid>
+    <ModVersion>100</ModVersion>
+    <Teaser>Example usage of Mod Settings Manager.</Teaser>
+    <Description>Example usage of Mod Settings Manager.</Description>
+    <Authors>Fiat Accompli</Authors>
+    <SpecialThanks>
+    </SpecialThanks>
+    <AffectsSavedGames>false</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <AssemblyName>SettingsManagerExample</AssemblyName>
+    <RootNamespace>SettingsManagerExample</RootNamespace>
+    <InGameActionData><![CDATA[<InGameActions><AddUserInterfaces id="ExampleUse"><Properties><Context>InGame</Context></Properties><File>ModSettingExample.xml</File></AddUserInterfaces><UpdateText id="ExampleText"><File>ModSettingExample_Text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
+    <AssociationData><![CDATA[<Associations>
+  <Dependency type="Mod" title="Mod Settings Manager" id="1cb1beaf-0428-4aad-b11d-e3168429c071" />
+</Associations>]]></AssociationData>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ModSettingExample_Text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ModSettingExample.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ModSettingExample.xml">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>

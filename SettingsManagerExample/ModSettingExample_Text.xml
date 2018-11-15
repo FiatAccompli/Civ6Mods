@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <LocalizedText>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_CATEGORY">
+      <Text>Example Mod</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_SETTING_TOOLTIP">
+      <Text>This is a tooltip.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_BOOLEAN_SETTING">
+      <Text>Boolean Setting</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_BOOLEAN_SETTING_2">
+      <Text>Another Boolean Setting</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_RANGE_SETTING">
+      <Text>Range Setting</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_STEPPED_RANGE_SETTING">
+      <Text>Stepped Range Setting</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_SELECT_SETTING">
+      <Text>Selection Setting</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_SELECT_SETTING_VALUE_1">
+      <Text>First Option</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_SELECT_SETTING_VALUE_2">
+       <Text>Second Option</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_SELECT_SETTING_VALUE_3">
+       <Text>Third Option</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_TEXT_SETTING">
+      <Text>Text Setting</Text>
+    </Row>
+  </LocalizedText>
+</GameData>
