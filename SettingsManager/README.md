@@ -13,6 +13,9 @@ When clicked this will bring up the settings popup that allows you to change all
 When you have changed the settings use the "Confirm" button at the bottom to lock in the changes 
 (if you press ESC or the back button at the upper right) the changes will be reverted.
 
+![Access Button](Documentation/SettingsManagerAccessButton.jpg)
+![Example Settings](Documentation/SettingsManagerExamplePage.jpg)
+
 ### Saving settings as the default for all games.
 
 To make the current settings the default for all games, click the "Show Saveable Config" button at the bottom
