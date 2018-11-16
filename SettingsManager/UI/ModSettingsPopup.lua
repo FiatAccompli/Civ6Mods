@@ -34,6 +34,8 @@ end
 function BaseSettingUIHandler:RaiseChange(value)
   LuaEvents.ModSettingsManager_SettingValueChange(
       self.setting.categoryName, self.setting.settingName, value);
+  LuaEvents.ModSettingsManager_SettingValueChanged(
+      self.setting.categoryName, self.setting.settingName, value);
 end
 
 function BaseSettingUIHandler:CacheAndUpdateValue()
@@ -44,18 +46,22 @@ end
 -- Restore the setting to the value cached when the popup was opened (to support
 -- cancellation of options screen and restoration of all values to initial values).
 function BaseSettingUIHandler:RestoreSettingValue()
-  if self.setting.Value ~= self.cachedValue then 
+  if not self:ValuesEqual(self.setting.Value, self.cachedValue) then 
     self:RaiseChange(self.cachedValue);
   end
 end
 
 function BaseSettingUIHandler:SaveValue()
   -- Only save changes.
-  if self.setting.Value ~= self.cachedValue then
-    print("Saving value: ", self.setting.storageName, self.setting.Value);
-    GameConfiguration.SetValue(self.setting.storageName, tostring(self.setting.Value));
+  if not self:ValuesEqual(self.setting.Value, self.cachedValue) then
+    print("Saving value: ", self.setting.storageName, self.setting:ToStringValue());
+    GameConfiguration.SetValue(self.setting.storageName, self.setting:ToStringValue());
     print(GameConfiguration.GetValue(self.setting.storageName));
   end
+end
+
+function BaseSettingUIHandler:ValuesEqual(v1, v2) 
+  return v1 == v2;
 end
 
 local BooleanSettingUIHandler = {};
@@ -95,7 +101,6 @@ function SelectSettingUIHandler:new(setting:table, ui:table)
   pulldown:LocalizeAndSetToolTip(setting.tooltip);
 
   for i, v in ipairs(setting.values) do
-    print(i, v);
     local instance = {};
     pulldown:BuildEntry("InstanceOne", instance);
     instance.Button:SetVoid1(i);
@@ -137,6 +142,95 @@ end
 
 function TextSettingUIHandler:UpdateUIToSettingValue()
   self.ui.SettingText:SetText(self.setting.Value);
+end
+
+local activeKeyBindingUIHandler = nil;
+
+function StartActiveKeyBinding(title)
+  Controls.BindingTitle:LocalizeAndSetText(title);
+	Controls.KeyBindingPopup:SetHide(false);
+	Controls.KeyBindingAlpha:SetToBeginning();
+	Controls.KeyBindingAlpha:Play();
+	Controls.KeyBindingSlide:SetToBeginning();
+	Controls.KeyBindingSlide:Play();
+end
+
+function StopActiveKeyBinding()
+	Controls.KeyBindingPopup:SetHide(true);
+  activeKeyBindingUIHandler = nil;
+end
+
+function HandlePossibleBinding(input)
+  local uiMsg = input:GetMessageType();
+	if(uiMsg == KeyEvents.KeyUp) then
+		local keyCode = input:GetKey();
+    if ModSettings.KeyBinding.KeyLocalizations[keyCode] then
+      activeKeyBindingUIHandler:SetBinding(
+          ModSettings.KeyBinding.MakeValue(keyCode, input:IsShiftDown(), input:IsControlDown(), input:IsAltDown()));
+    end
+    return true;
+  end
+  return false;
+end
+
+Controls.CancelBindingButton:RegisterCallback(Mouse.eLClick, 
+  function()
+		StopActiveKeyBinding();
+  end);
+
+Controls.ClearBindingButton:RegisterCallback(Mouse.eLClick,
+  function()
+		if (activeKeyBindingUIHandler) then 
+      activeKeyBindingUIHandler:SetBinding(nil);
+		end
+    StopActiveKeyBinding();	
+  end);
+
+local KeyBindingUIHandler = {};
+KeyBindingUIHandler.__index = KeyBindingUIHandler;
+setmetatable(KeyBindingUIHandler, BaseSettingUIHandler);
+
+function KeyBindingUIHandler:new(setting:table, ui:table)
+  local result = BaseSettingUIHandler.new(self, setting, ui);
+
+  ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER", Locale.Lookup(setting.settingName)));
+  ui.Binding:LocalizeAndSetToolTip(setting.tooltip);
+  ui.Binding:RegisterCallback(Mouse.eLClick, 
+    function()
+      activeKeyBindingUIHandler = result;
+      StartActiveKeyBinding(result.setting.settingName);
+    end);
+  result:UpdateUIToSettingValue();
+
+  return result;
+end
+
+function KeyBindingUIHandler:SetBinding(value) 
+  self:RaiseChange(value);
+  self:UpdateUIToSettingValue();
+end
+
+function KeyBindingUIHandler:ValuesEqual(v1, v2)
+  if v1 == nil or v2 == nil then 
+    return v1 == v2;
+  end
+  return v1.KeyCode == v2.KeyCode and
+         v1.IsShift == v2.IsShift and
+         v1.IsControl == v2.IsControl and
+         v1.IsAlt == v2.IsAlt;
+end
+
+function KeyBindingUIHandler:UpdateUIToSettingValue()
+  local value = self.setting.Value;
+  if value then 
+    self.ui.Binding:SetText(
+        (value.IsShift and (Locale.Lookup("LOC_OPTIONS_KEY_SHIFT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+        (value.IsControl and (Locale.Lookup("LOC_OPTIONS_KEY_CONTROL") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+        (value.IsAlt and (Locale.Lookup("LOC_OPTIONS_KEY_ALT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+        Locale.Lookup(ModSettings.KeyBinding.KeyLocalizations[value.KeyCode]));
+  else
+    self.ui.Binding:SetText("");
+  end
 end
 
 local RangeSettingUIHandler = {};
@@ -206,6 +300,7 @@ function CategoryUI:new(categoryName:string)
   local rangesManager = InstanceManager:new("RangeSetting", "Setting", tab.SettingsStack);
   local textsManager = InstanceManager:new("TextSetting", "Setting", tab.SettingsStack);
   local selectsManager = InstanceManager:new("SelectSetting", "Setting", tab.SettingsStack);
+  local keyBindingsManager = InstanceManager:new("KeyBindingSetting", "Setting", tab.SettingsStack);
 
   local result = setmetatable({settings = {},
                                label = label,
@@ -213,7 +308,8 @@ function CategoryUI:new(categoryName:string)
                                booleansManager = booleansManager,
                                rangesManager = rangesManager,
                                textsManager = textsManager,
-                               selectsManager = selectsManager},
+                               selectsManager = selectsManager,
+                               keyBindingsManager = keyBindingsManager },
                               self);
   label.Label:RegisterCallback(Mouse.eLClick, function()
       result:ShowSettings()
@@ -249,6 +345,9 @@ function CategoryUI:AddSetting(setting:table)
   elseif setting.Type == ModSettings.Types.TEXT then
     ui = self.textsManager:GetInstance();
     uiHandler = TextSettingUIHandler:new(setting, ui);
+  elseif setting.Type == ModSettings.Types.KEY_BINDING then
+    ui = self.keyBindingsManager:GetInstance();
+    uiHandler = KeyBindingUIHandler:new(setting, ui);
   end
 
   self.settings[setting.settingName] = {
@@ -318,9 +417,9 @@ function ShowDefaultsSql()
   local sql = {Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_PREAMBLE"), "", "INSERT OR REPLACE INTO ModSettingsUserDefaults(StorageName, Value) VALUES " };
   for _, ui in pairs(categories) do 
     for _, s in pairs(ui.settings) do
-      if s.setting.Value ~= s.setting.defaultValue then
+      if not s.uiHandler:ValuesEqual(s.setting.Value, s.setting.defaultValue) then
         table.insert(sql, "-- " .. Locale.Lookup(s.setting.categoryName) .. ": " .. Locale.Lookup(s.setting.settingName));
-        table.insert(sql, "(\"" .. s.setting.storageName .. "\", \"" .. tostring(s.setting.Value) .. "\"),");
+        table.insert(sql, "(\"" .. s.setting.storageName .. "\", \"" .. s.setting:ToStringValue() .. "\"),");
       end
     end
   end
@@ -338,9 +437,21 @@ function OnInput(input)
 	local uiMsg = input:GetMessageType();
 	if(uiMsg == KeyEvents.KeyUp) then
 		local uiKey = input:GetKey();
-		if(uiKey == Keys.VK_ESCAPE) then
-			CancelPopup();
-			return true;
+    if activeKeyBindingUIHandler then
+		  if(uiKey == Keys.VK_ESCAPE) then
+        StopActiveKeyBinding();
+        return true;
+      else
+        if HandlePossibleBinding(input) then
+          StopActiveKeyBinding();
+          return true;
+        end
+      end
+    else 
+      if(uiKey == Keys.VK_ESCAPE) then
+			  CancelPopup();
+        return true;
+      end
 		end
 	end
 	

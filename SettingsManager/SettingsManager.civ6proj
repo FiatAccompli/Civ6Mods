@@ -5,7 +5,7 @@
     <Name>LOC_MOD_SETTINGS_MANAGER_MOD_NAME</Name>
     <Guid>1cb1beaf-0428-4aad-b11d-e3168429c071</Guid>
     <ProjectGuid>2b269c1b-074e-49ed-87e3-fc27027d5f6d</ProjectGuid>
-    <ModVersion>1</ModVersion>
+    <ModVersion>100</ModVersion>
     <Teaser>LOC_MOD_SETTINGS_MANAGER_TEASER</Teaser>
     <Description>LOC_MOD_SETTINGS_MANAGER_TEASER</Description>
     <Authors>FiatAccompli</Authors>

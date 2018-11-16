@@ -20,6 +20,14 @@
       <Text>No settings have non default values</Text>
     </Row>
 
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER">
+      <Text>+</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER">
+      <Text>{1} key binding</Text>
+    </Row>
+
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULT_RANGE_SETTING_VALUE_FORMATTER">
       <Text>{1_Value : number #;-#}</Text>
     </Row>
