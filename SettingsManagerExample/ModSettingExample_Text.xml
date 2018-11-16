@@ -34,5 +34,8 @@
     <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_TEXT_SETTING">
       <Text>Text Setting</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_KEY_BINDING_SETTING">
+      <Text>Text Setting</Text>
+    </Row>
   </LocalizedText>
 </GameData>
