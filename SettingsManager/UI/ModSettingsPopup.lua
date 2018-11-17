@@ -28,7 +28,14 @@ local BaseSettingUIHandler = {}
 BaseSettingUIHandler.__index = BaseSettingUIHandler;
 
 function BaseSettingUIHandler:new(setting:table, ui:table)
-  return setmetatable({setting = setting, ui = ui, cachedValue = setting.Value}, self);
+  local result = setmetatable({setting = setting, ui = ui, cachedValue = setting.Value}, self);
+  LuaEvents.ModSettingsManager_SettingValueChanged.Add(
+    function(cName:string, sName:string, value)
+      if (cName == setting.categoryName) and (sName == setting.settingName) then
+        result:UpdateUIToValue(value);
+      end
+    end);
+  return result;
 end
 
 function BaseSettingUIHandler:RaiseChange(value)
@@ -40,7 +47,7 @@ end
 
 function BaseSettingUIHandler:CacheAndUpdateValue()
   self.cachedValue = self.setting.Value;
-  self:UpdateUIToSettingValue();
+  self:UpdateUIToValue(self.cachedValue);
 end
 
 -- Restore the setting to the value cached when the popup was opened (to support
@@ -56,7 +63,7 @@ function BaseSettingUIHandler:SaveValue()
   if not self:ValuesEqual(self.setting.Value, self.cachedValue) then
     print("Saving value: ", self.setting.storageName, self.setting:ToStringValue());
     GameConfiguration.SetValue(self.setting.storageName, self.setting:ToStringValue());
-    print(GameConfiguration.GetValue(self.setting.storageName));
+    --print(GameConfiguration.GetValue(self.setting.storageName));
   end
 end
 
@@ -78,14 +85,13 @@ function BooleanSettingUIHandler:new(setting:table, ui:table)
     function()
 			local selected = not checkbox:IsSelected();
       result:RaiseChange(selected);
-      result:UpdateUIToSettingValue();
     end);
-  result:UpdateUIToSettingValue();
+  result:UpdateUIToValue(setting.Value);
   return result;
 end
 
-function BooleanSettingUIHandler:UpdateUIToSettingValue()
-  self.ui.SettingCheckbox:SetSelected(self.setting.Value);
+function BooleanSettingUIHandler:UpdateUIToValue(value)
+  self.ui.SettingCheckbox:SetSelected(value);
 end
 
 local SelectSettingUIHandler = {};
@@ -107,20 +113,19 @@ function SelectSettingUIHandler:new(setting:table, ui:table)
     instance.Button:LocalizeAndSetText(v);
 	end
   
-  result:UpdateUIToSettingValue();
   pulldown:CalculateInternals();
   pulldown:RegisterSelectionCallback(
 			function(index, _, control)
         local selectedValue = setting.values[index];
         result:RaiseChange(selectedValue);
-        result:UpdateUIToSettingValue();
 			end
 		);
+  result:UpdateUIToValue(setting.Value);
   return result;
 end
 
-function SelectSettingUIHandler:UpdateUIToSettingValue()
-  self.ui.SettingPulldown:GetButton():LocalizeAndSetText(self.setting.Value);
+function SelectSettingUIHandler:UpdateUIToValue(value)
+  self.ui.SettingPulldown:GetButton():LocalizeAndSetText(value or "");
 end
 
 local TextSettingUIHandler = {};
@@ -134,14 +139,16 @@ function TextSettingUIHandler:new(setting:table, ui:table)
   ui.SettingText:LocalizeAndSetToolTip(setting.tooltip);
   ui.SettingText:RegisterStringChangedCallback(function() 
       local value = ui.SettingText:GetText();
-      result:RaiseChange(value);
+      if value ~= setting.Value then
+        result:RaiseChange(value);
+      end
     end);
-  result:UpdateUIToSettingValue();
+  result:UpdateUIToValue(setting.Value);
   return result;
 end
 
-function TextSettingUIHandler:UpdateUIToSettingValue()
-  self.ui.SettingText:SetText(self.setting.Value);
+function TextSettingUIHandler:UpdateUIToValue(value)
+  self.ui.SettingText:SetText(value);
 end
 
 local activeKeyBindingUIHandler = nil;
@@ -166,7 +173,7 @@ function HandlePossibleBinding(input)
 		local keyCode = input:GetKey();
     if ModSettings.KeyBinding.KeyLocalizations[keyCode] then
       activeKeyBindingUIHandler:SetBinding(
-          ModSettings.KeyBinding.MakeValue(keyCode, input:IsShiftDown(), input:IsControlDown(), input:IsAltDown()));
+          ModSettings.KeyBinding.MakeValue(keyCode, {SHIFT=input:IsShiftDown(), CTRL=input:IsControlDown(), ALT=input:IsAltDown()}));
     end
     return true;
   end
@@ -200,14 +207,13 @@ function KeyBindingUIHandler:new(setting:table, ui:table)
       activeKeyBindingUIHandler = result;
       StartActiveKeyBinding(result.setting.settingName);
     end);
-  result:UpdateUIToSettingValue();
+  result:UpdateUIToValue(setting.Value);
 
   return result;
 end
 
 function KeyBindingUIHandler:SetBinding(value) 
   self:RaiseChange(value);
-  self:UpdateUIToSettingValue();
 end
 
 function KeyBindingUIHandler:ValuesEqual(v1, v2)
@@ -220,8 +226,7 @@ function KeyBindingUIHandler:ValuesEqual(v1, v2)
          v1.IsAlt == v2.IsAlt;
 end
 
-function KeyBindingUIHandler:UpdateUIToSettingValue()
-  local value = self.setting.Value;
+function KeyBindingUIHandler:UpdateUIToValue(value)
   if value then 
     self.ui.Binding:SetText(
         (value.IsShift and (Locale.Lookup("LOC_OPTIONS_KEY_SHIFT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
@@ -263,12 +268,12 @@ function RangeSettingUIHandler:new(setting:table, ui:table)
       end
     end);
   end
-  result:UpdateUIToSettingValue();
+  result:UpdateUIToValue(setting.Value);
   return result;
 end
 
-function RangeSettingUIHandler:UpdateUIToSettingValue()  
-  local value = self.setting.Value;
+function RangeSettingUIHandler:UpdateUIToValue(value)
+  print("RangeSettingUIHandler:UpdateUIToValue", value);
   self:UpdateDisplayValue(value);
   local steps = self.setting.steps;
   if steps and steps > 0 then
@@ -282,7 +287,25 @@ function RangeSettingUIHandler:UpdateUIToSettingValue()
 end
 
 function RangeSettingUIHandler:UpdateDisplayValue(value)
-  self.ui.DisplayValue:LocalizeAndSetText(self.setting.valueFormatter, value);
+  self.ui.DisplayValue:LocalizeAndSetText(self.setting.valueFormatter, value or 0);
+end
+
+local ActionSettingUIHandler = {};
+ActionSettingUIHandler.__index = ActionSettingUIHandler;
+setmetatable(ActionSettingUIHandler, BaseSettingUIHandler);
+
+function ActionSettingUIHandler:new(setting:table, ui:table)
+  local result = BaseSettingUIHandler.new(self, setting, ui);
+  ui.ActionButton:LocalizeAndSetText(setting.settingName);
+  ui.ActionButton:RegisterCallback(Mouse.eLClick, 
+    function()
+      result:RaiseChange(0);
+    end);
+  return result;
+end
+
+function ActionSettingUIHandler:UpdateUIToValue(value)
+  -- Nothing to do here.
 end
 
 ------------------------------------------------------------------------------
@@ -301,6 +324,7 @@ function CategoryUI:new(categoryName:string)
   local textsManager = InstanceManager:new("TextSetting", "Setting", tab.SettingsStack);
   local selectsManager = InstanceManager:new("SelectSetting", "Setting", tab.SettingsStack);
   local keyBindingsManager = InstanceManager:new("KeyBindingSetting", "Setting", tab.SettingsStack);
+  local actionsManager = InstanceManager:new("ActionSetting", "Setting", tab.SettingsStack);
 
   local result = setmetatable({settings = {},
                                label = label,
@@ -309,7 +333,8 @@ function CategoryUI:new(categoryName:string)
                                rangesManager = rangesManager,
                                textsManager = textsManager,
                                selectsManager = selectsManager,
-                               keyBindingsManager = keyBindingsManager },
+                               keyBindingsManager = keyBindingsManager,
+                               actionsManager = actionsManager },
                               self);
   label.Label:RegisterCallback(Mouse.eLClick, function()
       result:ShowSettings()
@@ -348,6 +373,9 @@ function CategoryUI:AddSetting(setting:table)
   elseif setting.Type == ModSettings.Types.KEY_BINDING then
     ui = self.keyBindingsManager:GetInstance();
     uiHandler = KeyBindingUIHandler:new(setting, ui);
+  elseif setting.Type == ModSettings.Types.ACTION then
+    ui = self.actionsManager:GetInstance();
+    uiHandler = ActionSettingUIHandler:new(setting,ui);
   end
 
   self.settings[setting.settingName] = {
@@ -391,11 +419,12 @@ function OnShow()
   if firstCategory ~= nil then
     firstCategory:ShowSettings();
   end
+  Controls.TabScrollPanel:SetScrollValue(0);
 end
 
 function CancelPopup()
-  for _, ui in pairs(categories) do 
-    for _, s in pairs(ui.settings) do 
+  for _, ui in pairs(categories) do
+    for _, s in pairs(ui.settings) do
       s.uiHandler:RestoreSettingValue();
     end
   end

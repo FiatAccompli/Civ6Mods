@@ -8,6 +8,7 @@ local Types = {
   RANGE = 3,
   TEXT = 4,
   KEY_BINDING = 5,
+  ACTION = 6,
 };
 
 local function MakeFullStorageName(categoryName:string, settingName:string)
@@ -38,9 +39,6 @@ function BaseSetting:new(defaultValue, categoryName:string, settingName:string, 
     end);
   Events.LoadGameViewStateDone.Add(function()
       setting:LoadSavedValue();
-      if setting.onChanged then
-        setting.onChanged(self.Value);
-      end
     end);
   return setting;
 end
@@ -93,7 +91,7 @@ BooleanSetting.__index = BooleanSetting;
 setmetatable(BooleanSetting, BaseSetting);
 
 function BooleanSetting:new(defaultValue:boolean, categoryName:string, settingName:string, tooltip:string)
-  local result = BaseSetting.new(self, defaultValue, categoryName, settingName, tooltip, onChanged);
+  local result = BaseSetting.new(self, defaultValue, categoryName, settingName, tooltip);
   result:LoadSavedValue();
   return result;
 end
@@ -372,9 +370,10 @@ function KeyBindingSetting:new(defaultValue:table, categoryName:string, settingN
   return result;
 end
 
-function KeyBindingSetting.MakeValue(keyCode:number, isShift:boolean, isControl:boolean, isAlt:boolean) 
+function KeyBindingSetting.MakeValue(keyCode:number, modifiers:table) 
+  modifiers = modifiers or {}
   if KeyBindingSetting.KeyLocalizations[keyCode] then
-    return { IsShift = isShift, IsControl = isControl, IsAlt = isAlt, KeyCode = keyCode };
+    return { IsShift = modifiers.SHIFT or false, IsControl = modifiers.CTRL or false, IsAlt = modifiers.ALT or false, KeyCode = keyCode };
   else
     return nil;
   end
@@ -413,6 +412,25 @@ function KeyBindingSetting:MatchesInput(input:table)
   return false;
 end
 
+---------------------------------------------------------------------------------------------
+-- Psuedo-setting that allows mods to show a clickable button in configuration and 
+-- attach logic when its value changes.
+---------------------------------------------------------------------------------------------
+local ActionSetting = {
+  Type = Types.ACTION
+};
+ActionSetting.__index = ActionSetting;
+setmetatable(ActionSetting, BaseSetting);
+
+function ActionSetting:new(categoryName:string, settingName:string, tooltip:string)
+  local result = BaseSetting.new(self, 0, categoryName, settingName, tooltip);
+  return result;
+end
+
+function BooleanSetting:ParseValue(value:string)
+  return 0;
+end
+
 --------------------------------------------------------------------------------------------------
 -- Expose the public api in ModSettings.
 --------------------------------------------------------------------------------------------------
@@ -423,4 +441,5 @@ ModSettings = {
   Range = RangeSetting,
   Text = TextSetting,
   KeyBinding = KeyBindingSetting,
+  Action = ActionSetting,
 };

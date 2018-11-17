@@ -14,8 +14,9 @@
         <!--Options Tabs-->
         <Grid Style="SubContainerFill" Size="210,parent-6" Offset="3,3" Color="6,36,57,150">
           <Grid Style="SubContainer3" Size="parent-6,parent-6" Anchor="C,C" Color="13,70,82,255">
-            <ScrollPanel Style="FoBar" ID="TabScrollPanel" Size="parent, parent-30" AutoScrollBar="1" Vertical="1" Anchor="L,T">
+            <ScrollPanel ID="TabScrollPanel" Size="parent, parent-30" AutoScrollBar="1" Vertical="1" Anchor="L,T">
               <Stack ID="CategoriesStack" StackGrowth="Down" Anchor="C,T" Padding="10"/>
+              <ScrollBar Style="Slider_Blue" Anchor="R,C" AnchorSide="O,I"/>
             </ScrollPanel>
             <GridButton ID="ShowDefaultSql" Size="150,22" Style="ShellButton" Anchor="C,B" Offset="0,2"
                         String="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL" ToolTip="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL_TOOLTIP"/>
@@ -28,7 +29,7 @@
             <Stack ID="DefaultSqlTab" Hidden="1" Size="parent, parent" Padding="10" StackGrowth="Down">
               <Label Size="parent, 100" Offset="0, 10" String="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_INSTRUCTIONS" Style="ShellOptionText" Anchor="C,C" />
               <Grid Style="EditTextArea" Size="parent-20,29" Offset="0,0" Anchor="C,T">
-                <EditBox ID="SqlText" Size="parent-26, 23" Anchor="C,C" EditMode="1" Style="TreeOptionText" MaxLength="100000" String="This is the sql"/>
+                <EditBox ID="SqlText" HighlightOnFocus="true" Size="parent-26, 23" Anchor="C,C" EditMode="1" Style="TreeOptionText" MaxLength="100000" String="This is the sql"/>
               </Grid>
             </Stack>
           </Stack>
@@ -107,7 +108,7 @@
     <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="5">
       <Stack StackGrowth="Left">
         <Grid Style="EditTextArea" CallOnChar="1" Size="300,30" InnerPadding="6,6" Anchor="C,T">
-          <EditBox ID="SettingText" Style="FontNormal14" FontStyle="stroke" Size="parent-12,parent-12" Anchor="C,C" EditMode="1" MaxLength="1000"/>
+          <EditBox ID="SettingText" Style="FontNormal14" FontStyle="stroke" Size="parent-12,parent-12" Anchor="C,C" EditMode="1" MaxLength="100"/>
         </Grid>
         <Label String=":" Style="ShellOptionText" Anchor="R,C"/>
         <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
@@ -123,5 +124,11 @@
       <Label String=":" Style="ShellOptionText" Anchor="R,C"/>
       <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>     
     </Stack>
-  </Instance>"
+  </Instance>
+
+  <Instance Name="ActionSetting">
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Down" Padding="0">
+      <GridButton ID="ActionButton" Style="ButtonControl" Size="300,24" />
+    </Stack>
+  </Instance>
 </Context>

@@ -37,14 +37,14 @@ To use Mod Settings Manager in other mods:
    This makes it so users can't enable your mod without also enabling Mod Settings Manager. 
 
 2. In whichever lua files you want to use settings include the settings api
-```
-include ("ModSettings")
-```
-and contruct the settings you need to control.  All settings constructed will be automatically registered with the ui 
-and available for users to configure.
+   ```
+   include ("ModSettings")
+   ```
+   and contruct the settings you need to control.  All settings constructed will be automatically registered with the ui 
+   and available for users to configure.
 
-*Note that mod settings can only control behavior of lua code - either UI behavior or custom behavior 
- implemented with lua gameplay scripts.  You can't use this mod to control changes made to the gameplay database.*
+   *Note that mod settings can only control behavior of lua code - either UI behavior or custom behavior 
+   implemented with lua gameplay scripts.  You can't use this mod to control changes made to the gameplay database.*
 
 ## Settings Api
 
@@ -75,7 +75,7 @@ ModSettings.<Type>:new(...)
 
 #### Setting Methods
 
-* `Change(value)` - Update the setting to the given value. 
+* `Change(value)` - Update the setting to the given value. *Note that this does not persist the change.*
 * `AddChangedHandler(onChanged)` - Register a function to be called after the setting value has changed.
   This is equivalent to adding a listener to `LuaEvents.ModSettingsManager_SettingValueChanged` and filtering
   to matching categoryName/settingName.
@@ -169,15 +169,35 @@ setting = ModSettings.KeyBinding:new(defaultValue, categoryName, settingName, to
 * `defaultValue` should be a value constructed with `MakeValue` or `nil` if no binding is specified.  
   **To avoid conflicts with base game bindings it is recommended that 
   all defaults for mod key bindings use at least one of the shift/ctrl/alt modifiers**.
+  
+The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsControl`, and `IsAlt`.
     
 ##### Methods
-* `ModSettings.KeyBinding.MakeValue(keyCode, isShift, isControl, isAlt)` - 
+* `ModSettings.KeyBinding.MakeValue(keyCode, modifiers)` - 
   A static method to construct a data table to be used as the value of a key binding setting. 
-  `keyCode` should be one of the values from the `Keys` table.  (Note that not all values in the `Keys`
-  table are available for binding.  See the source for details.)  
+  `keyCode` should be one of the values from the `Keys` table. (Note that not all values in the `Keys`
+  table are available for binding.  See the source for details.)  `modifiers` is a table of modifier keys.
+  set `SHIFT`, `CTRL`, and/or `ALT` to true in it to require those modifier keys.
 * `MatchesInput(input)` - Returns true if `input` is a key-up event that matches the currently configured key binding.
   `input` is the parameter passed to the function registered with `ContextPtr.SetInputHandler(handler, true)`.
-    
+
+---
+
+#### Action
+
+A psuedo-setting that shows up in the configuration UI as a clickable button.  By attaching a callback 
+with AddChangedHandler you can attach custom behavior into the UI configuration popup.  For example, 
+if you were providing a key-binding mode for world view you could have individual keybinding settings to 
+move the world view up/down/left/right and zoom-in/zoom-out.  You could then add two custom action "settings"
+to set those keybindings to recommended values of up/down/left/right/+/- or w/s/a/d/r/f.
+
+```
+setting = ModSettings.Action:new(categoryName, settingName, tooltip)
+```
+
+The `Value` of the setting is meaningless.
+
+
     
 ### Examples
 See [SettingsManagerExample](../SettingsManagerExample) for a very simple mod that declares settings 
