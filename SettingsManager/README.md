@@ -48,7 +48,7 @@ To use Mod Settings Manager in other mods:
 
 ## Settings Api
 
-### Comman Api
+### Common Api
 
 Settings are declared by calling a constructor of the form
 ```
@@ -85,13 +85,13 @@ ModSettings.<Type>:new(...)
 * `LuaEvents.ModSettingsManager_SettingValueChange(categoryName, settingName, value)` -
   Called when the setting value has been changed by the ui or programmatically.  Allows setting objects to update their 
   publicly exposed `Value` to the new value. Modders should not need to interact with this.
-* `LuaEvents.ModSettingsManager_SettingValueChanged(categoryName, settingName, value)` - 
+* `LuaEvents.ModSettingsManager_SettingValueChanged(categoryName, settingName, value, oldValue)` - 
   Called *after* settings have had values updated via the ModSettingsManager_SettingValueChange event.
   This is generally the only event modders need to care about.  The convenience helper `AddChangeHandler` 
   on settings objects is the preferred way to interact with this event.
 * `LuaEvents.ModSettingsManager_UIReadyForRegistration()` - Called by the popup ui to trigger registration of settings.
   Modders should not need to interact with this.
-* `LuaEvents.ModSettingsManager_RegisterSetting(setting)` - Called by settings to register themselves with the configuration UI.
+* `LuaEvents.ModSettingsManager_RegisterSetting(setting)` - Called by settings to register themselves with the ui.
   Modders should not need to interact with this.
 
 ### Setting Types
@@ -175,11 +175,15 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
 ##### Methods
 * `ModSettings.KeyBinding.MakeValue(keyCode, modifiers)` - 
   A static method to construct a data table to be used as the value of a key binding setting. 
-  `keyCode` should be one of the values from the `Keys` table. (Note that not all values in the `Keys`
+  `keyCode` should be one of the values from the `Keys` table. (Note that not all keys in the `Keys`
   table are available for binding.  See the source for details.)  `modifiers` is a table of modifier keys.
-  set `SHIFT`, `CTRL`, and/or `ALT` to true in it to require those modifier keys.
-* `MatchesInput(input)` - Returns true if `input` is a key-up event that matches the currently configured key binding.
-  `input` is the parameter passed to the function registered with `ContextPtr.SetInputHandler(handler, true)`.
+  Set `SHIFT`, `CTRL`, and/or `ALT` to true in it to require those modifier keys.
+* `MatchesInput(input, inputContext)` - Returns true if `input` is a key-up event that matches the currently
+  configured key binding and the game is in `inputContext`.
+  * `input` is the parameter passed to the function registered with `ContextPtr.SetInputHandler(handler, true)`.
+  * `inputContext` is the context that the binding should be active in (world view, diplomacy, menus, etc). 
+    See UI\Scripts\InputSupport.lua from the game for valid values. This defaults to `World` if not specified, 
+    which is generally what you want.
 
 ---
 

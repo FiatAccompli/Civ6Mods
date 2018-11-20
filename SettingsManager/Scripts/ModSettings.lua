@@ -1,5 +1,7 @@
 -- Provides the public api (in the ModSettings table) that other mods use to declare and use settings.
 
+include ("InputSupport")
+
 local STORAGE_NAME_PREFIX = 'MOD_SETTING_';
 
 local Types = {
@@ -34,19 +36,21 @@ function BaseSetting:new(defaultValue, categoryName:string, settingName:string, 
         setting.Value = value;
       end
     end);
-  LuaEvents.ModSettingsManager_UIReadyForRegistration.Add(function() 
+  LuaEvents.ModSettingsManager_UIReadyForRegistration.Add(
+    function() 
       LuaEvents.ModSettingsManager_RegisterSetting(setting);
     end);
-  Events.LoadGameViewStateDone.Add(function()
-      setting:LoadSavedValue();
-    end);
+--  Events.LoadGameViewStateDone.Add(
+--    function()
+--      setting:LoadSavedValue();
+--    end);
   return setting;
 end
 
 function BaseSetting:Change(value)
-  GameConfiguration.SetValue(self.storageName, self:ToStringValue());
+  local oldValue = self.Value;
   LuaEvents.ModSettingsManager_SettingValueChange(self.categoryName, self.settingName, value);
-  LuaEvents.ModSettingsManager_SettingValueChanged(self.categoryName, self.settingName, value);
+  LuaEvents.ModSettingsManager_SettingValueChanged(self.categoryName, self.settingName, value, oldValue);
 end
 
 function BaseSetting:ToStringValue()
@@ -66,19 +70,22 @@ end
 
 function BaseSetting:LoadSavedValue()
   local playerDefault = (GameInfo.ModSettingsUserDefaults or {})[self.storageName];
-  local loadedValue = nil;
+  local oldValue = self.Value;
   if playerDefault ~= nil then
-    loadedValue = playerDefault.Value;
+    local parsedValue = self:ParseValue(playerDefault);
+    if parsedValue ~= nil then
+      self.defaultValue = parsedValue;
+      self.Value = parsedValue;
+    end
   end
-  loadedValue = GameConfiguration.GetValue(self.storageName) or loadedValue;
-  local value = self.defaultValue;
+  local loadedValue = GameConfiguration.GetValue(self.storageName);
   if loadedValue ~= nil and type(loadedValue) == "string" then
     local parsedValue = self:ParseValue(loadedValue);
     if parsedValue ~= nil then
-      value = parsedValue;
+      self.Value = value;
     end
   end
-  self.Value = value;
+  LuaEvents.ModSettingsManager_SettingValueChanged(self.categoryName, self.settingName, self.Value, oldValue);
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -118,7 +125,6 @@ setmetatable(SelectSetting, BaseSetting);
 function SelectSetting:new(values:table, defaultIndex:number, categoryName:string, settingName:string, tooltip:string)
   local result = BaseSetting.new(self, values[defaultIndex], categoryName, settingName, tooltip);
   result.values = values;
-  result.defaultIndex = defaultIndex;
   result:LoadSavedValue();
   return result;
 end
@@ -129,7 +135,7 @@ function SelectSetting:ParseValue(value:string)
       return value;
     end
   end
-  return self.values[self.defaultIndex];
+  return self.defaultValue;
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -312,7 +318,7 @@ local KeyBindingSetting = {
     [Keys.VK_PRIOR] = "LOC_OPTIONS_KEY_PAGEUP",
     [Keys.VK_PAUSE] = "LOC_OPTIONS_KEY_PAUSE",
     [Keys.VK_OEM_PERIOD] = "LOC_OPTIONS_KEY_PERIOD",
-    -- Which, ironically, is actually the = key.=
+    -- Which, ironically, is actually the = key.
     [Keys.VK_OEM_PLUS] = "LOC_OPTIONS_KEY_PLUS",
     -- Not allowed to bind it in main game options.
     -- "LOC_OPTIONS_KEY_PRINTSCREEN"
@@ -333,7 +339,7 @@ local KeyBindingSetting = {
     -- "LOC_OPTIONS_KEY_RSHIFT"
     -- "LOC_OPTIONS_KEY_RWIN"
     [Keys.S] = "LOC_OPTIONS_KEY_S",
-    -- It actually is valid to bind ScrollLock in the base game.  Let's not allow that.
+    -- It actually is valid to bind ScrollLock in the base game.  Disallow it because it feels weird.
     --"LOC_OPTIONS_KEY_SCROLLLOCK"
     [Keys.VK_OEM_1] = "LOC_OPTIONS_KEY_SEMICOLON",
     -- Modifier key
@@ -346,7 +352,7 @@ local KeyBindingSetting = {
     -- Is this meant to be the backtick key `?  If so, it's not bindable in main game options.
     -- "LOC_OPTIONS_KEY_TILDE"
     [Keys.U] = "LOC_OPTIONS_KEY_U",
-    -- Don't know which key this is supposed to be.  Underscore is shift + VK_OEM_MINUS on standard English keyboards.
+    -- Don't know which key this is supposed to be.  Underscore is shift + VK_OEM_MINUS on standard English keyboards and VK_OEM_MINUS is already accounted for.
     -- "LOC_OPTIONS_KEY_UNDERSCORE"
     [Keys.VK_UP] = "LOC_OPTIONS_KEY_UP",
     [Keys.V] = "LOC_OPTIONS_KEY_V",
@@ -370,7 +376,7 @@ function KeyBindingSetting:new(defaultValue:table, categoryName:string, settingN
   return result;
 end
 
-function KeyBindingSetting.MakeValue(keyCode:number, modifiers:table) 
+function KeyBindingSetting.MakeValue(keyCode:number, modifiers:table)
   modifiers = modifiers or {}
   if KeyBindingSetting.KeyLocalizations[keyCode] then
     return { IsShift = modifiers.SHIFT or false, IsControl = modifiers.CTRL or false, IsAlt = modifiers.ALT or false, KeyCode = keyCode };
@@ -381,11 +387,11 @@ end
 
 function KeyBindingSetting:ToStringValue() 
   local value = self.Value;
-  if value == nil then 
+  if value == nil then
     return "";
   else
     return (value.IsShift and "S" or "-") .. (value.IsControl and "C" or "-") .. 
-           (value.IsAlt and "A" or "-") .. " " .. tostring(value.KeyCode);
+           (value.IsAlt and "A" or "-") .. "+" .. tostring(value.KeyCode);
   end
 end
 
@@ -394,11 +400,18 @@ function KeyBindingSetting:ParseValue(value:string)
     return nil;
   end
 
-  return KeyBindingSetting.MakeValue(tonumber(value:sub(5,-1)), value:sub(1,1) == "S", value:sub(2,2) == "C", value:sub(3,3) == "A");
+  return KeyBindingSetting.MakeValue(tonumber(value:sub(5,-1)), 
+        {SHIFT=(value:sub(1,1) == "S"), CTRL=(value:sub(2,2) == "C"), ALT=(value:sub(3,3) == "A")});
 end
 
-function KeyBindingSetting:MatchesInput(input:table) 
+function KeyBindingSetting:MatchesInput(input:table, inputContext:number) 
   if self.Value == nil then
+    return false;
+  end
+
+  -- Generally bindings should only be active in main game mode.  Not in menus, diplomacy or other input contexts.
+  inputContext = inputContext or InputContext.World
+  if Input.GetActiveContext() ~= inputContext then
     return false;
   end
 

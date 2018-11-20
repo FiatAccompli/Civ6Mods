@@ -20,8 +20,24 @@
       <Text>No settings have non default values</Text>
     </Row>
 
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_RESTORE_ALL_DEFAULTS">
+      <Text>Restore settings in all categories to default values.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_RESTORE_DEFAULTS">
+      <Text>Restore settings in this category to default values.</Text>
+    </Row>
+
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER">
       <Text>+</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME">
+      <Text>Civ6 built-in: </Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_DUPLICATE_WARNING_PREAMBLE">
+      <Text>This key combination is bound to multiple actions:</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_DUPLICATE_WARNING_POPUP">
+      <Text>Some key bindings are bound to multiple actions. They may not work as intended!</Text>
     </Row>
 
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER">
@@ -33,6 +49,16 @@
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_PERCENT_RANGE_SETTING_VALUE_FORMATTER">
       <Text>{1_Value : number #}%</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY">
+      <Text>Mod Settings UI</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME">
+      <Text>Open mod settings</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_TOOLTIP">
+      <Text>The key binding that will bring up this configuration window.</Text>
     </Row>
   </LocalizedText>
 </GameData>

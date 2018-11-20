@@ -1,4 +1,5 @@
 include("InstanceManager")
+include("InputSupport")
 include("ModSettings")
 
 -- Maps from categoryName to CategoryUI for settings in that category.
@@ -30,24 +31,29 @@ BaseSettingUIHandler.__index = BaseSettingUIHandler;
 function BaseSettingUIHandler:new(setting:table, ui:table)
   local result = setmetatable({setting = setting, ui = ui, cachedValue = setting.Value}, self);
   LuaEvents.ModSettingsManager_SettingValueChanged.Add(
-    function(cName:string, sName:string, value)
+    function(cName:string, sName:string, value, oldValue)
       if (cName == setting.categoryName) and (sName == setting.settingName) then
-        result:UpdateUIToValue(value);
+        result:UpdateUIToValue(value, oldValue);
       end
     end);
   return result;
 end
 
 function BaseSettingUIHandler:RaiseChange(value)
+  local oldValue = self.setting.Value;
   LuaEvents.ModSettingsManager_SettingValueChange(
       self.setting.categoryName, self.setting.settingName, value);
   LuaEvents.ModSettingsManager_SettingValueChanged(
-      self.setting.categoryName, self.setting.settingName, value);
+      self.setting.categoryName, self.setting.settingName, value, oldValue);
 end
 
 function BaseSettingUIHandler:CacheAndUpdateValue()
   self.cachedValue = self.setting.Value;
   self:UpdateUIToValue(self.cachedValue);
+end
+
+function BaseSettingUIHandler:RestoreDefault()
+  self:RaiseChange(self.setting.defaultValue);
 end
 
 -- Restore the setting to the value cached when the popup was opened (to support
@@ -62,8 +68,13 @@ function BaseSettingUIHandler:SaveValue()
   -- Only save changes.
   if not self:ValuesEqual(self.setting.Value, self.cachedValue) then
     print("Saving value: ", self.setting.storageName, self.setting:ToStringValue());
-    GameConfiguration.SetValue(self.setting.storageName, self.setting:ToStringValue());
-    --print(GameConfiguration.GetValue(self.setting.storageName));
+    local saveValue = self.setting:ToStringValue();
+    if self:ValuesEqual(self.setting.Value, self.setting.defaultValue) then
+      print("Is default");
+      saveValue = nil;
+    end
+    GameConfiguration.SetValue(self.setting.storageName, saveValue);
+    print(GameConfiguration.GetValue(self.setting.storageName));
   end
 end
 
@@ -151,10 +162,12 @@ function TextSettingUIHandler:UpdateUIToValue(value)
   self.ui.SettingText:SetText(value);
 end
 
+-- UI handler which is in the process of having its binding changed.  This is non-nil while 
+-- we are showing the popup to prompt the user to enter the key.
 local activeKeyBindingUIHandler = nil;
 
-function StartActiveKeyBinding(title)
-  Controls.BindingTitle:LocalizeAndSetText(title);
+function StartActiveKeyBinding(settingName)
+  Controls.KeyBindingPopupTitle:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER", Locale.Lookup(settingName)));
 	Controls.KeyBindingPopup:SetHide(false);
 	Controls.KeyBindingAlpha:SetToBeginning();
 	Controls.KeyBindingAlpha:Play();
@@ -169,29 +182,93 @@ end
 
 function HandlePossibleBinding(input)
   local uiMsg = input:GetMessageType();
-	if(uiMsg == KeyEvents.KeyUp) then
+	if uiMsg == KeyEvents.KeyUp then
 		local keyCode = input:GetKey();
     if ModSettings.KeyBinding.KeyLocalizations[keyCode] then
       activeKeyBindingUIHandler:SetBinding(
           ModSettings.KeyBinding.MakeValue(keyCode, {SHIFT=input:IsShiftDown(), CTRL=input:IsControlDown(), ALT=input:IsAltDown()}));
+      return true;
     end
-    return true;
   end
   return false;
 end
 
-Controls.CancelBindingButton:RegisterCallback(Mouse.eLClick, 
-  function()
-		StopActiveKeyBinding();
-  end);
+function ClearActiveKeyBinding()
+  if (activeKeyBindingUIHandler) then 
+    activeKeyBindingUIHandler:SetBinding(nil);
+	end
+  StopActiveKeyBinding();	
+end
 
-Controls.ClearBindingButton:RegisterCallback(Mouse.eLClick,
-  function()
-		if (activeKeyBindingUIHandler) then 
-      activeKeyBindingUIHandler:SetBinding(nil);
-		end
-    StopActiveKeyBinding();	
-  end);
+-- Maps from localized key string to info about what is using that binding.
+local duplicateBindings = {};
+setmetatable(duplicateBindings, 
+  {
+    __index = function(t,v)
+      t[v] = { baseGameBindings = {}, modBindings = {} };
+      return t[v];
+    end 
+  });
+
+function InitializeBaseGameKeyBindingsForDuplication() 
+  for k, _ in pairs(duplicateBindings) do 
+    duplicateBindings[k] = nil;
+  end
+
+  local count = Input.GetActionCount();
+  for i = 0, count-1 do
+    local actionId = Input.GetActionId(i);
+    if Input.GetActionEnabled(actionId) then
+      local name = Locale.Lookup(Input.GetActionName(actionId));
+      --Locale.Lookup(Input.GetActionCategory(action)),
+		  local binding1 = Input.GetGestureDisplayString(actionId, 0);
+		  local binding2 = Input.GetGestureDisplayString(actionId, 1);
+      if binding1 then
+        table.insert(duplicateBindings[binding1].baseGameBindings, name);
+      end
+      if binding2 then
+        table.insert(duplicateBindings[binding2].baseGameBindings, name);
+      end
+    end
+  end
+end
+
+function MakeDuplicatesActionsMessage(duplicateData)
+  local duplicateStrings = {};
+  for _, action in pairs(duplicateData.baseGameBindings) do 
+    table.insert(duplicateStrings, "[ICON_Bullet]" .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME") .. action);
+  end
+  for handler, _ in pairs(duplicateData.modBindings) do
+    table.insert(duplicateStrings, "[ICON_Bullet]" .. Locale.Lookup(handler.setting.categoryName) .. ": " .. Locale.Lookup(handler.setting.settingName));
+  end
+  if #duplicateStrings > 1 then
+    return table.concat(duplicateStrings, "[NEWLINE]");
+  end
+end
+
+function MakeDuplicateMessage(duplicateData)
+  local actionsString = MakeDuplicatesActionsMessage(duplicateData);
+  if actionsString then
+    return Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_DUPLICATE_WARNING_PREAMBLE") .."[NEWLINE]" .. actionsString;
+  end
+end
+
+function MakeAllDuplicatesMessage()
+  local duplicateStrings = {};
+  local moreDuplicates = 0;
+
+  for binding, duplicateData in pairs(duplicateBindings) do
+    local duplicatesMessage = MakeDuplicatesActionsMessage(duplicateData);
+    if duplicatesMessage then
+      if #duplicateStrings < 5 then 
+        table.insert(duplicateStrings, binding .. "[NEWLINE]" .. duplicatesMessage);
+      else 
+        moreDuplicates = moreDuplicates + 1;
+      end
+    end
+  end
+  return table.concat(duplicateStrings, "[NEWLINE]");
+end
 
 local KeyBindingUIHandler = {};
 KeyBindingUIHandler.__index = KeyBindingUIHandler;
@@ -212,6 +289,44 @@ function KeyBindingUIHandler:new(setting:table, ui:table)
   return result;
 end
 
+function KeyBindingUIHandler:ValueToString(value) 
+  return (value.IsShift and (Locale.Lookup("LOC_OPTIONS_KEY_SHIFT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+         (value.IsControl and (Locale.Lookup("LOC_OPTIONS_KEY_CONTROL") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+         (value.IsAlt and (Locale.Lookup("LOC_OPTIONS_KEY_ALT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+         Locale.Lookup(ModSettings.KeyBinding.KeyLocalizations[value.KeyCode])
+end
+
+function KeyBindingUIHandler:RemoveFromDuplicateDetection(value)
+  if value ~= nil then
+    local keyBindingString = self:ValueToString(value);
+    local duplicateData = duplicateBindings[keyBindingString];
+    duplicateData.modBindings[self] = nil;
+    
+    local duplicateMessage = MakeDuplicateMessage(duplicateData);
+    for handler, _ in pairs(duplicateData.modBindings) do
+      handler:UpdateDuplicateUI(duplicateMessage);
+    end
+  end
+end
+
+function KeyBindingUIHandler:UpdateDuplicateUI(message:string)
+  self.ui.Conflicts:SetHide(not message);
+  self.ui.Conflicts:SetToolTipString(message);
+end
+
+function KeyBindingUIHandler:AddToDuplicateDetection(value)
+  if value ~= nil then
+    local keyBindingString = self:ValueToString(value);
+    local duplicateData = duplicateBindings[keyBindingString];
+    duplicateData.modBindings[self] = true;
+
+    local duplicateMessage = MakeDuplicateMessage(duplicateData);
+    for handler, _ in pairs(duplicateData.modBindings) do
+      handler:UpdateDuplicateUI(duplicateMessage);
+    end
+  end
+end
+
 function KeyBindingUIHandler:SetBinding(value) 
   self:RaiseChange(value);
 end
@@ -226,14 +341,13 @@ function KeyBindingUIHandler:ValuesEqual(v1, v2)
          v1.IsAlt == v2.IsAlt;
 end
 
-function KeyBindingUIHandler:UpdateUIToValue(value)
+function KeyBindingUIHandler:UpdateUIToValue(value, oldValue)
+  self:RemoveFromDuplicateDetection(oldValue);
   if value then 
-    self.ui.Binding:SetText(
-        (value.IsShift and (Locale.Lookup("LOC_OPTIONS_KEY_SHIFT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
-        (value.IsControl and (Locale.Lookup("LOC_OPTIONS_KEY_CONTROL") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
-        (value.IsAlt and (Locale.Lookup("LOC_OPTIONS_KEY_ALT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
-        Locale.Lookup(ModSettings.KeyBinding.KeyLocalizations[value.KeyCode]));
+    self:AddToDuplicateDetection(value);
+    self.ui.Binding:SetText(self:ValueToString(value));
   else
+    self:UpdateDuplicateUI(nil);
     self.ui.Binding:SetText("");
   end
 end
@@ -273,7 +387,6 @@ function RangeSettingUIHandler:new(setting:table, ui:table)
 end
 
 function RangeSettingUIHandler:UpdateUIToValue(value)
-  print("RangeSettingUIHandler:UpdateUIToValue", value);
   self:UpdateDisplayValue(value);
   local steps = self.setting.steps;
   if steps and steps > 0 then
@@ -302,6 +415,10 @@ function ActionSettingUIHandler:new(setting:table, ui:table)
       result:RaiseChange(0);
     end);
   return result;
+end
+
+function ActionSettingUIHandler:RestoreDefault()
+  -- Do nothing so we don't trigger the action.
 end
 
 function ActionSettingUIHandler:UpdateUIToValue(value)
@@ -336,8 +453,13 @@ function CategoryUI:new(categoryName:string)
                                keyBindingsManager = keyBindingsManager,
                                actionsManager = actionsManager },
                               self);
-  label.Label:RegisterCallback(Mouse.eLClick, function()
+  label.Label:RegisterCallback(Mouse.eLClick, 
+    function()
       result:ShowSettings()
+    end);
+  tab.RestoreDefaults:RegisterCallback(Mouse.eLClick, 
+    function()
+      result:RestoreDefaults();
     end);
   return result;
 end
@@ -389,6 +511,12 @@ function CategoryUI:CacheAndUpdateValues()
   end
 end
 
+function CategoryUI:RestoreDefaults()
+  for _, s in pairs(self.settings) do
+    s.uiHandler:RestoreDefault();
+  end
+end
+
 -----------------------------------------------------------------------------
 
 function RegisterModSetting(setting:table)
@@ -413,6 +541,7 @@ end
 function OnShow()
   -- Trigger registration of settings.  This is necessary when working on this ui and it gets reloaded.
   LuaEvents.ModSettingsManager_UIReadyForRegistration();
+  InitializeBaseGameKeyBindingsForDuplication();
   for _, ui in pairs(categories) do 
     ui:CacheAndUpdateValues()
   end
@@ -420,6 +549,18 @@ function OnShow()
     firstCategory:ShowSettings();
   end
   Controls.TabScrollPanel:SetScrollValue(0);
+  -- Switch input context. This prevents base game bindings from applying while in this popup.
+  if Input.GetActiveContext() ~= InputContext.GameOptions then
+		Input.PushActiveContext( InputContext.GameOptions );
+	end
+end
+
+function ClosePopup() 
+	-- Only pop the context if what we expect is the current context.
+	if(Input.GetActiveContext() == InputContext.GameOptions) then
+		Input.PopContext();
+	end
+  UIManager:DequeuePopup(ContextPtr);
 end
 
 function CancelPopup()
@@ -428,27 +569,50 @@ function CancelPopup()
       s.uiHandler:RestoreSettingValue();
     end
   end
-  UIManager:DequeuePopup(ContextPtr);
+  ClosePopup();
 end
 
-function ConfirmPopup()
+function SaveAndClosePopup()
   for _, ui in pairs(categories) do 
     for _, s in pairs(ui.settings) do 
       s.uiHandler:SaveValue();
     end
   end
-  UIManager:DequeuePopup(ContextPtr);
+  ClosePopup();
+end
+
+function CancelDuplicates()
+  Controls.DuplicateBindingsPopup:SetHide(true);
+end
+
+function AcceptDuplicates()
+  SaveAndClosePopup();
+end
+
+function ConfirmPopup()
+  local duplicatesMessage = MakeAllDuplicatesMessage();
+  if duplicatesMessage then
+    Controls.AllDuplicatedBindingsLabel:SetText(duplicatesMessage);
+    Controls.DuplicateBindingsPopup:SetHide(false);
+  else
+    SaveAndClosePopup();
+  end
+end
+
+function SqlEscape(value:string)
+  return value:gsub("\"", "\"\"");
 end
 
 function ShowDefaultsSql()
   HideAllTabs();
   Controls.ShowDefaultSql:SetSelected(true);
-  local sql = {Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_PREAMBLE"), "", "INSERT OR REPLACE INTO ModSettingsUserDefaults(StorageName, Value) VALUES " };
+  local sql = {Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_PREAMBLE"), "", 
+               "INSERT OR REPLACE INTO ModSettingsUserDefaults(StorageName, Value) VALUES " };
   for _, ui in pairs(categories) do 
     for _, s in pairs(ui.settings) do
       if not s.uiHandler:ValuesEqual(s.setting.Value, s.setting.defaultValue) then
         table.insert(sql, "-- " .. Locale.Lookup(s.setting.categoryName) .. ": " .. Locale.Lookup(s.setting.settingName));
-        table.insert(sql, "(\"" .. s.setting.storageName .. "\", \"" .. s.setting:ToStringValue() .. "\"),");
+        table.insert(sql, "(\"" .. SqlEscape(s.setting.storageName) .. "\", \"" .. SqlEscape(s.setting:ToStringValue()) .. "\"),");
       end
     end
   end
@@ -485,7 +649,7 @@ function OnInput(input)
 	end
 	
 	return false;
-end 
+end
 
 -- ===========================================================================
 function Initialize()
@@ -494,10 +658,16 @@ function Initialize()
   Controls.ConfirmButton:RegisterCallback(Mouse.eLClick, ConfirmPopup);
   Controls.ShowDefaultSql:RegisterCallback(Mouse.eLClick, ShowDefaultsSql);
 
+  Controls.ClearBindingButton:RegisterCallback(Mouse.eLClick, ClearActiveKeyBinding);
+  Controls.CancelBindingButton:RegisterCallback(Mouse.eLClick, StopActiveKeyBinding);
+
+  Controls.CancelDuplicatesButton:RegisterCallback(Mouse.eLClick, CancelDuplicates);
+  Controls.AcceptDuplicatesButton:RegisterCallback(Mouse.eLClick, AcceptDuplicates);
+
   ContextPtr:SetShowHandler(OnShow);
   ContextPtr:SetInputHandler(OnInput, true);
 
   LuaEvents.ModSettingsManager_RegisterSetting.Add(RegisterModSetting);
 end
 
-Initialize(); 
+Initialize();

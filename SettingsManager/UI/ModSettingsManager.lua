@@ -1,12 +1,21 @@
 -- "Main" ui for mod settings.  Actually all this file does is handle the button that is put in the 
 -- minimap "toolbar" that opens the settings popup.  The real content lives in ModSettingsPopup.
 
-local function ShowModOptions()
+include("ModSettings")
+
+function ShowModOptions()
   UIManager:QueuePopup(Controls.SettingsPopup, PopupPriority.Current);
 end
 
+-- Use this mod functionality to bind a key to bring up the mod setting ui popup.  
+-- More just cool than actually useful.
+local showModSettingsPopupKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_F5, {CTRL=true}),
+    "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY", 
+    "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME", 
+    "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_TOOLTIP");
+
 -- Move the access button from the ui space where it is create into the minimap toolbar.
-local function InitializeUI() 
+function InitializeUI() 
   local settingsButton = Controls.SettingsButton;
   local settingsButtonSpacer = Controls.SettingsButtonSpacer;
   local minimapBar = ContextPtr:LookUpControl("/InGame/MinimapPanel/OptionsStack");
@@ -27,7 +36,7 @@ local function InitializeUI()
   ContextPtr:SetShutdown(OnShutdown);
 end
 
-local function OnInit(isReload:boolean)
+function OnInit(isReload:boolean)
   if isReload then
     InitializeUI();
   end
@@ -48,9 +57,16 @@ function OnShutdown()
   end
 end
 
+function OnInput(input:table)
+  if showModSettingsPopupKeyBinding:MatchesInput(input) then
+    ShowModOptions();
+  end
+end
+
 -- ===========================================================================
-local function Initialize()
-  ContextPtr:SetInitHandler(OnInit);  
+function Initialize()
+  ContextPtr:SetInitHandler(OnInit);
+  ContextPtr:SetInputHandler(OnInput, true);
   Events.LoadScreenClose.Add(InitializeUI);
 end
 
