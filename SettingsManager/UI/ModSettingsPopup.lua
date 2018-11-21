@@ -5,9 +5,6 @@ include("ModSettings")
 -- Maps from categoryName to CategoryUI for settings in that category.
 local categories = {};
 
--- First CategoryUI created.  Necessary so we can activate its tab of settings when the popup is opened.
-local firstCategory = nil;
-
 local labelsManager = InstanceManager:new("CategoryLabel", "Label", Controls.CategoriesStack);
 local tabsManager = InstanceManager:new("SettingTab", "Tab", Controls.TabsStack);
 
@@ -236,7 +233,7 @@ end
 function MakeDuplicatesActionsMessage(duplicateData)
   local duplicateStrings = {};
   for _, action in pairs(duplicateData.baseGameBindings) do 
-    table.insert(duplicateStrings, "[ICON_Bullet]" .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME") .. action);
+    table.insert(duplicateStrings, "[ICON_Bullet]" .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME", action));
   end
   for handler, _ in pairs(duplicateData.modBindings) do
     table.insert(duplicateStrings, "[ICON_Bullet]" .. Locale.Lookup(handler.setting.categoryName) .. ": " .. Locale.Lookup(handler.setting.settingName));
@@ -433,7 +430,8 @@ CategoryUI.__index = CategoryUI;
 
 function CategoryUI:new(categoryName:string)
   local label = labelsManager:GetInstance();
-  label.Label:SetText(Locale.ToUpper(Locale.Lookup(categoryName)));
+  local displayName = Locale.ToUpper(Locale.Lookup(categoryName));
+  label.Label:SetText(displayName);
   local tab = tabsManager:GetInstance();
 
   local booleansManager = InstanceManager:new("BooleanSetting", "Setting", tab.SettingsStack);
@@ -444,6 +442,7 @@ function CategoryUI:new(categoryName:string)
   local actionsManager = InstanceManager:new("ActionSetting", "Setting", tab.SettingsStack);
 
   local result = setmetatable({settings = {},
+                               displayName = displayName,
                                label = label,
                                tab = tab,
                                booleansManager = booleansManager,
@@ -517,7 +516,11 @@ function CategoryUI:RestoreDefaults()
   end
 end
 
------------------------------------------------------------------------------
+function RestoreAllDefaults()
+  for _, ui in pairs(categories) do
+    ui:RestoreDefaults();
+  end
+end
 
 function RegisterModSetting(setting:table)
   local categoryName = setting.categoryName;
@@ -530,25 +533,34 @@ function RegisterModSetting(setting:table)
     categories[categoryName] = categoryUI;
   end
 
-  if firstCategory == nil then
-    firstCategory = categoryUI;
-    firstCategory:ShowSettings();
-  end
+  categoryUI:AddSetting(setting); 
+end
 
-  categoryUI:AddSetting(setting);
+function CompareCategories(a, b)
+  return a:GetText() < b:GetText();
 end
 
 function OnShow()
   -- Trigger registration of settings.  This is necessary when working on this ui and it gets reloaded.
   LuaEvents.ModSettingsManager_UIReadyForRegistration();
   InitializeBaseGameKeyBindingsForDuplication();
+  Controls.CategoriesStack:SortChildren(CompareCategories);
+
+  local firstCategory = nil;
   for _, ui in pairs(categories) do 
     ui:CacheAndUpdateValues()
+    firstCategory = firstCategory or ui;
+    if ui.displayName < firstCategory.displayName then
+      firstCategory = ui;
+    end
+    if ui.label.Label == firstLabel then
+      ui:ShowSettings();
+    end
   end
-  if firstCategory ~= nil then
-    firstCategory:ShowSettings();
-  end
+
+  firstCategory:ShowSettings();
   Controls.TabScrollPanel:SetScrollValue(0);
+
   -- Switch input context. This prevents base game bindings from applying while in this popup.
   if Input.GetActiveContext() ~= InputContext.GameOptions then
 		Input.PushActiveContext( InputContext.GameOptions );
@@ -657,6 +669,7 @@ function Initialize()
   Controls.WindowCloseButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
   Controls.ConfirmButton:RegisterCallback(Mouse.eLClick, ConfirmPopup);
   Controls.ShowDefaultSql:RegisterCallback(Mouse.eLClick, ShowDefaultsSql);
+  Controls.RestoreAllDefaults:RegisterCallback(Mouse.eLClick, RestoreAllDefaults);
 
   Controls.ClearBindingButton:RegisterCallback(Mouse.eLClick, ClearActiveKeyBinding);
   Controls.CancelBindingButton:RegisterCallback(Mouse.eLClick, StopActiveKeyBinding);

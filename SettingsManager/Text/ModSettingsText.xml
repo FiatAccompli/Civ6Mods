@@ -31,7 +31,7 @@
       <Text>+</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME">
-      <Text>Civ6 built-in: </Text>
+      <Text>Civ6 built-in: {1}</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_DUPLICATE_WARNING_PREAMBLE">
       <Text>This key combination is bound to multiple actions:</Text>

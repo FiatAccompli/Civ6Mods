@@ -22,7 +22,7 @@
             </ScrollPanel>
             <GridButton ID="ShowDefaultSql" Size="150,22" Style="ShellButton" Anchor="C,B" Offset="0,26"
                         String="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL" ToolTip="LOC_MOD_SETTINGS_MANAGER_SHOW_DEFAULTS_SQL_TOOLTIP"/>
-            <GridButton ID="RestoreDefaults" Size="150,22" Style="ShellButton" Anchor="C,B" Offset="0,2"
+            <GridButton ID="RestoreAllDefaults" Size="150,22" Style="ShellButton" Anchor="C,B" Offset="0,2"
                         String="LOC_SETUP_RESTORE_DEFAULT" ToolTip="LOC_MOD_SETTINGS_MANAGER_RESTORE_ALL_DEFAULTS"/>
           </Grid>
         </Grid>
@@ -67,7 +67,7 @@
       <SlideAnim ID="DuplicateBindingsPopupSlide" Size="parent,parent" Start="0,-20"  End="0,0" Speed="3" Function="Root" Cycle="Once">
         <Grid Size="500,auto" Anchor="C,C" Offset="0,0" Style="DropShadow2"  Hidden="0" Color="255,255,255,200">
           <Grid ID="DuplicatedBindingsPopupWindow" Size="parent,auto" Anchor="C,C" Offset="0,0" SizePadding="0,10" Style="WindowFrameTitle" >
-            <Label Anchor="C,T" String="LOC_GENERIC_POPUP_ARE_YOU_SURE" Align="Center" Style="BodyText20" Offset="0,15="""/>
+            <Label Anchor="C,T" String="LOC_GENERIC_POPUP_ARE_YOU_SURE" Align="Center" Style="BodyText20" Offset="0,15="/>
             <Stack Offset="0,60" Size="parent-60,auto" StackGrowth="Down" Anchor="C,T" StackPadding="15" >
               <Label Anchor="L,T" size="auto,auto" WrapWidth="450" Color="Red" String="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_DUPLICATE_WARNING_POPUP" Style="BodyTextDark18"/>
               <ScrollPanel Size="parent,200" AutoScrollBar="1" Vertical="1" Anchor="C,T">
