@@ -668,14 +668,21 @@ function Initialize()
   Controls.WindowCloseButton:RegisterCallback(Mouse.eLClick, CancelPopup);
   Controls.WindowCloseButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
   Controls.ConfirmButton:RegisterCallback(Mouse.eLClick, ConfirmPopup);
+  Controls.ConfirmButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
   Controls.ShowDefaultSql:RegisterCallback(Mouse.eLClick, ShowDefaultsSql);
+  Controls.ShowDefaultSql:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
   Controls.RestoreAllDefaults:RegisterCallback(Mouse.eLClick, RestoreAllDefaults);
+  Controls.RestoreAllDefaults:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 
   Controls.ClearBindingButton:RegisterCallback(Mouse.eLClick, ClearActiveKeyBinding);
+  Controls.ClearBindingButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
   Controls.CancelBindingButton:RegisterCallback(Mouse.eLClick, StopActiveKeyBinding);
+  Controls.CancelBindingButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 
   Controls.CancelDuplicatesButton:RegisterCallback(Mouse.eLClick, CancelDuplicates);
+  Controls.CancelDuplicatesButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
   Controls.AcceptDuplicatesButton:RegisterCallback(Mouse.eLClick, AcceptDuplicates);
+  Controls.AcceptDuplicatesButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 
   ContextPtr:SetShowHandler(OnShow);
   ContextPtr:SetInputHandler(OnInput, true);
