@@ -30,6 +30,9 @@
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER">
       <Text>+</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIERS_NOT_ALLOWED">
+      <Text>Shift/Ctrl/Alt modifiers are not allowed for this binding.</Text>
+    </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME">
       <Text>Civ6 intrinsic: {1}</Text>
     </Row>
@@ -52,7 +55,7 @@
     </Row>
 
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY">
-      <Text>Mod Settings UI</Text>
+      <Text>Mod Settings</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME">
       <Text>Open mod settings</Text>

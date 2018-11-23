@@ -1,8 +1,11 @@
 -- Provides the public api (in the ModSettings table) that other mods use to declare and use settings.
 
-include ("InputSupport")
+if not ModSettings then
+print("Executing ModSettings.lua");
 
 local STORAGE_NAME_PREFIX = 'MOD_SETTING_';
+
+local NO_OPTIONS = {};
 
 local Types = {
   BOOLEAN = 1,
@@ -141,8 +144,6 @@ end
 ----------------------------------------------------------------------------------------------------
 -- A range settings allows the player to choose any value between a min and max (optionally stepped 
 -- so that only regularly spaced values in this range are possible).  
--- valueFormatter is a localized string for formatting the value currently selected by the user.
--- Two reasonable defaults for this are provided.
 ----------------------------------------------------------------------------------------------------
 local RangeSetting = {
   Type = Types.RANGE,
@@ -152,13 +153,15 @@ local RangeSetting = {
 RangeSetting.__index = RangeSetting;
 setmetatable(RangeSetting, BaseSetting);
 
-function RangeSetting:new(defaultValue:number, min:number, max:number, steps:number, 
-    categoryName:string, settingName:string, tooltip:string, valueFormatter:string)
+function RangeSetting:new(defaultValue:number, min:number, max:number, 
+    categoryName:string, settingName:string, tooltip:string, options:table)
   local result = BaseSetting.new(self, defaultValue, categoryName, settingName, tooltip);
+  options = options or NO_OPTIONS;
   result.min = min;
   result.max = max;
   result.steps = steps;
-  result.valueFormatter = valueFormatter or self.DEFAULT_VALUE_FORMATTER;
+  result.valueFormatter = options.ValueFormatter or self.DEFAULT_VALUE_FORMATTER;
+  result.steps = options.Steps;
   result:LoadSavedValue();
   return result;
 end
@@ -369,17 +372,18 @@ local KeyBindingSetting = {
 KeyBindingSetting.__index = KeyBindingSetting;
 setmetatable(KeyBindingSetting, BaseSetting);
 
--- There is no default value for a KeyBinding.
-function KeyBindingSetting:new(defaultValue:table, categoryName:string, settingName:string, tooltip:string)
+function KeyBindingSetting:new(defaultValue:table, categoryName:string, settingName:string, tooltip:string, options:table)
   local result = BaseSetting.new(self, defaultValue, categoryName, settingName, tooltip);
+  options = options or {};
+  result.allowsModifiers = not options.DisallowModifiers;
   result:LoadSavedValue();
   return result;
 end
 
 function KeyBindingSetting.MakeValue(keyCode:number, modifiers:table)
-  modifiers = modifiers or {}
+  modifiers = modifiers or NO_OPTIONS;
   if KeyBindingSetting.KeyLocalizations[keyCode] then
-    return { IsShift = modifiers.SHIFT or false, IsControl = modifiers.CTRL or false, IsAlt = modifiers.ALT or false, KeyCode = keyCode };
+    return { IsShift = modifiers.Shift or false, IsControl = modifiers.Ctrl or false, IsAlt = modifiers.Alt or false, KeyCode = keyCode };
   else
     return nil;
   end
@@ -401,28 +405,7 @@ function KeyBindingSetting:ParseValue(value:string)
   end
 
   return KeyBindingSetting.MakeValue(tonumber(value:sub(5,-1)), 
-        {SHIFT=(value:sub(1,1) == "S"), CTRL=(value:sub(2,2) == "C"), ALT=(value:sub(3,3) == "A")});
-end
-
-function KeyBindingSetting:MatchesInput(input:table, inputContext:number) 
-  if self.Value == nil then
-    return false;
-  end
-
-  -- Generally bindings should only be active in main game mode.  Not in menus, diplomacy or other input contexts.
-  inputContext = inputContext or InputContext.World
-  if Input.GetActiveContext() ~= inputContext then
-    return false;
-  end
-
-  local uiMsg = input:GetMessageType();
-	if(uiMsg == KeyEvents.KeyUp) then
-		return input:GetKey() == self.Value.KeyCode and 
-           input:IsShiftDown() == self.Value.IsShift and 
-           input:IsControlDown() == self.Value.IsControl and 
-           input:IsAltDown() == self.Value.IsAlt;
-  end
-  return false;
+        {Shift=(value:sub(1,1) == "S"), Ctrl=(value:sub(2,2) == "C"), Alt=(value:sub(3,3) == "A")});
 end
 
 ---------------------------------------------------------------------------------------------
@@ -456,3 +439,5 @@ ModSettings = {
   KeyBinding = KeyBindingSetting,
   Action = ActionSetting,
 };
+
+end

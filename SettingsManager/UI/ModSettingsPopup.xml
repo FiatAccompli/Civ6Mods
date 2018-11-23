@@ -50,6 +50,7 @@
             <Label ID="KeyBindingPopupTitle" Anchor="C,T" Align="Center" Style="BodyText20" Offset="0,15"/>
             <Stack Offset="0,60" Size="parent,auto" StackGrowth="Down" Anchor="C,T" StackPadding="15">
               <Label Anchor="C,T" WrapWidth="450" String="LOC_OPTIONS_SET_KEY_BINDING_TEXT" Style="BodyTextDark18"/>
+              <Label ID="KeyBindingModifiersNotAllowed" Anchor="C,T" WrapWidth="450" String="Modifiers not allowed" Style="BodyTextDark18" Color="Red" Hidden="1"/>
               <Stack Size="auto,auto" Anchor="C,T" Offset="0,0" StackGrowth="Right">
                 <GridButton ID="CancelBindingButton" Style="MainButton" Size="150,41" Offset="0,0" Anchor="C,C" String="LOC_CANCEL" />
                 <GridButton ID="ClearBindingButton" Style="ButtonRed" Size="150,41" Offset="0,0" Anchor="C,C" String="LOC_OPTIONS_CLEAR"/>

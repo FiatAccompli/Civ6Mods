@@ -163,12 +163,16 @@ The `Value` of the setting is the user-providede string.
 Allows the user to bind a specific key (optionally with shift/control/alt modifiers)
 
 ```
-setting = ModSettings.KeyBinding:new(defaultValue, categoryName, settingName, tooltip)
+setting = ModSettings.KeyBinding:new(defaultValue, categoryName, settingName, tooltip, options)
 ```
   
 * `defaultValue` should be a value constructed with `MakeValue` or `nil` if no binding is specified.  
   **To avoid conflicts with base game bindings it is recommended that 
   all defaults for mod key bindings use at least one of the shift/ctrl/alt modifiers**.
+* `options` is a table that allows for the settings:
+  * `disallowsModifiers`: When set to true the configuration ui will only accept a new binding without 
+    shift/ctrl/alt modifiers.  This is intended for hot keys that are intended to be held 
+    down rather than simply pressed (e.g. for map scrolling).
   
 The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsControl`, and `IsAlt`.
     
@@ -178,12 +182,15 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
   `keyCode` should be one of the values from the `Keys` table. (Note that not all keys in the `Keys`
   table are available for binding.  See the source for details.)  `modifiers` is a table of modifier keys.
   Set `SHIFT`, `CTRL`, and/or `ALT` to true in it to require those modifier keys.
-* `MatchesInput(input, inputContext)` - Returns true if `input` is a key-up event that matches the currently
-  configured key binding and the game is in `inputContext`.
+* `MatchesInput(input, options)` - Returns true if `input` is a key event that matches the currently
+  configured key binding.
   * `input` is the parameter passed to the function registered with `ContextPtr.SetInputHandler(handler, true)`.
-  * `inputContext` is the context that the binding should be active in (world view, diplomacy, menus, etc). 
-    See UI\Scripts\InputSupport.lua from the game for valid values. This defaults to `World` if not specified, 
-    which is generally what you want.
+  * `options` is a table that permits the following settings:
+    * `InputContexts` is a set of the input contexts that the binding is active in (e.g. world view, diplomacy, menus, etc). 
+      See UI\Scripts\InputSupport.lua for valid values. Default is only active in `World` input context.
+    * `InterfaceModes` is a set of the interface modes that the binding is active in (as members of `InterfaceModeTypes`).
+      Default includes 
+    * `Event` is the event to match, either `KeyEvents.KeyUp` or `KeyEvents.KeyDown`.  Default is `KeyUp`.
 
 ---
 
@@ -206,4 +213,5 @@ The `Value` of the setting is meaningless.
 ### Examples
 See [SettingsManagerExample](../SettingsManagerExample) for a very simple mod that declares settings 
 (but doesn't really do much with them).
+
 For more advanced usages check out the other mods in this repository.

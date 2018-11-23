@@ -163,8 +163,11 @@ end
 -- we are showing the popup to prompt the user to enter the key.
 local activeKeyBindingUIHandler = nil;
 
-function StartActiveKeyBinding(settingName)
-  Controls.KeyBindingPopupTitle:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER", Locale.Lookup(settingName)));
+function StartActiveKeyBinding(uiHandler)
+  activeKeyBindingUIHandler = uiHandler;
+  Controls.KeyBindingPopupTitle:SetText(
+      Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER", Locale.Lookup(uiHandler.setting.settingName)));
+  Controls.KeyBindingModifiersNotAllowed:SetHide(uiHandler.setting.allowsModifiers);
 	Controls.KeyBindingPopup:SetHide(false);
 	Controls.KeyBindingAlpha:SetToBeginning();
 	Controls.KeyBindingAlpha:Play();
@@ -182,9 +185,14 @@ function HandlePossibleBinding(input)
 	if uiMsg == KeyEvents.KeyUp then
 		local keyCode = input:GetKey();
     if ModSettings.KeyBinding.KeyLocalizations[keyCode] then
-      activeKeyBindingUIHandler:SetBinding(
-          ModSettings.KeyBinding.MakeValue(keyCode, {SHIFT=input:IsShiftDown(), CTRL=input:IsControlDown(), ALT=input:IsAltDown()}));
-      return true;
+      print("allowsModifiers", Locale.Lookup(activeKeyBindingUIHandler.setting.settingName), activeKeyBindingUIHandler.setting.allowsModifiers);
+      if activeKeyBindingUIHandler.setting.allowsModifiers or 
+         (not activeKeyBindingUIHandler.setting.allowsModifiers and
+              not input:IsShiftDown() and not input:IsControlDown() and not input:IsAltDown()) then
+        activeKeyBindingUIHandler:SetBinding(
+            ModSettings.KeyBinding.MakeValue(keyCode, {SHIFT=input:IsShiftDown(), CTRL=input:IsControlDown(), ALT=input:IsAltDown()}));
+        return true;
+      end
     end
   end
   return false;
@@ -232,11 +240,12 @@ end
 
 function MakeDuplicatesActionsMessage(duplicateData)
   local duplicateStrings = {};
-  for _, action in pairs(duplicateData.baseGameBindings) do 
-    table.insert(duplicateStrings, "[ICON_Bullet]" .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME", action));
-  end
   for handler, _ in pairs(duplicateData.modBindings) do
     table.insert(duplicateStrings, "[ICON_Bullet]" .. Locale.Lookup(handler.setting.categoryName) .. ": " .. Locale.Lookup(handler.setting.settingName));
+  end
+  table.sort(duplicateStrings);
+  for _, action in pairs(duplicateData.baseGameBindings) do 
+    table.insert(duplicateStrings, 1, "[ICON_Bullet]" .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME", action));
   end
   if #duplicateStrings > 1 then
     return table.concat(duplicateStrings, "[NEWLINE]");
@@ -252,19 +261,14 @@ end
 
 function MakeAllDuplicatesMessage()
   local duplicateStrings = {};
-  local moreDuplicates = 0;
 
   for binding, duplicateData in pairs(duplicateBindings) do
     local duplicatesMessage = MakeDuplicatesActionsMessage(duplicateData);
     if duplicatesMessage then
-      if #duplicateStrings < 5 then 
-        table.insert(duplicateStrings, binding .. "[NEWLINE]" .. duplicatesMessage);
-      else 
-        moreDuplicates = moreDuplicates + 1;
-      end
+      table.insert(duplicateStrings, binding .. "[NEWLINE]" .. duplicatesMessage);
     end
   end
-  return table.concat(duplicateStrings, "[NEWLINE]");
+  return table.concat(duplicateStrings, "[NEWLINE][NEWLINE]");
 end
 
 local KeyBindingUIHandler = {};
@@ -278,8 +282,7 @@ function KeyBindingUIHandler:new(setting:table, ui:table)
   ui.Binding:LocalizeAndSetToolTip(setting.tooltip);
   ui.Binding:RegisterCallback(Mouse.eLClick, 
     function()
-      activeKeyBindingUIHandler = result;
-      StartActiveKeyBinding(result.setting.settingName);
+      StartActiveKeyBinding(result);
     end);
   result:UpdateUIToValue(setting.Value);
 
@@ -640,10 +643,10 @@ end
 
 function OnInput(input) 
 	local uiMsg = input:GetMessageType();
-	if(uiMsg == KeyEvents.KeyUp) then
+	if uiMsg == KeyEvents.KeyUp then
 		local uiKey = input:GetKey();
     if activeKeyBindingUIHandler then
-		  if(uiKey == Keys.VK_ESCAPE) then
+		  if uiKey == Keys.VK_ESCAPE then
         StopActiveKeyBinding();
         return true;
       else
@@ -652,8 +655,13 @@ function OnInput(input)
           return true;
         end
       end
-    else 
-      if(uiKey == Keys.VK_ESCAPE) then
+    elseif not Controls.DuplicateBindingsPopup:IsHidden() then
+      if uiKey == Keys.VK_ESCAPE then
+        CancelDuplicates();
+        return true;
+      end
+    else
+      if uiKey == Keys.VK_ESCAPE then
 			  CancelPopup();
         return true;
       end

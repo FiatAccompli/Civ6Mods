@@ -2,6 +2,7 @@
 -- minimap "toolbar" that opens the settings popup.  The real content lives in ModSettingsPopup.
 
 include("ModSettings")
+include("mod_settings_key_binding_helper")
 
 function ShowModOptions()
   UIManager:QueuePopup(Controls.SettingsPopup, PopupPriority.Current);
@@ -9,12 +10,12 @@ end
 
 -- Use this mod functionality to bind a key to bring up the mod setting ui popup.  
 -- More just cool than actually useful.
-local showModSettingsPopupKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_F5, {CTRL=true}),
+local showModSettingsPopupKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_F1, {Ctrl=true}),
     "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY", 
     "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME", 
     "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_TOOLTIP");
 
--- Move the access button from the ui space where it is create into the minimap toolbar.
+-- Move the access button from the ui space where it is created into the minimap toolbar.
 function InitializeUI() 
   local settingsButton = Controls.SettingsButton;
   local settingsButtonSpacer = Controls.SettingsButtonSpacer;
@@ -58,7 +59,7 @@ function OnShutdown()
 end
 
 function OnInput(input:table)
-  if showModSettingsPopupKeyBinding:MatchesInput(input) then
+  if KeyBindingHelper.InputMatches(showModSettingsPopupKeyBinding.Value, input) then
     ShowModOptions();
   end
 end
