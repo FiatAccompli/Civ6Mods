@@ -166,9 +166,7 @@ Allows the user to bind a specific key (optionally with shift/control/alt modifi
 setting = ModSettings.KeyBinding:new(defaultValue, categoryName, settingName, tooltip, options)
 ```
   
-* `defaultValue` should be a value constructed with `MakeValue` or `nil` if no binding is specified.  
-  **To avoid conflicts with base game bindings it is recommended that 
-  all defaults for mod key bindings use at least one of the shift/ctrl/alt modifiers**.
+* `defaultValue` should be a value constructed with `MakeValue` or `nil` if no binding is specified.
 * `options` is a table that supports the following:
   * `disallowModifiers`: When set to true the configuration ui will only accept a new binding without 
     shift/ctrl/alt modifiers.  This is intended for hot keys that are intended to be held 
@@ -180,17 +178,21 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
 * `ModSettings.KeyBinding.MakeValue(keyCode, modifiers)` - 
   A static method to construct a data table to be used as the value of a key binding setting. 
   `keyCode` should be one of the values from the `Keys` table. (Note that not all keys in the `Keys`
-  table are available for binding.  See the source for details.)  `modifiers` is a table of modifier keys.
-  Set `SHIFT`, `CTRL`, and/or `ALT` to true in it to require those modifier keys.
-* `MatchesInput(input, options)` - Returns true if `input` is a key event that matches the currently
-  configured key binding.
+  table are available for binding.  See the source for details.)  `modifiers` is a table containing 
+  modifier key info. Set `Shift`, `Ctrl`, and/or `Alt` to true in it to require those modifier keys.
+* `KeyBindingHelper.InputMatches(value, input, options)` - From mod_settings_key_binding_helper.lua. 
+  Returns true if `input` is a key event that matches the `value` of a key binding.
+  * `value` is the `.Value` of a keybind setting.
   * `input` is the parameter passed to the function registered with `ContextPtr.SetInputHandler(handler, true)`.
   * `options` is a table that permits the following settings:
-    * `InputContexts` is a set of the input contexts that the binding is active in (e.g. world view, diplomacy, menus, etc). 
-      See UI\Scripts\InputSupport.lua for valid values. Default is only active in `World` input context.
+    * `InputContexts` is a set of the input contexts in which a match is allowed (e.g. world view, diplomacy, menus, etc). 
+      See UI\Scripts\InputSupport.lua for contexts. If the ui is not in one of these contexts this method returns false.
+      Default is only active in `World` input context.
     * `InterfaceModes` is a set of the interface modes that the binding is active in (as members of `InterfaceModeTypes`).
-      Default includes 
+      If the ui is not in one of these modes this method returns false. Default is to only be active in `SELECTION` mode.
     * `Event` is the event to match, either `KeyEvents.KeyUp` or `KeyEvents.KeyDown`.  Default is `KeyUp`.
+    * `AllowInPopups` determines whether a match is permitted if the ui is displaying a "popup".  This is anything displayed 
+      via `UI.QueuePopup` (and also tech/civic trees). Default is false.
 
 ---
 
