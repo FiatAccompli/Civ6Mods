@@ -35,7 +35,13 @@
       <Text>Text Setting</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_KEY_BINDING_SETTING">
-      <Text>Text Setting</Text>
+      <Text>An example</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_KEY_BINDING_SETTING_2">
+      <Text>Another example</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTING_EXAMPLE_KEY_ACTION_SETTING">
+      <Text>And action! (You'll be disappointed.)</Text>
     </Row>
   </LocalizedText>
 </GameData>
