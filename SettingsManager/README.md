@@ -131,18 +131,18 @@ Allows the user to choose any value within a [min, max] range.
 May be configured so that only regularly spaced values within the range are selectable.
 
 ```
-setting = ModSettings.Range:new(defaultValue, min, max, steps, 
-    categoryName, settingName, tooltip, valueFormatter)
+setting = ModSettings.Range:new(defaultValue, min, max, categoryName, settingName, tooltip, options)
 ```
   
 * `defaultValue` should be a number within [min, max].
 * `min` and `max` define the limits of the range the user can select
-* `steps` restricts which values the user can select within the [min, max] range.  
-If `nil` the setting is continuous and the user can freely select any value in the range.  
-Otherwise it should be a positive integer and the range [min, max] is broken into `steps` 
-chunks such that the only user selectable values are `min + (max - min) / steps * k` for `k` in [0, steps].
-* `valueFormatter` is a localizable string that defines how to format the current value to give ui feedback.
-A reasonable default is provided if this is `nil`.
+* options is a table that supports the following:
+  * `steps` restricts which values the user can select within the [min, max] range.  
+    If `nil` the setting is continuous and the user can freely select any value in the range.  
+    Otherwise it should be a positive integer and the range [min, max] is broken into `steps` 
+    chunks such that the only user selectable values are `min + (max - min) / steps * k` for `k` in [0, steps].
+  * `valueFormatter` is a localizable string that defines how to format the current value to give ui feedback.
+    A reasonable default is provided if this is `nil`.
 
 The `Value` of the setting is a number in [min, max].
 
@@ -169,8 +169,8 @@ setting = ModSettings.KeyBinding:new(defaultValue, categoryName, settingName, to
 * `defaultValue` should be a value constructed with `MakeValue` or `nil` if no binding is specified.  
   **To avoid conflicts with base game bindings it is recommended that 
   all defaults for mod key bindings use at least one of the shift/ctrl/alt modifiers**.
-* `options` is a table that allows for the settings:
-  * `disallowsModifiers`: When set to true the configuration ui will only accept a new binding without 
+* `options` is a table that supports the following:
+  * `disallowModifiers`: When set to true the configuration ui will only accept a new binding without 
     shift/ctrl/alt modifiers.  This is intended for hot keys that are intended to be held 
     down rather than simply pressed (e.g. for map scrolling).
   

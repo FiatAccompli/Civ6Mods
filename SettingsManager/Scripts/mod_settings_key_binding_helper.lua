@@ -1,11 +1,23 @@
 -- Contains the ModSettings.KeyBinding:MatchesInput method.  This can't be defined in the main 
 -- mod_settings file because it references some api values in setup that are only available in a 
--- ui context, and it's perfectly valid to have settings in gameplay scripts
+-- ui context, and it's perfectly valid to have settings in gameplay scripts (could move the 
+-- whole keybinding setting here, but that feels logically inconsistent).
+
+if not KeyBindingHelper then
 
 include("InputSupport");
 
 local NO_OPTIONS = {};
-local inSubScreen = false;
+
+-- Tech and civic trees are "popups" but don't actually get displayed via the UI.ShowPopup api
+-- for ... reasons.  So we have to track whether they're displayed separately.
+local techTreeOpen = false;
+local civicTreeOpen = false;
+
+LuaEvents.CivicsTree_CloseCivicsTree.Add(function() civicTreeOpen=false; end);
+LuaEvents.CivicsTree_OpenCivicsTree.Add(function() print("Civic Tree Open"); civicTreeOpen=true; end);
+LuaEvents.TechTree_CloseTechTree.Add(function() techTreeOpen=false; end);
+LuaEvents.TechTree_OpenTechTree.Add(function() techTreeOpen=true; end);
 
 local ONLY_WORLD_INPUT_CONTEXT = { [InputContext.World] = true };
 local ONLY_SELECTION_INTERFACE_MODE = { [InterfaceModeTypes.SELECTION] = true };
@@ -37,7 +49,7 @@ function KeyBindingHelper.InputMatches(value:table, input:table, options:table)
   if not (options.InterfaceModes or ONLY_SELECTION_INTERFACE_MODE)[UI.GetInterfaceMode()] then
     return false;
   end
-  if not (options.InSubScreen) and inSubScreen then 
+  if (UI.IsAnyPopupInterfaceVisible() or techTreeOpen or civicTreeOpen) and not options.AllowInPopups then 
     return false;
   end
 
@@ -48,4 +60,6 @@ function KeyBindingHelper.InputMatches(value:table, input:table, options:table)
            input:IsAltDown() == value.IsAlt;
   end
   return false;
+end
+
 end
