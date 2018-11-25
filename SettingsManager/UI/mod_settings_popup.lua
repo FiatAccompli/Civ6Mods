@@ -50,7 +50,7 @@ function BaseSettingUIHandler:CacheAndUpdateValue()
 end
 
 function BaseSettingUIHandler:RestoreDefault()
-  local value = self.setting.playerDefault;
+  local value = self.setting.playerDefaultValue;
   if value == nil then 
     value = self.setting.defaultValue;
   end
@@ -198,7 +198,7 @@ function HandlePossibleBinding(input)
          (not activeKeyBindingUIHandler.setting.allowsModifiers and
               not input:IsShiftDown() and not input:IsControlDown() and not input:IsAltDown()) then
         activeKeyBindingUIHandler:SetBinding(
-            ModSettings.KeyBinding.MakeValue(keyCode, {SHIFT=input:IsShiftDown(), CTRL=input:IsControlDown(), ALT=input:IsAltDown()}));
+            ModSettings.KeyBinding.MakeValue(keyCode, {Shift=input:IsShiftDown(), Ctrl=input:IsControlDown(), Alt=input:IsAltDown()}));
         return true;
       end
     end
@@ -554,6 +554,7 @@ end
 function OnShow()
   -- Trigger registration of settings.  This is necessary when working on this ui and it gets reloaded.
   LuaEvents.ModSettingsManager_UIReadyForRegistration();
+  Controls.DuplicateBindingsPopup:SetHide(true);
   InitializeBaseGameKeyBindingsForDuplication();
   Controls.CategoriesStack:SortChildren(CompareCategories);
 

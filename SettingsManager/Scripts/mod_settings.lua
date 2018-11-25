@@ -42,10 +42,6 @@ function BaseSetting:new(defaultValue, categoryName:string, settingName:string, 
     function() 
       LuaEvents.ModSettingsManager_RegisterSetting(setting);
     end);
---  Events.LoadGameViewStateDone.Add(
---    function()
---      setting:LoadSavedValue();
---    end);
   return setting;
 end
 
@@ -71,7 +67,11 @@ function BaseSetting:AddChangedHandler(onChanged:ifunction)
 end
 
 function BaseSetting:LoadSavedValue()
-  local playerDefault = (GameInfo.ModSettingsUserDefaults or NO_OPTIONS)[self.storageName];
+  local playerDefaultEntry = GameInfo.ModSettingsUserDefaults[self.storageName]
+  local playerDefault = nil;
+  if playerDefaultEntry ~= nil then
+    playerDefault = playerDefaultEntry.Value;
+  end
   local oldValue = self.Value;
   if playerDefault ~= nil then
     local parsedValue = self:ParseValue(playerDefault);
