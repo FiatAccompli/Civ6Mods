@@ -1,6 +1,6 @@
 include("InstanceManager")
 include("InputSupport")
-include("ModSettings")
+include("mod_settings")
 
 -- Maps from categoryName to CategoryUI for settings in that category.
 local categories = {};
@@ -50,7 +50,11 @@ function BaseSettingUIHandler:CacheAndUpdateValue()
 end
 
 function BaseSettingUIHandler:RestoreDefault()
-  self:RaiseChange(self.setting.defaultValue);
+  local value = self.setting.playerDefault;
+  if value == nil then 
+    value = self.setting.defaultValue;
+  end
+  self:RaiseChange(value);
 end
 
 -- Restore the setting to the value cached when the popup was opened (to support
@@ -66,7 +70,11 @@ function BaseSettingUIHandler:SaveValue()
   if not self:ValuesEqual(self.setting.Value, self.cachedValue) then
     print("Saving value: ", self.setting.storageName, self.setting:ToStringValue());
     local saveValue = self.setting:ToStringValue();
-    if self:ValuesEqual(self.setting.Value, self.setting.defaultValue) then
+    local defaultValue = self.setting.playerDefaultValue;
+    if defaultValue == nil then
+      defaultValue = self.setting.defaultValue;
+    end
+    if self:ValuesEqual(self.setting.Value, defaultValue) then
       print("Is default");
       saveValue = nil;
     end

@@ -1,7 +1,7 @@
 -- "Main" ui for mod settings.  Actually all this file does is handle the button that is put in the 
 -- minimap "toolbar" that opens the settings popup.  The real content lives in ModSettingsPopup.
 
-include("ModSettings")
+include("mod_settings")
 include("mod_settings_key_binding_helper")
 
 function ShowModOptions()

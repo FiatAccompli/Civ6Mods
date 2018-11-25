@@ -1,7 +1,6 @@
 -- Provides the public api (in the ModSettings table) that other mods use to declare and use settings.
 
 if not ModSettings then
-print("Executing ModSettings.lua");
 
 local STORAGE_NAME_PREFIX = 'MOD_SETTING_';
 
@@ -72,12 +71,12 @@ function BaseSetting:AddChangedHandler(onChanged:ifunction)
 end
 
 function BaseSetting:LoadSavedValue()
-  local playerDefault = (GameInfo.ModSettingsUserDefaults or {})[self.storageName];
+  local playerDefault = (GameInfo.ModSettingsUserDefaults or NO_OPTIONS)[self.storageName];
   local oldValue = self.Value;
   if playerDefault ~= nil then
     local parsedValue = self:ParseValue(playerDefault);
     if parsedValue ~= nil then
-      self.defaultValue = parsedValue;
+      self.playerDefaultValue = parsedValue;
       self.Value = parsedValue;
     end
   end

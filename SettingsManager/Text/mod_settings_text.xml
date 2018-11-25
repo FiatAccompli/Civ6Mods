@@ -11,10 +11,10 @@
       <Text>Shows settings configuration and instructions that can be saved to make the current settings the default for all games.</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_INSTRUCTIONS">
-      <Text>To save the current settings as the default for all games copy the following contents[NEWLINE]and save the copied text in[NEWLINE]STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/ModSettingsDefaultValues.sql[NEWLINE]or the equivalent if Mod Settings Manager was installed locally.</Text>
+      <Text>To save the current settings as the default for all games copy the following contents[NEWLINE]and save the copied text in[NEWLINE]STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/mod_settings_default_values.sql[NEWLINE]or the equivalent if Mod Settings Manager was installed locally.</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_PREAMBLE">
-      <Text>-- Save this text in STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/ModSettingsDefaultValues.sql</Text>
+      <Text>-- Save this text in STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/mod_settings_default_values.sql</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_NO_SETTINGS_NON_DEFAULT_VALUES">
       <Text>No settings have non default values</Text>

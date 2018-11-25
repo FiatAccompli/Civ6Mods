@@ -4,12 +4,12 @@
        This is reparented to show up in the minimap "toolbar" on startup so that we don't need to alter minimap.lua/minimap.xml in this mod. -->
   <Button ID="SettingsButton" Anchor="R,C" Size="40,40"  Texture="LaunchBar_Hook_ButtonSmall"
           Style="ButtonNormalText" ToolTip="LOC_MOD_SETTINGS_MANAGER_MOD_SETTINGS">
-    <Image Texture="ModSettingsMinimapIconSmaller.dds" Anchor="C,C"/>
+    <Image Texture="mod_settings_minimap_icon.dds" Anchor="C,C"/>
   </Button>
   <!-- Spacer pip between items on the minimap toolbar.
        (Actually goes after the settings button, which makes it look out of place IMO, but do it anyway so it's consistent with the base ui.) -->
   <Image ID="SettingsButtonSpacer" Anchor="L,C" Size="7,7" Texture="LaunchBar_TrackPip" Color="255,255,255,200" Offset="0,-2"/>
 
   <!-- Where all the actual ui is. -->
-  <LuaContext FileName="ModSettingsPopup" ID="SettingsPopup" Hidden="1"/>
+  <LuaContext FileName="mod_settings_popup" ID="SettingsPopup" Hidden="1"/>
 </Context>
