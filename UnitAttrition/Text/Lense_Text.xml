@@ -5,12 +5,12 @@
 			<Text>Unit Attrition</Text>
 		</Row>
 		<Row Language="en_US" Tag="LOC_HUD_UNIT_ATTRITION_LENS_TOOLTIP">
-			<Text>Unit Attrition or something I guess.</Text>
+			<Text>Shows amount of damage units will suffer at end of turn.</Text>
 		</Row>
 
-        <Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_0">
-            <Text>No attrition</Text>
-        </Row>
+    <Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_0">
+        <Text>No attrition</Text>
+    </Row>
 		<Row Language="en_US" Tag="LOC_TOOLTIP_UNIT_ATTRITION_LENS_RATE_5">
 			<Text>1-5 HP per turn</Text>
 		</Row>

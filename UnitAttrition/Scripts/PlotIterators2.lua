@@ -16,7 +16,8 @@ local ADJACENT_PLOT_DIRECTIONS = {
   DirectionTypes.DIRECTION_SOUTHEAST,
 };
 
-local function IndexIteratorFromFunction(func)
+-- Creates an iterator for plot indices from a coroutine enumerator of plot indices.
+local function IndexIteratorFromEnumerator(func:ifunction)
   local next = coroutine.create(func);
   return function() 
     local success, plotIndex = coroutine.resume(next);
@@ -28,10 +29,10 @@ local function IndexIteratorFromFunction(func)
   end
 end
 
--- Wrap an iterator of plot indexes to return all the wrapped plot indexes as well as the indexes for 
+-- Wrap an iterator of plot indices to return all the wrapped plot indices as well as the indices for 
 -- all plots that are adjacent to any returned by the wrapped iterator.
-function PlotIterators.AndAdjacentIndexIterator(inputPlotIterator)
-  return IndexIteratorFromFunction(
+function PlotIterators.AndAdjacentIndexIterator(inputPlotIterator:ifunction)
+  return IndexIteratorFromEnumerator(
     function() 
       local emitted = {}
 
@@ -55,10 +56,16 @@ function PlotIterators.AndAdjacentIndexIterator(inputPlotIterator)
     end);  
 end
 
+-- True if x,y is left of the line defined by (startX, startY) (endX, endY)
+-- and looking from start to end.
+local function IsLeftOf(startX:number, startY:number, endX:number, endY:number, x:number, y:number)
+  return ((endX - startX) * (y - startY)) > ((endY - startY) * (x - startX));
+end
+
 -- Get an iterator of all plots whose center (from what I can tell it is the center of the hex that is 
 -- referenced when using UI.GridToWorld()) lies within the current screen view.
 function PlotIterators.OnScreenIndexIterator()
-  return IndexIteratorFromFunction(
+  return IndexIteratorFromEnumerator(
     function()
       -- Normalized screen pos is from [-1, -1] at bottom left to [1, 1] at top right with [0,0]
       -- being in the center of the window.
@@ -68,19 +75,12 @@ function PlotIterators.OnScreenIndexIterator()
       local worldTRX, worldTRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(1, 1);
       local width, height = Map.GetGridSize();
 
-      -- True if x,y is left of the line defined by (startX, startY) (endX, endY)
-      -- and looking from start to end.
-      function isLeftOf(startX, startY, endX, endY, x, y)
-        local leftOf = ((endX - startX) * (y - startY)) > ((endY - startY) * (x - startX));
-        return leftOf;
-      end
-
       function inBounds(plotX, plotY)
         local worldX, worldY = UI.GridToWorld(plotX, plotY);
-        return isLeftOf(worldTLX, worldTLY, worldBLX, worldBLY, worldX, worldY) and 
-               isLeftOf(worldBLX, worldBLY, worldBRX, worldBRY, worldX, worldY) and
-               isLeftOf(worldBRX, worldBRY, worldTRX, worldTRY, worldX, worldY) and
-               isLeftOf(worldTRX, worldTRY, worldTLX, worldTRY, worldX, worldY);
+        return IsLeftOf(worldTLX, worldTLY, worldBLX, worldBLY, worldX, worldY) and 
+               IsLeftOf(worldBLX, worldBLY, worldBRX, worldBRY, worldX, worldY) and
+               IsLeftOf(worldBRX, worldBRY, worldTRX, worldTRY, worldX, worldY) and
+               IsLeftOf(worldTRX, worldTRY, worldTLX, worldTRY, worldX, worldY);
       end
 
       -- Iterate over all plots and see if they fall in the screen bounds.  Probably some more efficient way to quickly 

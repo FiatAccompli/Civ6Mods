@@ -1,12 +1,26 @@
--- The dozen lines of code that do the actual effect of this mod in removing health from units.
+-- The relatively few lines of code that do the actual effect of this mod in removing health from units.
 
 include("AttritionMaps")
+include("mod_settings")
 
-function OnPlayerTurnDeactivated(playerId) 
+local applyAttritionToStationaryAIUnits = ModSettings.Boolean:new(
+    false, 
+    "LOC_UNIT_ATTRITION_MOD_SETTINGS_CATEGORY", 
+    "LOC_UNIT_ATTRITION_MOD_SETTING_APPLY_ATTRITION_TO_STATIONARY_AI_UNITS", 
+    "LOC_UNIT_ATTRITION_MOD_SETTING_APPLY_ATTRITION_TO_STATIONARY_AI_UNITS_TOOLTIP");
+
+local attritionPercentageForAI = ModSettings.Range:new(
+    70, 0, 100,
+    "LOC_UNIT_ATTRITION_MOD_SETTINGS_CATEGORY", 
+    "LOC_UNIT_ATTRITION_MOD_SETTING_ATTRITION_PERCENTAGE_FOR_AI", 
+    "LOC_UNIT_ATTRITION_MOD_SETTING_ATTRITION_PERCENTAGE_FOR_AI_TOOLTIP", 
+    { ValueFormatter = ModSettings.Range.PERCENT_FORMATTER, Steps = 100 });
+
+function OnPlayerTurnDeactivated(playerId:number) 
   print("-----------------Unit Attrition:OnPlayerTurnDeactivated(): " .. playerId .. ' -------------------');
   local player = Players[playerId];
 
-  -- Barbarians don't suffer from attrition - that's whey they're barbarians.  Also it makes them rather 
+  -- Barbarians don't suffer from attrition - that's why they're barbarians.  It's rather 
   -- pointless if they just die off a couple turns after spawning.
   if player:IsBarbarian() then
     return;
@@ -23,13 +37,17 @@ function OnPlayerTurnDeactivated(playerId)
     -- it claims to be at) until it is really cleaned up and removed from the player's units at some point before the next turn.
     if not unit:IsDead() and not unit:IsDelayedDeath() then
       local attrition = attritionMap:GetAttritionForUnit(unit:GetType(), unit:GetX(), unit:GetY());
+      if isAI then 
+        attrition = attrition * attritionPercentageForAI.Value / 100;
+      end
     
       assert(attrition ~= nil, "Unexpected attrition value of nil");
       assert(attrition >= 0, "Unexpected attrition value " .. attrition);
 
       local hasNotMoved = (unit:GetMaxMoves() == unit:GetMovesRemaining());
 
-      if hasNotMoved and isAI and not attritionSpec.ApplyToAINonMovingUnits then
+      -- if hasNotMoved and isAI and not attritionSpec.ApplyToAINonMovingUnits then
+      if hasNotMoved and isAI and not applyAttritionToStationaryAIUnits.Value then
         print("Handling attrition for:", unit:GetID(), unit:GetX(), unit:GetY(), "<has not moved>");
       else
         local currentDamage = unit:GetDamage();

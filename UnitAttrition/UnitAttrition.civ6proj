@@ -17,7 +17,10 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>UnitAttrition</AssemblyName>
     <RootNamespace>UnitAttrition</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="AttritionLenses"><Properties><LoadOrder>10</LoadOrder><Context>InGame</Context></Properties><File>UI/ModLens_Attrition.lua</File><File>UI/ModLens_AttritionDistance.lua</File></ImportFiles><UpdateDatabase id="UnitAttritionData"><File>Database/UnitAttrition.sql</File></UpdateDatabase><UpdateText id="UnitAttritionText"><File>Text/Lense_Text.xml</File></UpdateText><AddGameplayScripts id="UnitAttritionGameplayScript"><Properties><LoadOrder>9</LoadOrder></Properties><File>Scripts/ApplyUnitAttrition.lua</File></AddGameplayScripts><ImportFiles id="UnitAttritionSupport"><Properties><LoadOrder>5</LoadOrder><Context>InGame</Context></Properties><File>Scripts/AttritionMaps.lua</File><File>Scripts/BinaryHeap.lua</File><File>Scripts/DistanceCalculator.lua</File><File>Scripts/PlotIterators2.lua</File></ImportFiles><UpdateDatabase id="AttritionLensColors"><File>UI/AttritionLensColors.sql</File></UpdateDatabase><AddUserInterfaces id="DiplomacyHelper"><Properties><Context>InGame</Context></Properties><File>Scripts/DiplomacyHelper.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="AttritionLenses"><Properties><Context>InGame</Context><LoadOrder>1</LoadOrder></Properties><File>UI/ModLens_Attrition.lua</File><File>UI/ModLens_AttritionDistance.lua</File></ImportFiles><UpdateDatabase id="UnitAttritionData"><File>Database/UnitAttrition.sql</File></UpdateDatabase><UpdateText id="LensText"><File>Text/Lense_Text.xml</File></UpdateText><AddGameplayScripts id="UnitAttritionGameplayScript"><Properties><LoadOrder>10200</LoadOrder></Properties><File>Scripts/ApplyUnitAttrition.lua</File></AddGameplayScripts><ImportFiles id="UnitAttritionSupport"><Properties><Context>InGame</Context><LoadOrder>0</LoadOrder></Properties><File>Scripts/AttritionMaps.lua</File><File>Scripts/BinaryHeap.lua</File><File>Scripts/DistanceCalculator.lua</File><File>Scripts/PlotIterators2.lua</File></ImportFiles><UpdateDatabase id="AttritionLensColors"><File>UI/AttritionLensColors.sql</File></UpdateDatabase><AddUserInterfaces id="DiplomacyHelper"><Properties><Context>InGame</Context></Properties><File>Scripts/DiplomacyHelper.xml</File></AddUserInterfaces><UpdateText id="AttritionText"><File>Text/UnitAttritition_Text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
+    <AssociationData><![CDATA[<Associations>
+  <Dependency type="Mod" title="Mod Settings Manager" id="1cb1beaf-0428-4aad-b11d-e3168429c071" />
+</Associations>]]></AssociationData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>
@@ -25,9 +28,6 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Copy Scripts' ">
     <OutputPath>bin\Copy Scripts\</OutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <None Include="Mod.Art.xml" />
-  </ItemGroup>
   <ItemGroup>
     <Content Include="Database\UnitAttrition.sql">
       <SubType>Content</SubType>
@@ -57,6 +57,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Text\Lense_Text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Text\UnitAttritition_Text.xml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="UI\AttritionLensColors.sql">

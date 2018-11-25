@@ -20,18 +20,6 @@ CREATE TABLE UA_UnitAttritionSets (
    -- Max amount of attrition per turn allowed for a unit.
    MaxAttritionPerTurn INTEGER NOT NULL,
 
-   -- Amount to subtract from max attrition for AI players.  The AI does not know about attrition, so it will 
-   -- not plan for it.  Applying attrition will generally slow the ai down (just as it does the player), but to a larger 
-   -- extent as AI players will only respond reactively to units taking attrition damage (e.g. by trying to heal 
-   -- afterwards) rather than planning to not take attrition damage by moving out of support range.
-   MaxAttritionAIBonus INTEGER NOT NULL,
-   
-   -- Whether to apply attrition to non-moving AI units.  The AI will try to heal units and since it has no idea that 
-   -- attrition is in effect it will just keep trying to heal them on a hex until they either heal fully or 
-   -- attrition kills them (depending on which effect is greater).  If this is set to false then ai units that do not 
-   -- move (and thus are eligible to heal) will not have attrition applied and can heal as the AI intends.
-   ApplyToAINonMovingUnits BOOLEAN NOT NULL CHECK (ApplyToAINonMovingUnits IN (0,1)),
-
    -- Amount of attrition per turn alleviated for each food yield from a plot.  Simulates the ability of a unit to 
    -- support itself by living off the land.
    AttritionAlleviatedPerFood INTEGER NOT NULL,
@@ -84,32 +72,32 @@ CREATE TABLE UA_UnitAttritionFormationClassSettings(
   PRIMARY KEY(FormationClass)
 );
 
-INSERT INTO UA_UnitAttritionSets (Name, MaxAttritionPerTurn, MaxAttritionAIBonus, ApplyToAINonMovingUnits, AttritionAlleviatedPerFood, PopulationDistanceCostOffset, 
+INSERT INTO UA_UnitAttritionSets (Name, MaxAttritionPerTurn, AttritionAlleviatedPerFood, PopulationDistanceCostOffset, 
     RoutesInOwnTerritory, RoutesInNeutralTerritory, RoutesInOpenBordersTerritory, RoutesInCityStateSuzerain, 
         RoutesInFriendTerritory, RoutesInAllianceTerritory, RoutesInMilitaryAllianceTerritory, RoutesInEnemyTerritory, 
     FriendProvidesSupport, AllianceProvidesSupport, MilitaryAllianceProvidesSupport, CityStateSuzerainProvidesSupport)
-VALUES ('UNIT_ATTRITION_SET_ANCIENT_DEFAULT', 30, 10, 0, 5, 6,
+VALUES ('UNIT_ATTRITION_SET_ANCIENT_DEFAULT', 30, 5, 6,
         1, 1, 0, 1, 1, 1, 1, 0,
 		0, 0, 1, 1),
-       ('UNIT_ATTRITION_SET_CLASSICAL_DEFAULT', 30, 10, 0, 5, 8,
+       ('UNIT_ATTRITION_SET_CLASSICAL_DEFAULT', 30, 5, 8,
 	    1, 1, 0, 1, 1, 1, 1, 0,
 		0, 0, 1, 1),
-	   ('UNIT_ATTRITION_SET_MEDIEVAL_DEFAULT', 30, 10, 0, 2, 10,
+	   ('UNIT_ATTRITION_SET_MEDIEVAL_DEFAULT', 30, 2, 10,
 	    1, 1, 0, 1, 1, 1, 1, 1,
 		0, 0, 1, 1),
-       ('UNIT_ATTRITION_SET_RENAISSANCE_DEFAULT', 30, 10, 0, 2, 12,
+       ('UNIT_ATTRITION_SET_RENAISSANCE_DEFAULT', 30, 2, 12,
 	    1, 1, 0, 1, 0, 1, 1, 1,
 		0, 0, 1, 1),
-       ('UNIT_ATTRITION_SET_INDUSTRIAL_DEFAULT', 30, 10, 0, 0, 14,
+       ('UNIT_ATTRITION_SET_INDUSTRIAL_DEFAULT', 30, 0, 14,
 	    1, 1, 0, 1, 0, 1, 1, 1,
 		0, 0, 1, 1),
-       ('UNIT_ATTRITION_SET_MODERN_DEFAULT', 30, 10, 0, 0, 16,
+       ('UNIT_ATTRITION_SET_MODERN_DEFAULT', 30, 0, 16,
 	    1, 1, 0, 1, 0, 1, 1, 1,
 		0, 0, 1, 1),
-       ('UNIT_ATTRITION_SET_ATOMIC_DEFAULT', 30, 10, 0, 0, 18,
+       ('UNIT_ATTRITION_SET_ATOMIC_DEFAULT', 30, 0, 18,
 	    1, 1, 0, 1, 0, 1, 1, 1,
 		0, 0, 1, 1),
-       ('UNIT_ATTRITION_SET_INFORMATION_DEFAULT', 30, 10, 0, 0, 20,
+       ('UNIT_ATTRITION_SET_INFORMATION_DEFAULT', 30, 0, 20,
 	    1, 1, 0, 1, 0, 1, 1, 1,
 		0, 0, 1, 1);
 

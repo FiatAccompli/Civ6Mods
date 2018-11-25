@@ -1,5 +1,5 @@
 -- Caches information about diplomacy that is only available in UI context.  Open borders and alliance type 
--- information are not to exposed in gameplay script context (that I can find).  And while diplomatic state
+-- information are not exposed in gameplay script context (that I can find).  And while diplomatic state
 -- is available in both contexts, it's exposed in different places.  So cache that too just so it can 
 -- be treated consistently.
 --
@@ -10,7 +10,7 @@ if ExposedMembers.DiplomacyHelper == nil then
   ExposedMembers.DiplomacyHelper = {}
 end
 
-ExposedMembers.DiplomacyHelper.GetDiplomacyInfo = function(playerId) 
+ExposedMembers.DiplomacyHelper.GetDiplomacyInfo = function(playerId:number) 
   return ExposedMembers.DiplomacyHelper.diploInfos[playerId];
 end
 
@@ -23,19 +23,19 @@ function DiplomacyInfo:new(playerId)
   return info;
 end
 
-function DiplomacyInfo:HasOpenBordersFrom(otherPlayerId) 
+function DiplomacyInfo:HasOpenBordersFrom(otherPlayerId:number) 
   return self.openBorders[otherPlayerId];
 end
 
-function DiplomacyInfo:GetDiplomaticState(otherPlayerId)
+function DiplomacyInfo:GetDiplomaticState(otherPlayerId:number)
   return self.diploStates[otherPlayerId];
 end
 
-function DiplomacyInfo:GetAllianceType(otherPlayerId) 
+function DiplomacyInfo:GetAllianceType(otherPlayerId:number)
   return self.allianceTypes[otherPlayerId];
 end
 
-function DiplomacyInfo:IsSuzerain(minorId)
+function DiplomacyInfo:IsSuzerain(minorId:number)
   return ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(minorId).suzerain == self.playerId;
 end
 
@@ -62,21 +62,21 @@ local function InitializeDiplomacyInfos()
   end
 end
 
-local function OnPlayerTurnActivated(playerId)
+local function OnPlayerTurnActivated(playerId:number)
   ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(playerId):RefreshAll();
 end
 
-local function OnDiplomacyRelationshipChanged(player1, player2)
+local function OnDiplomacyRelationshipChanged(player1:number, player2:number)
   ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player1):Refresh(Players[player2]);
   ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player2):Refresh(Players[player1]);
 end
 
-local function OnDiplomacyDealEnacted(player1, player2)
+local function OnDiplomacyDealEnacted(player1:number, player2:number)
   ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player1):Refresh(Players[player2]);
   ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player2):Refresh(Players[player1]);
 end
 
-local function OnInfluenceGiven(cityState, player)
+local function OnInfluenceGiven(cityState:number, player:number)
   ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(cityState):Refresh(Players[player]);
 end
 

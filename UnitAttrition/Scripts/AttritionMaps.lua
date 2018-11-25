@@ -82,7 +82,7 @@ for _, harborReplacement in ipairs(GameInfo.Districts['DISTRICT_HARBOR'].Replace
   table.insert(HARBOR_DISTRICT_TYPE_INDEXES, harborReplacement.ReplacementDistrictReference.Index);
 end
 
-local function IsHarbor(plot)
+local function IsHarbor(plot:table)
   type = plot:GetDistrictType();
   if type == NOT_A_DISTRICT_TYPE then 
     return false;
@@ -106,7 +106,7 @@ end
 -- Arguments:
 --  player: A Player object for whom route use is to be calculated.
 --  spec: Specification for distance calculations in the form of an entry from GameInfo.UA_UnitAttritionSets
-local function GetRouteUseMap(player, attritionSpec)
+local function GetRouteUseMap(player:table, attritionSpec:table)
   local diploInfo = ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player:GetID());
   local canUseRoutesByOwner = {};
 
@@ -178,23 +178,15 @@ AttritionMaps.__index = AttritionMaps;
 
 -- TODO:
 -- Can't move through *enemy* cities/units.
-function AttritionMaps:new(player, attritionSpec)
+function AttritionMaps:new(player:table, attritionSpec:table)
   attritionSpec = attritionSpec or GameInfo.Eras[player:GetEra()].DefaultUnitAttritionSet
 
   local diploInfo = ExposedMembers.DiplomacyHelper.GetDiplomacyInfo(player:GetID());
   local routeUse = GetRouteUseMap(player, attritionSpec);
 
-  --[[for playerId, use in pairs(routeUse) do
-    if playerId >= 0 then
-       print(playerId, PlayerConfigurations[playerId]:GetPlayerName(), use);
-    else
-      print(playerId, use);
-    end
-  end]]
-
   local visibility = PlayerVisibilityManager.GetPlayerVisibility(player:GetID());
 
-  local function plotDistance(plot, nextPlot, direction)
+  local function plotDistance(plot, nextPlot, direction, initialDistance)
     -- Can't enter hex.
     if nextPlot:IsImpassable() then 
       return UNREACHABLE_DISTANCE; 
@@ -206,7 +198,7 @@ function AttritionMaps:new(player, attritionSpec)
 
     -- Compute distance to next hex considering terrain, feature, and improvement impediments.  This
     -- should be the same as Plot.GetMovementCost, but that is not available in game script context.
-    local distance = TERRAIN_MOVEMENT_COSTS[nextPlot:GetTerrainType()];
+    local distance = initialDistance + TERRAIN_MOVEMENT_COSTS[nextPlot:GetTerrainType()];
     if nextPlot:GetFeatureType() >= 0 then
       distance = distance + FEATURE_MOVEMENT_COSTS[nextPlot:GetFeatureType()];
     end
@@ -257,7 +249,7 @@ function AttritionMaps:new(player, attritionSpec)
         if routeUse[plot:GetOwner()] and routeUse[nextPlot:GetOwner()] then
           -- Nor if we cross a river and either side does not support bridges.
           if not crossesRiver or (crossesRiver and ROUTE_SUPPORTS_BRIDGES[routeType] and ROUTE_SUPPORTS_BRIDGES[nextRouteType]) then
-              distance = math.max(ROUTE_MOVEMENT_COSTS[routeType], ROUTE_MOVEMENT_COSTS[nextRouteType]);
+              distance = initialDistance + math.max(ROUTE_MOVEMENT_COSTS[routeType], ROUTE_MOVEMENT_COSTS[nextRouteType]);
           end
         end
       end
@@ -268,7 +260,7 @@ function AttritionMaps:new(player, attritionSpec)
 
   local distanceCalculator = DistanceCalculator:new(plotDistance);
 
-  function addStartingCity(city)
+  function addStartingCity(city:table)
     if visibility:IsRevealed(city:GetX(), city:GetY()) then 
       distanceCalculator:AddStartPlot(Map.GetPlot(city:GetX(), city:GetY()), 
                                       math.max(0, attritionSpec.PopulationDistanceCostOffset - city:GetPopulation()));
@@ -321,7 +313,7 @@ function AttritionMaps:new(player, attritionSpec)
     self);
 end
 
-function AttritionMaps:GetAttritionRangeRates(formationClass) 
+function AttritionMaps:GetAttritionRangeRates(formationClass:string) 
   local attritionRates = {};
   for _, rateInfo in ipairs(self.attritionSpec.SettingsCollection) do 
     if rateInfo.FormationClass == formationClass then
@@ -332,7 +324,7 @@ function AttritionMaps:GetAttritionRangeRates(formationClass)
 end
 
 -- Returns a map from plot index to per-turn attrition for the given formationClass.
-function AttritionMaps:GetAttritionMapForFormationClass(formationClass)
+function AttritionMaps:GetAttritionMapForFormationClass(formationClass:string)
   -- Cache these so we don't have to recompute for the same class.
   local map = self.formationClassMaps[formationClass];
 
@@ -346,9 +338,6 @@ function AttritionMaps:GetAttritionMapForFormationClass(formationClass)
     local attritionRates = self:GetAttritionRangeRates(formationClass);
     local navalAttritionRates = attritionRates;
     local maxAttrition = self.attritionSpec.MaxAttritionPerTurn;
-    if not self.player:IsHuman() then
-      maxAttrition = maxAttrition - self.attritionSpec.MaxAttritionAIBonus;
-    end
     local attritionAlleviatedPerFood = self.attritionSpec.AttritionAlleviatedPerFood;
 
     local formationClassSetting = GameInfo.UA_UnitAttritionFormationClassSettings[formationClass];
@@ -385,10 +374,10 @@ function AttritionMaps:GetAttritionMapForFormationClass(formationClass)
   return map;
 end
 
-function AttritionMaps:GetAttritionForUnit(unitType, x, y)
+function AttritionMaps:GetAttritionForUnit(unitType, x:number, y:number)
   local formationClass = GameInfo.Units[unitType].FormationClass;
   local width, height = Map.GetGridSize();
-  -- Can't use Map.
+  -- Can't use Map methods to convert x, y to index becuase they are not available in gameplay script context.
   local attrition = self:GetAttritionMapForFormationClass(formationClass)[width * y + x];
   return attrition;
 end

@@ -3,21 +3,9 @@
 
 include("AttritionMaps")
 
-local ENABLED = true;
-local LENS_NAME = "UA_UNIT_ATTRITION_DISTANCE"
+local ENABLED = false;
+local LENS_NAME = "ML_UNIT_ATTRITION_DISTANCE"
 local NUM_COLORS = 10
-
--- ===========================================================================
--- Attrition Lens Support
--- ===========================================================================
-
-local function plotHasBarbCamp(plot)
-    local improvementInfo = GameInfo.Improvements[plot:GetImprovementType()];
-    if improvementInfo ~= nil and improvementInfo.ImprovementType == "IMPROVEMENT_BARBARIAN_CAMP" then
-        return true;
-    end
-    return false;
-end
 
 -- ===========================================================================
 -- Exported functions

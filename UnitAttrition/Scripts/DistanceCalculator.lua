@@ -19,13 +19,13 @@ local ADJACENT_PLOT_DIRECTIONS = {
 DistanceCalculator = { UNREACHABLE_DISTANCE = UNREACHABLE_DISTANCE, NO_PREVIOUS_PLOT = NO_PREVIOUS_PLOT };
 DistanceCalculator.__index = DistanceCalculator;
 
-local CONSTANT_PLOT_DISTANCE_CALCULATOR = function(plot, direction)
-  return 1;
+local CONSTANT_PLOT_DISTANCE_CALCULATOR = function(plot, nextPlot, direction, distance)
+  return distance + 1;
 end
 
--- Creates a new DistanceCalculator instance where the distance from a plot to its adjacent plot is calculated by 
--- plotDistanceCalculator(plot, adjacentPlot, direction).
-function DistanceCalculator:new(plotDistanceCalculator)
+-- Creates a new DistanceCalculator instance where the distance from a plot to a starting point is calculated by 
+-- plotDistanceCalculator(plot, adjacentPlot, direction, plotDistance).
+function DistanceCalculator:new(plotDistanceCalculator:ifunction)
   local distances = {};
   local previousPlots = {};
   local plotCount = Map.GetPlotCount();
@@ -44,7 +44,7 @@ end
 -- Adds a plot as a starting point of the search with implied initial cost to get to the plot.
 -- (Another way of looking at it is that the true start node for path finding is off the map and calling this 
 -- adds an edge from it to <plot> of length <initialDistance>.)
-function DistanceCalculator:AddStartPlot(plot, initialDistance)
+function DistanceCalculator:AddStartPlot(plot:table, initialDistance:number)
   assert(not self.startedDistanceCalculations, "Can not add plot after starting to compute distances");
   initialDistance = initialDistance or 0;
 
@@ -78,9 +78,8 @@ function DistanceCalculator:ComputeForAllPlots()
           -- Also skip doing distance calculation (which might be somewhat expensive) when 
           -- we know it will not be better than what we already have for a plot.
           if distance < self.distances[nextPlotIndex] then
-            local increment = self.plotDistanceCalculator(plot, nextPlot, direction);
-            assert(increment >= 0, "calculated plot distance is negative");
-            local nextPlotDistance = distance + increment;
+            local nextPlotDistance = self.plotDistanceCalculator(plot, nextPlot, direction, distance);
+            assert(nextPlotDistance >= distance, "calculated plot to plot distance is negative " .. tostring(distance) .. "->" .. tostring(nextPlotDistance));
 
             -- Also skip the plot if it is unreachable from the current one.
             if nextPlotDistance < UNREACHABLE_DISTANCE then
@@ -97,7 +96,7 @@ function DistanceCalculator:ComputeForAllPlots()
   end
 end
 
--- Show computed paths/distances on screen in world view.  (Must be in ui script context to use).
+-- Show computed paths/distances on screen in world view.  (Use from LiveTuner, must be in ui script context to use.)
 function DistanceCalculator:DebugShowOnWorldMap(distanceMultiplier)
   -- Since UI.AddNumberToPath only shows the whole part of the number, multiply each distance 
   -- so that fractional parts are visible (e.g. roads use a fraction of a movement point in later eras).
@@ -112,10 +111,12 @@ function DistanceCalculator:DebugShowOnWorldMap(distanceMultiplier)
 
   -- Why not just draw the previous plot (e.g. shortest path) mapping for every plot and let the core game engine
   -- handle what shows up on screen like it does for everything else.  Because bad stuff happens when you exceed ~1000 
-  -- trade route or movement path segments.  First the game simply will not display more than ~1000 paths (it actually seems to 
-  -- be 963, but why that number would be a limit I have no idea) (or maybe it's path segments that are the limit, but this use 
-  -- has a one to one correspondence between them, so it doesn't really matter which it is).  Second, once you've exceeded this
-  -- limit the game has a nasty habit of crashing when trying to end the game (either through a reload, or exit to menu/desktop).
+  -- trade route or movement path segments.  First the game simply will simply ignore additions once you get beyond 
+  -- ~1000 paths (it actually seems to be 963, but why that number would be a limit I have no idea) (or maybe it's path
+  -- segments that are the limit, but this use has a one to one correspondence between them, so it doesn't really matter
+  -- which it is).  To stay safely within the limit we have to restrict to drawing the paths only for the hexes that are 
+  -- on-screen (or right next to it.)  Furthermore, once the ~1000 paths limit is exceeded the game has a nasty habit of
+  -- crashing when trying to end the game (either through a reload, or exit to menu/desktop).
   for plotIndex in PlotIterators.AndAdjacentIndexIterator(PlotIterators.OnScreenIndexIterator()) do
     local plot = Map.GetPlotByIndex(plotIndex); --= Map.GetPlot(x, y);
     if self.distances[plotIndex] < UNREACHABLE_DISTANCE then 
