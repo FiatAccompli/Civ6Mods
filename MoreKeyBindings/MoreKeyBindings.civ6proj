@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>LOC_MORE_KEY_BINDINGS_MOD_NAME</Name>
+    <Guid>cc4fc631-3c75-47d6-b992-7efa2de95b2c</Guid>
+    <ProjectGuid>70562607-5f95-481f-9a73-a71197a839fb</ProjectGuid>
+    <ModVersion>1</ModVersion>
+    <Teaser>LOC_MORE_KEY_BINDINGS_TEASER</Teaser>
+    <Description>LOC_MORE_KEY_BINDINGS_TEASER</Description>
+    <Authors>FiatAccompli</Authors>
+    <SpecialThanks>
+    </SpecialThanks>
+    <AffectsSavedGames>false</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <AssemblyName>MoreKeyBindings</AssemblyName>
+    <RootNamespace>MoreKeyBindings</RootNamespace>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="LuaImports"><File>UI/worldinput.lua</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/more_key_bindings_text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
+    <AssociationData><![CDATA[<Associations>
+  <Dependency type="Mod" title="ModSettingsManager" id="1cb1beaf-0428-4aad-b11d-e3168429c071" />
+</Associations>]]></AssociationData>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="modinfo_fixer.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Text\more_key_bindings_text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\worldinput.lua">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI" />
+    <Folder Include="Text" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <LocalizedText>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY">
+      <Text>More Key Bindings</Text>
+    </Row>
+
+    <!-- Map control -->
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_CONTROLS">
+      <Text>World View</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_PAN_NORTH">
+      <Text>Pan map north</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_PAN_SOUTH">
+      <Text>Pan map south</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_PAN_EAST">
+      <Text>Pan map east</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_PAN_WEST">
+      <Text>Pan map west</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_ZOOM_IN">
+      <Text>Zoom map in</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_ZOOM_OUT">
+      <Text>Zoom map out</Text>
+    </Row>
+    
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT">
+      <Text>Minimap size change amount</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT_TOOLTIP">
+      <Text>Amount the minimap changes each time the increase minimap size or decrease minimap size keys are pressed.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_INCREASE_SIZE">
+      <Text>Increase minimap size</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_DECREASE_SIZE">
+      <Text>Decrease minimap size</Text>
+    </Row>
+    
+    <!-- Sound control -->
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SOUND_CONTROLS">
+      <Text>Sound</Text>
+    </Row>
+    
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT">
+      <Text>Volume change amount</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT_TOOLTIP">
+      <Text>Amount the volume changes each time the increase volume or decrease volume keys are pressed.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_INCREASE_VOLUME">
+      <Text>Increase volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_DECREASE_VOLUME">
+      <Text>Decrease volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MUTE_VOLUME">
+      <Text>Mute/Unmute</Text>
+    </Row>
+  </LocalizedText>
+</GameData>

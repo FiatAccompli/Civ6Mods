@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
+  <xsl:strip-space elements="*"/>
+  
+  <xsl:template match="/Mod/Properties">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+    <LocalizedText>
+      <Text id="LOC_MORE_KEY_BINDINGS_MOD_NAME">
+        <en_US>More Key Bindings</en_US>
+        <de_DE>More Key Bindings</de_DE>
+        <es_ES>More Key Bindings</es_ES>
+        <fr_FR>More Key Bindings</fr_FR>
+        <it_IT>More Key Bindings</it_IT>
+        <pl_PL>More Key Bindings</pl_PL>
+        <pt_BR>More Key Bindings</pt_BR>
+        <ru_RU>More Key Bindings</ru_RU>
+        <ja_JP>More Key Bindings</ja_JP>
+        <ko_KR>More Key Bindings</ko_KR>
+        <zh_Hans_CN>More Key Bindings</zh_Hans_CN>
+        <zh_Hant_HK>More Key Bindings</zh_Hant_HK>
+      </Text>
+      <Text id="LOC_MORE_KEY_BINDINGS_TEASER">
+        <en_US>Adds more keybindings to the game to facilitate worker.</en_US>
+        <de_DE>Adds more keybindings to the game to facilitate worker.</de_DE>
+        <es_ES>Adds more keybindings to the game to facilitate worker.</es_ES>
+        <fr_FR>Adds more keybindings to the game to facilitate worker.</fr_FR>
+        <it_IT>Adds more keybindings to the game to facilitate worker.</it_IT>
+        <pl_PL>Adds more keybindings to the game to facilitate worker.</pl_PL>
+        <pt_BR>Adds more keybindings to the game to facilitate worker.</pt_BR>
+        <ru_RU>Adds more keybindings to the game to facilitate worker.</ru_RU>
+        <ja_JP>Adds more keybindings to the game to facilitate worker.</ja_JP>
+        <ko_KR>Adds more keybindings to the game to facilitate worker.</ko_KR>
+        <zh_Hans_CN>Adds more keybindings to the game to facilitate worker.</zh_Hans_CN>
+        <zh_Hant_HK>Adds more keybindings to the game to facilitate worker.</zh_Hant_HK>
+      </Text>
+    </LocalizedText>
+  </xsl:template>
+
+  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
+  <xsl:template match="/Mod/LocalizedText"/>
+
+  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
+       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
+  <xsl:template match="@priority">
+    <xsl:attribute name="Priority">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
+  </xsl:template>
+
+  <!--Identity template, provides default behavior that copies all content into the output -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>
