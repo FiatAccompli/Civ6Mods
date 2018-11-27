@@ -1,7 +1,7 @@
 -- A very simple example of using mod setting provided by the Mod Settings Manager mod.
 -- All this does is print out the values of the declared settings when they are changed.
 
-include("ModSettings");
+include("mod_settings");
 include("mod_settings_key_binding_helper");
 
 local actionSetting = ModSettings.Action:new(
@@ -29,12 +29,14 @@ local selectValues = {"LOC_MOD_SETTING_EXAMPLE_SELECT_SETTING_VALUE_1",
 local selectSetting = ModSettings.Select:new(selectValues, 2, "LOC_MOD_SETTING_EXAMPLE_CATEGORY",
   "LOC_MOD_SETTING_EXAMPLE_SELECT_SETTING", "LOC_MOD_SETTING_EXAMPLE_SETTING_TOOLTIP");
 
--- Note that this will show the "conflict" UI for key bindings since they both have the same default.
+local headerSetting = ModSettings.Header:new(
+  "LOC_MOD_SETTING_EXAMPLE_CATEGORY", "LOC_MOD_SETTING_EXAMPLE_HEADER_SETTING", "LOC_MOD_SETTING_EXAMPLE_SETTING_TOOLTIP");
+
 local keybindSetting = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.B, {Alt=true, Ctrl=true}),
   "LOC_MOD_SETTING_EXAMPLE_CATEGORY", "LOC_MOD_SETTING_EXAMPLE_KEY_BINDING_SETTING", "LOC_MOD_SETTING_EXAMPLE_SETTING_TOOLTIP");
+-- Note that this will show the "conflict" UI for key bindings since it conflicts with a base game binding.
 local keybindSetting2 = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.B),
-  "LOC_MOD_SETTING_EXAMPLE_CATEGORY", "LOC_MOD_SETTING_EXAMPLE_KEY_BINDING_SETTING_2", "LOC_MOD_SETTING_EXAMPLE_SETTING_TOOLTIP", 
-  {DisallowModifiers=true});
+  "LOC_MOD_SETTING_EXAMPLE_CATEGORY", "LOC_MOD_SETTING_EXAMPLE_KEY_BINDING_SETTING_2", "LOC_MOD_SETTING_EXAMPLE_SETTING_TOOLTIP");
 
 
 -- Create enough category tabs that it will have to scroll.  And also add a bunch of settings to the example category.
@@ -74,7 +76,15 @@ actionSetting:AddChangedHandler(
   end);
 
 ContextPtr:SetInputHandler(
-  function(input) 
+  function(input)
+    --[[
+    local count = 100000;
+    local start = os.clock();
+    for i = 1,count do
+      KeyBindingHelper.InputMatches(keybindSetting.Value, input);
+    end
+    print("Processed input events", count, os.clock() - start);
+    --]]
     if KeyBindingHelper.InputMatches(keybindSetting.Value, input) then
       print("The bound key was pressed!");
       return true;
