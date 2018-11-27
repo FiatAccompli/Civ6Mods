@@ -30,9 +30,6 @@
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER">
       <Text>+</Text>
     </Row>
-    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIERS_NOT_ALLOWED">
-      <Text>Shift/Ctrl/Alt modifiers are not allowed for this binding.</Text>
-    </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_SOURCE_BASE_GAME">
       <Text>Civ6 intrinsic: {1}</Text>
     </Row>
@@ -43,8 +40,11 @@
       <Text>Some key bindings are bound to multiple actions. They may not work as intended!</Text>
     </Row>
 
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER">
+      <Text>{1}:</Text>
+    </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER">
-      <Text>{1}</Text>
+      <Text>{1}:</Text>
     </Row>
 
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULT_RANGE_SETTING_VALUE_FORMATTER">

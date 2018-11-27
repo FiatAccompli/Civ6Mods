@@ -79,7 +79,6 @@ function BaseSettingUIHandler:SaveValue()
       saveValue = nil;
     end
     GameConfiguration.SetValue(self.setting.storageName, saveValue);
-    print(GameConfiguration.GetValue(self.setting.storageName));
   end
 end
 
@@ -117,7 +116,7 @@ setmetatable(SelectSettingUIHandler, BaseSettingUIHandler);
 function SelectSettingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
 
-  ui.SettingName:LocalizeAndSetText(setting.settingName);
+  ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER", Locale.Lookup(setting.settingName)));
 
   local pulldown = ui.SettingPulldown;
   pulldown:LocalizeAndSetToolTip(setting.tooltip);
@@ -151,7 +150,7 @@ setmetatable(TextSettingUIHandler, BaseSettingUIHandler);
 function TextSettingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
 
-  ui.SettingName:LocalizeAndSetText(setting.settingName);
+  ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER", Locale.Lookup(setting.settingName)));
   ui.SettingText:LocalizeAndSetToolTip(setting.tooltip);
   ui.SettingText:RegisterStringChangedCallback(function() 
       local value = ui.SettingText:GetText();
@@ -175,7 +174,6 @@ function StartActiveKeyBinding(uiHandler)
   activeKeyBindingUIHandler = uiHandler;
   Controls.KeyBindingPopupTitle:SetText(
       Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER", Locale.Lookup(uiHandler.setting.settingName)));
-  Controls.KeyBindingModifiersNotAllowed:SetHide(uiHandler.setting.allowsModifiers);
 	Controls.KeyBindingPopup:SetHide(false);
 	Controls.KeyBindingAlpha:SetToBeginning();
 	Controls.KeyBindingAlpha:Play();
@@ -193,14 +191,9 @@ function HandlePossibleBinding(input)
 	if uiMsg == KeyEvents.KeyUp then
 		local keyCode = input:GetKey();
     if ModSettings.KeyBinding.KeyLocalizations[keyCode] then
-      print("allowsModifiers", Locale.Lookup(activeKeyBindingUIHandler.setting.settingName), activeKeyBindingUIHandler.setting.allowsModifiers);
-      if activeKeyBindingUIHandler.setting.allowsModifiers or 
-         (not activeKeyBindingUIHandler.setting.allowsModifiers and
-              not input:IsShiftDown() and not input:IsControlDown() and not input:IsAltDown()) then
-        activeKeyBindingUIHandler:SetBinding(
-            ModSettings.KeyBinding.MakeValue(keyCode, {Shift=input:IsShiftDown(), Ctrl=input:IsControlDown(), Alt=input:IsAltDown()}));
-        return true;
-      end
+      activeKeyBindingUIHandler:SetBinding(
+          ModSettings.KeyBinding.MakeValue(keyCode, {Shift=input:IsShiftDown(), Ctrl=input:IsControlDown(), Alt=input:IsAltDown()}));
+      return true;
     end
   end
   return false;
@@ -367,7 +360,7 @@ setmetatable(RangeSettingUIHandler, BaseSettingUIHandler);
 function RangeSettingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
 
-  ui.SettingName:LocalizeAndSetText(setting.settingName);
+  ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER", Locale.Lookup(setting.settingName)));
   ui.SettingSlider:LocalizeAndSetToolTip(setting.tooltip);
   local steps = setting.steps;
   if steps and steps > 0 then
@@ -417,8 +410,10 @@ setmetatable(ActionSettingUIHandler, BaseSettingUIHandler);
 
 function ActionSettingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
-  ui.ActionButton:LocalizeAndSetText(setting.settingName);
-  ui.ActionButton:RegisterCallback(Mouse.eLClick, 
+  local button = ui.ActionButton;
+  button:LocalizeAndSetText(setting.settingName);
+  button:LocalizeAndSetToolTip(setting.tooltip);
+  button:RegisterCallback(Mouse.eLClick, 
     function()
       result:RaiseChange(0);
     end);
@@ -430,6 +425,24 @@ function ActionSettingUIHandler:RestoreDefault()
 end
 
 function ActionSettingUIHandler:UpdateUIToValue(value)
+  -- Nothing to do here.
+end
+
+local HeaderSettingUIHandler = {};
+HeaderSettingUIHandler.__index = HeaderSettingUIHandler;
+setmetatable(HeaderSettingUIHandler, BaseSettingUIHandler);
+
+function HeaderSettingUIHandler:new(setting:table, ui:table)
+  local result = BaseSettingUIHandler.new(self, setting, ui);
+  ui.Header:LocalizeAndSetText(setting.settingName);
+  ui.Header:LocalizeAndSetToolTip(setting.tooltip);
+  return result;
+end
+
+function HeaderSettingUIHandler:RestoreDefault()
+end
+
+function HeaderSettingUIHandler:UpdateUIToValue(value)
   -- Nothing to do here.
 end
 
@@ -451,6 +464,7 @@ function CategoryUI:new(categoryName:string)
   local selectsManager = InstanceManager:new("SelectSetting", "Setting", tab.SettingsStack);
   local keyBindingsManager = InstanceManager:new("KeyBindingSetting", "Setting", tab.SettingsStack);
   local actionsManager = InstanceManager:new("ActionSetting", "Setting", tab.SettingsStack);
+  local headersManager = InstanceManager:new("HeaderSetting", "Setting", tab.SettingsStack);
 
   local result = setmetatable({settings = {},
                                displayName = displayName,
@@ -461,7 +475,8 @@ function CategoryUI:new(categoryName:string)
                                textsManager = textsManager,
                                selectsManager = selectsManager,
                                keyBindingsManager = keyBindingsManager,
-                               actionsManager = actionsManager },
+                               actionsManager = actionsManager,
+                               headersManager = headersManager },
                               self);
   label.Label:RegisterCallback(Mouse.eLClick, 
     function()
@@ -507,7 +522,10 @@ function CategoryUI:AddSetting(setting:table)
     uiHandler = KeyBindingUIHandler:new(setting, ui);
   elseif setting.Type == ModSettings.Types.ACTION then
     ui = self.actionsManager:GetInstance();
-    uiHandler = ActionSettingUIHandler:new(setting,ui);
+    uiHandler = ActionSettingUIHandler:new(setting, ui);
+  elseif setting.Type == ModSettings.Types.HEADER then
+    ui = self.headersManager:GetInstance();
+    uiHandler = HeaderSettingUIHandler:new(setting, ui);
   end
 
   self.settings[setting.settingName] = {

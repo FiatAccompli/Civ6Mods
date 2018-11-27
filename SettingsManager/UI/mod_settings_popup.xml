@@ -50,7 +50,6 @@
             <Label ID="KeyBindingPopupTitle" Anchor="C,T" Align="Center" Style="BodyText20" Offset="0,15"/>
             <Stack Offset="0,60" Size="parent,auto" StackGrowth="Down" Anchor="C,T" StackPadding="15">
               <Label Anchor="C,T" WrapWidth="450" String="LOC_OPTIONS_SET_KEY_BINDING_TEXT" Style="BodyTextDark18"/>
-              <Label ID="KeyBindingModifiersNotAllowed" Anchor="C,T" WrapWidth="450" String="LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIERS_NOT_ALLOWED" Style="BodyTextDark18" Color="Red" Hidden="1"/>
               <Stack Size="auto,auto" Anchor="C,T" Offset="0,0" StackGrowth="Right">
                 <GridButton ID="CancelBindingButton" Style="MainButton" Size="150,41" Offset="0,0" Anchor="C,C" String="LOC_CANCEL" />
                 <GridButton ID="ClearBindingButton" Style="ButtonRed" Size="150,41" Offset="0,0" Anchor="C,C" String="LOC_OPTIONS_CLEAR"/>
@@ -96,7 +95,7 @@
     <Container ID="Tab" Size="parent,parent">
       <ScrollPanel Offset="20,3" Size="parent-20,parent-30" AutoScrollBar="1" Vertical="1" Anchor="R,T">
         <ScrollBar Style="Slider_Blue" Anchor="R,C" AnchorSide="O,I"/>
-        <Stack ID="SettingsStack" Anchor="R,T" StackGrowth="Down" Padding="3" Offset="150,50">
+        <Stack ID="SettingsStack" Anchor="R,T" Size="parent,auto" StackGrowth="Down" Padding="5" Offset="0,50">
         </Stack>
       </ScrollPanel>
       <GridButton ID="RestoreDefaults" Size="150,22" Style="ShellButton" Anchor="R,B" Offset="8,2"
@@ -106,26 +105,22 @@
 
   <!-- UI for each type of setting. -->
   <Instance Name="BooleanSetting">
-    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="5">
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" StackPadding="5" Offset="150,0">
       <GridButton ID="SettingCheckbox" Anchor="L,C" Offset="0,0" Size="300,24" Style="CheckBoxControl"/>
     </Stack>
   </Instance>
 
   <Instance Name="SelectSetting">
-    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="5">
-      <Stack StackGrowth="Left">
-        <PullDown ID="SettingPulldown" Style="PullDownBlue" Anchor="R,C" ScrollThreshold="400" Size="300,24" Offset="0,0" SpaceForScroll="0"/>
-        <Label String=":" Style="ShellOptionText" Anchor="R,C"/>
-        <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
-      </Stack>
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" StackPadding="5" Offset="150,0">
+      <PullDown ID="SettingPulldown" Style="PullDownBlue" Anchor="R,C" ScrollThreshold="400" Size="300,24" Offset="0,0" SpaceForScroll="0"/>
+      <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
     </Stack>
   </Instance>
 
   <Instance Name="RangeSetting">
-    <Stack ID="Setting" Anchor="R,T" StackGrowth="Down" Padding="0">
-      <Stack StackGrowth="Left">
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Down" StackPadding="0" Offset="150,0">
+      <Stack StackGrowth="Left" StackPadding="5">
         <Slider ID="SettingSlider" Style="SliderControl" Anchor="C,B" Size="300,13" SpaceForScroll="0"/>
-        <Label String=":" Style="ShellOptionText"/>
         <Label ID="SettingName" Style="ShellOptionText" />
       </Stack>
       <Container Size="300,13" Anchor="R,T">
@@ -135,19 +130,16 @@
   </Instance>
 
   <Instance Name="TextSetting">
-    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="5">
-      <Stack StackGrowth="Left">
-        <Grid Style="EditTextArea" CallOnChar="1" Size="300,30" InnerPadding="6,6" Anchor="C,T">
-          <EditBox ID="SettingText" Style="FontNormal14" FontStyle="stroke" Size="parent-12,parent-12" Anchor="C,C" EditMode="1" MaxLength="100"/>
-        </Grid>
-        <Label String=":" Style="ShellOptionText" Anchor="R,C"/>
-        <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
-      </Stack>
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" StackPadding="5" Offset="150,0">
+      <Grid Style="EditTextArea" CallOnChar="1" Size="300,30" InnerPadding="6,6" Anchor="C,T">
+        <EditBox ID="SettingText" Style="FontNormal14" FontStyle="stroke" Size="parent-12,parent-12" Anchor="C,C" EditMode="1" MaxLength="100"/>
+      </Grid>
+      <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
     </Stack>
   </Instance>
 
   <Instance Name="KeyBindingSetting">
-    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" Padding="0">
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" StackPadding="5" Offset="150,0">
       <Container Size="300,24">
         <GridButton ID="Binding" Style="ButtonControl" String="BINDING!" Size="200,24" TruncateWidth="295"  Anchor="C,C"/>
         <Container ID="Conflicts" Size="24,24" Anchor="R,C">
@@ -156,14 +148,26 @@
           </Image>
         </Container>
       </Container>
-      <Label String=":" Style="ShellOptionText" Anchor="R,C"/>
       <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>     
     </Stack>
   </Instance>
 
   <Instance Name="ActionSetting">
-    <Stack ID="Setting" Anchor="R,T" StackGrowth="Down" Padding="0">
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" StackPadding="5" Offset="150,0">
       <GridButton ID="ActionButton" Style="ButtonControl" Size="300,24" />
+    </Stack>
+  </Instance>
+
+  <Instance Name="HeaderSetting">
+    <Stack ID="Setting" Anchor="R,T" Size="parent,auto" StackGrowth="Down" StackPadding="5">
+      <Container Size="parent,15"/>
+      <Grid Size="parent,21" Texture="Shell_SectionHeader" SliceCorner="154,10" SliceTextureSize="308,21" Color="20,144,140,100">
+        <!--<Image Texture="Controls_Gradient_HalfRadial" Color="20,144,140,100" FlipY="1" Anchor="C,T" Size="225,94"/>-->
+        <Label ID="Header" Anchor="C,C" Style="ShellOptionText" WrapWidth="320"/>
+      </Grid>
+      <!--<Container Size="parent,40" Anchor="C,C">-->
+        <!--<Label ID="Label" Size="auto,auto" Anchor="C,B" FontSize="20" Style="ShellOptionText" />-->
+
     </Stack>
   </Instance>
 </Context>

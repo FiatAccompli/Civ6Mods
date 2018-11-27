@@ -13,6 +13,7 @@ local Types = {
   TEXT = 4,
   KEY_BINDING = 5,
   ACTION = 6,
+  HEADER = 7,
 };
 
 local function MakeFullStorageName(categoryName:string, settingName:string)
@@ -371,10 +372,10 @@ local KeyBindingSetting = {
 KeyBindingSetting.__index = KeyBindingSetting;
 setmetatable(KeyBindingSetting, BaseSetting);
 
-function KeyBindingSetting:new(defaultValue:table, categoryName:string, settingName:string, tooltip:string, options:table)
+function KeyBindingSetting:new(defaultValue:table, categoryName:string, settingName:string, tooltip:string)
   local result = BaseSetting.new(self, defaultValue, categoryName, settingName, tooltip);
   options = options or {};
-  result.allowsModifiers = not options.DisallowModifiers;
+  result.allowsModifiers = true;
   result:LoadSavedValue();
   return result;
 end
@@ -422,7 +423,27 @@ function ActionSetting:new(categoryName:string, settingName:string, tooltip:stri
   return result;
 end
 
-function BooleanSetting:ParseValue(value:string)
+function ActionSetting:ParseValue(value:string)
+  return 0;
+end
+
+
+----------------------------------------------------------------------------------------------
+-- Psuedo-setting that allows for sub-categorization of settings in configuration by showing
+-- up as a chunk of text in the config UI.
+----------------------------------------------------------------------------------------------
+local HeaderSetting = {
+  Type = Types.HEADER
+};
+HeaderSetting.__index = HeaderSetting;
+setmetatable(HeaderSetting, BaseSetting);
+
+function HeaderSetting:new(categoryName:string, settingName:string, tooltip:string)
+  local result = BaseSetting.new(self, 0, categoryName, settingName, tooltip);
+  return result;
+end
+
+function HeaderSetting:ParseValue(value:string)
   return 0;
 end
 
@@ -437,6 +458,7 @@ ModSettings = {
   Text = TextSetting,
   KeyBinding = KeyBindingSetting,
   Action = ActionSetting,
+  Header = HeaderSetting,
 };
 
 end

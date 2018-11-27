@@ -38,7 +38,7 @@ To use Mod Settings Manager in other mods:
 
 2. In whichever lua files you want to use settings include the settings api
    ```
-   include ("ModSettings")
+   include ("mod_settings")
    ```
    and contruct the settings you need to control.  All settings constructed will be automatically registered with the ui 
    and available for users to configure.
@@ -167,10 +167,6 @@ setting = ModSettings.KeyBinding:new(defaultValue, categoryName, settingName, to
 ```
   
 * `defaultValue` should be a value constructed with `MakeValue` or `nil` if no binding is specified.
-* `options` is a table that supports the following:
-  * `disallowModifiers`: When set to true the configuration ui will only accept a new binding without 
-    shift/ctrl/alt modifiers.  This is intended for hot keys that are intended to be held 
-    down rather than simply pressed (e.g. for map scrolling).
   
 The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsControl`, and `IsAlt`.
     
@@ -193,6 +189,11 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
     * `Event` is the event to match, either `KeyEvents.KeyUp` or `KeyEvents.KeyDown`.  Default is `KeyUp`.
     * `AllowInPopups` determines whether a match is permitted if the ui is displaying a "popup".  This is anything displayed 
       via `UI.QueuePopup` (and also tech/civic trees). Default is false.
+    * `IgnoreModifiers` ignores shift/ctrl/alt matching between the binding and the current keyboard state.
+      This is useful on the key-up detection if you have an action that should take place throughout the duration 
+      a key is held down and should end when the key is released.  (Without this the user can first press the key, 
+      then press a modifier, and then release the key while holding the modifier resulting in the key-up not being 
+      handled and the action permanently taking place.)
 
 ---
 
@@ -206,6 +207,18 @@ to set those keybindings to recommended values of up/down/left/right/+/- or w/s/
 
 ```
 setting = ModSettings.Action:new(categoryName, settingName, tooltip)
+```
+
+The `Value` of the setting is meaningless.
+
+---
+
+### Header
+
+A psuedo-setting that shows up in the configuration UI as a section header.
+
+```
+setting = ModSettings.Header:new(categoryName, settingName, tooltip)
 ```
 
 The `Value` of the setting is meaningless.
