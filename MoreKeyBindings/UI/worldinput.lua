@@ -147,13 +147,13 @@ local mapPanKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyB
 local mapPanKeyUpMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, IgnoreModifiers=true };
 
 local mapPanNorthKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_UP),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_NORTH", nil, {DisallowModifiers=true});
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_NORTH", nil);
 local mapPanSouthKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_DOWN),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_SOUTH", nil, {DisallowModifiers=true});
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_SOUTH", nil);
 local mapPanEastKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_LEFT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_EAST", nil, {DisallowModifiers=true});
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_EAST", nil);
 local mapPanWestKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_RIGHT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_WEST", nil, {DisallowModifiers=true});
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_WEST", nil);
 
 -- Key down is used so that we pick up auto-repeats from the operating system.
 local mapZoomKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
@@ -3179,7 +3179,6 @@ function OnInputHandler( pInputStruct:table )
 		keyPanChanged = true;
 	end
 	if keyPanChanged then
-    print("Panning");
 		ProcessPan(m_edgePanX,m_edgePanY);
     return true;
 	end
