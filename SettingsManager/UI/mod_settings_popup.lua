@@ -27,12 +27,12 @@ BaseSettingUIHandler.__index = BaseSettingUIHandler;
 
 function BaseSettingUIHandler:new(setting:table, ui:table)
   local result = setmetatable({setting = setting, ui = ui, cachedValue = setting.Value}, self);
-  LuaEvents.ModSettingsManager_SettingValueChanged.Add(
+  --[[LuaEvents.ModSettingsManager_SettingValueChanged.Add(
     function(cName:string, sName:string, value, oldValue)
       if (cName == setting.categoryName) and (sName == setting.settingName) then
         result:UpdateUIToValue(value, oldValue);
       end
-    end);
+    end);]]
   return result;
 end
 
@@ -565,11 +565,27 @@ function RegisterModSetting(setting:table)
   categoryUI:AddSetting(setting); 
 end
 
+function OnSettingValueChanged(categoryName:string, settingName:string, value, oldValue)
+  local categoryUI = categories[categoryName];
+  if categoryUI ~= nil then
+    local setting = categoryUI.settings[settingName];
+    if setting ~= nil then
+      setting.uiHandler:UpdateUIToValue(value, oldValue);
+    end
+  end
+end
+
 function CompareCategories(a, b)
   return a:GetText() < b:GetText();
 end
 
 function OnShow()
+  for category in pairs(categories) do
+    categories[category] = nil;
+  end
+  labelsManager:DestroyInstances();
+  tabsManager:DestroyInstances();
+
   -- Trigger registration of settings.  This is necessary when working on this ui and it gets reloaded.
   LuaEvents.ModSettingsManager_UIReadyForRegistration();
   Controls.DuplicateBindingsPopup:SetHide(true);
@@ -723,6 +739,7 @@ function Initialize()
   ContextPtr:SetInputHandler(OnInput, true);
 
   LuaEvents.ModSettingsManager_RegisterSetting.Add(RegisterModSetting);
+  LuaEvents.ModSettingsManager_SettingValueChanged.Add(OnSettingValueChanged);
 end
 
 Initialize();

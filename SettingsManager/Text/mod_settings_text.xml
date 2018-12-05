@@ -19,7 +19,6 @@
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_NO_SETTINGS_NON_DEFAULT_VALUES">
       <Text>No settings have non default values</Text>
     </Row>
-
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_RESTORE_ALL_DEFAULTS">
       <Text>Restore settings in all categories to default values.</Text>
     </Row>
@@ -55,7 +54,7 @@
     </Row>
 
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY">
-      <Text>Mod Settings</Text>
+      <Text>Mod settings</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME">
       <Text>Open mod settings</Text>
