@@ -60,9 +60,9 @@ function BaseSetting:AddChangedHandler(onChanged:ifunction)
   local categoryName = self.categoryName;
   local settingName = self.settingName;
   LuaEvents.ModSettingsManager_SettingValueChanged.Add(
-    function(cName:string, sName:string, value)
+    function(cName:string, sName:string, value, oldValue)
       if (categoryName == cName) and (settingName == sName) then
-        onChanged(value);
+        onChanged(value, oldValue);
       end
     end);
 end
@@ -85,7 +85,7 @@ function BaseSetting:LoadSavedValue()
   if loadedValue ~= nil and type(loadedValue) == "string" then
     local parsedValue = self:ParseValue(loadedValue);
     if parsedValue ~= nil then
-      self.Value = value;
+      self.Value = parsedValue;
     end
   end
   LuaEvents.ModSettingsManager_SettingValueChanged(self.categoryName, self.settingName, self.Value, oldValue);
@@ -135,7 +135,7 @@ end
 function SelectSetting:ParseValue(value:string)
   for _, v in ipairs(self.values) do
     if v == value then
-      return value;
+      return v;
     end
   end
   return self.defaultValue;
