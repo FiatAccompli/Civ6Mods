@@ -13,7 +13,7 @@
       <Text>Use keyboard hex targeting/selection</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_PLOT_TARGETING_TOOLTIP">
-      <Text>Allows navigation and selection of hexes with the keyboard as an alternative option for what can only be done with the mouse.</Text>
+      <Text>Allows navigation and selection of hexes with the keyboard as an alternative for what is only possible with the mouse.</Text>
     </Row>
 
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_KEEP_TARGET_ONSCREEN">

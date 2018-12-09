@@ -3395,7 +3395,6 @@ function OnInputHandler( pInputStruct:table )
 
 	-- Get the handler for the mode
 	local modeHandler = InterfaceModeMessageHandler[mode];
-	
 	-- Is it valid and is able to handle this message?
 	if modeHandler and modeHandler[uiMsg] then
 		isHandled = modeHandler[uiMsg]( pInputStruct );
@@ -3409,6 +3408,22 @@ function OnInputHandler( pInputStruct:table )
 		g_isMouseDragging = false;	-- No mouse down, no dragging is occuring!
 	end
 
+  -- Last-case fallback for pressing esc key.  If esc is pressed and it was not handled somewhere 
+  -- else then deselect all units/cities/districts and return to the default interface mode (selection).
+  -- This would not be necessary if everything correctly and consistently cleaned up after themselves.  
+  -- Of course, with Firaxis involved, that's not the case.  For example, when you press esc in trade 
+  -- mode it closes all the trade screen ui but doesn't switch out of the MAKE_TRADE_ROUTE interface mode.
+  -- (It does things correctly when the x button is used, just not when the esc key is used.)
+  if not isHandled and uiMsg == KeyEvents.KeyUp and pInputStruct:GetKey() == Keys.VK_ESCAPE then
+    if UI.GetHeadSelectedUnit() or UI.GetHeadSelectedCity() or UI.GetHeadSelectedDistrict() then
+      UI.DeselectAll();
+      isHandled = true;
+    end
+    if UI.GetInterfaceMode() ~= InterfaceModeTypes.SELECTION then
+      UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      isHandled = true;
+    end
+  end
 
 	return isHandled;
 end
