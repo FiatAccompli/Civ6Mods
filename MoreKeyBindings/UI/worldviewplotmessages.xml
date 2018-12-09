@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Context>
+
+  <Container ID="FloatUpPlotTextContainer"/>
+  
+  <Instance Name="FloatUpPlotText">
+    <WorldAnchor ID="Anchor" Anchor="c,c">
+      <SlideAnim ID="SlideAnim" Anchor="c,c" End="0,-100" Cycle="once" Speed=".5">
+        <AlphaAnim ID="AlphaAnimIn" Anchor="c,c" AlphaStart="0" Cycle="once" AlphaEnd="1" Pause="0" Speed="100">
+          <AlphaAnim ID="AlphaAnimOut" Anchor="c,c" AlphaStart="1" Cycle="once" AlphaEnd="0" Pause="0.75" Function="Square">
+            <Label ID="Text" Anchor="c,c" ColorSet="White_Black" Style="FontNormal22" FontStyle="Stroke"/>
+          </AlphaAnim>
+        </AlphaAnim>
+      </SlideAnim>
+    </WorldAnchor>
+  </Instance>
+
+  <WorldAnchor ID="KeyboardPlotTargetingAnchor">
+    <Container Size="64,64" Anchor="C,C" Offset="0,-10">
+      <AlphaAnim ID="KeyboardPlotTargetAlpha" Anchor="C,C" AlphaBegin="1.0" AlphaEnd="0.4" Cycle="Once" Speed="3">
+        <Image ID="KeyboardPlotTargetOutline" Texture="keyboard_targeting_indicator.dds" Size="64,64" Anchor="C,C"/>
+        <Image ID="KeyboardTargetAction" Size="32,32" Icon="ICON_MORE_KEY_BINDINGS_KEYBOARD" Anchor="C,C"/>
+      </AlphaAnim>
+    </Container>
+  </WorldAnchor>
+</Context>

@@ -17,7 +17,7 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>MoreKeyBindings</AssemblyName>
     <RootNamespace>MoreKeyBindings</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="LuaImports"><File>UI/worldinput.lua</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/more_key_bindings_text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="UIImports"><File>UI/worldinput.lua</File><File>UI/worldinput.xml</File><File>UI/worldviewplotmessages.lua</File><File>UI/worldviewplotmessages.xml</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/more_key_bindings_text.xml</File><File>Text/keyboard_navigation_text.xml</File></UpdateText><ImportFiles id="ImportTextures"><File>Textures/keyboard_targeting_indicator.dds</File><File>Textures/keyboard_navigation_icons.dds</File><File>Textures/movement_indicators.dds</File></ImportFiles><UpdateIcons id="UpdateIcons"><File>Icons/more_key_binding_icons.xml</File></UpdateIcons></InGameActions>]]></InGameActionData>
     <AssociationData><![CDATA[<Associations>
   <Dependency type="Mod" title="ModSettingsManager" id="1cb1beaf-0428-4aad-b11d-e3168429c071" />
 </Associations>]]></AssociationData>
@@ -26,17 +26,43 @@
     <OutputPath>.</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Icons\more_key_binding_icons.xml">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="modinfo_fixer.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Textures\keyboard_navigation_icons.dds">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Textures\keyboard_targeting_indicator.dds">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Textures\movement_indicators.dds">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Text\more_key_bindings_text.xml">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Text\keyboard_navigation_text.xml">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="UI\worldinput.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\worldinput.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\worldviewplotmessages.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\worldviewplotmessages.xml">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Icons" />
+    <Folder Include="Textures\" />
     <Folder Include="UI" />
     <Folder Include="Text" />
   </ItemGroup>

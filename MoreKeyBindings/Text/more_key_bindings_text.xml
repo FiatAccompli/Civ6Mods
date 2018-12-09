@@ -2,7 +2,7 @@
 <GameData>
   <LocalizedText>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY">
-      <Text>More Key Bindings</Text>
+      <Text>More key bindings</Text>
     </Row>
 
     <!-- Map control -->
@@ -21,12 +21,18 @@
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_PAN_WEST">
       <Text>Pan map west</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_PAN_SPEED">
+      <Text>Pan speed (percent of default)</Text>
+    </Row>
 
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_ZOOM_IN">
       <Text>Zoom map in</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_ZOOM_OUT">
       <Text>Zoom map out</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_ZOOM_SPEED">
+      <Text>Zoom speed (percent of default)</Text>
     </Row>
     
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT">
@@ -62,5 +68,6 @@
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MUTE_VOLUME">
       <Text>Mute/Unmute</Text>
     </Row>
+    
   </LocalizedText>
 </GameData>

@@ -142,34 +142,41 @@ local m_isPauseMenuOpen					:boolean = false;
 
 -------------- Map pan/zoom/minimap size ----------------------
 local mapPanHeaderSetting = ModSettings.Header:new(
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_CONTROLS", nil);
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_CONTROLS");
 local mapPanKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
 local mapPanKeyUpMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, IgnoreModifiers=true };
 
 local mapPanNorthKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_UP),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_NORTH", nil);
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_NORTH");
 local mapPanSouthKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_DOWN),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_SOUTH", nil);
-local mapPanEastKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_LEFT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_EAST", nil);
-local mapPanWestKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_RIGHT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_WEST", nil);
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_SOUTH");
+local mapPanEastKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_RIGHT),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_EAST");
+local mapPanWestKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_LEFT),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_WEST");
+local mapPanSpeed = ModSettings.Range:new(100, 0, 500, 
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_SPEED", nil,
+    { ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
 
 -- Key down is used so that we pick up auto-repeats from the operating system.
 local mapZoomKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
 local mapZoomInKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_ADD),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_IN", nil);
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_IN");
 local mapZoomOutKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_SUBTRACT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_OUT", nil);
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_OUT");
+
+local mapZoomSpeed = ModSettings.Range:new(100, 0, 500, 
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_SPEED", nil,
+    { ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
 
 local minimapSizeKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
+local minimapSizeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR, {Shift=true}),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MINIMAP_INCREASE_SIZE");
+local minimapSizeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Shift=true}),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MINIMAP_DECREASE_SIZE");
 local minimapChangeAmountSetting = ModSettings.Range:new(5, 1, 100, "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
     "LOC_MORE_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT", "LOC_MORE_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT_TOOLTIP",
     { Steps = 99, ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
-local minimapSizeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR, {Shift=true}),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MINIMAP_INCREASE_SIZE", nil);
-local minimapSizeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Shift=true}),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MINIMAP_DECREASE_SIZE", nil);
 
 -- Rather annoyingly, there is no way to get the current minimap size.  So we just have to keep track of it in parallel 
 -- to the real game value.  A side effect of this is that when you adjust the size with the actual in-game options it 
@@ -178,24 +185,71 @@ local minimapSizeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.Key
 local minimapSize = Options.GetGraphicsOption("General", "MinimapSize") or 0.0;
 
 -------------- Sound controls -----------------------------
-local volumeHeaderSetting = ModSettings.Header:new(
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SOUND_CONTROLS", nil);
+local soundHeaderSetting = ModSettings.Header:new(
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SOUND_CONTROLS");
 local volumeKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
-
 -- Key down is used so that we pick up auto-repeats from the operating system.
 local volumeChangeKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
 
+local volumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_INCREASE_VOLUME");
+local volumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_DECREASE_VOLUME");
+local volumeMuteKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Ctrl=true}),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MUTE_VOLUME");
 local volumeChangeAmountSetting = ModSettings.Range:new(5, 1, 100, "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
   "LOC_MORE_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT", "LOC_MORE_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT_TOOLTIP",
   { Steps = 99, ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
-local volumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_INCREASE_VOLUME", nil);
-local volumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_DECREASE_VOLUME", nil);
-local volumeMuteKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Ctrl=true}),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MUTE_VOLUME", nil);
 
 local volumeToDeMute = -1;
+
+
+------------------- Unit movement/plot selection navigation ------------------
+local volumeHeaderSetting = ModSettings.Header:new(
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_NAVIGATION_CONTROLS");
+
+local enableKeyboardPlotTargeting = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_PLOT_TARGETING",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_PLOT_TARGETING_TOOLTIP");
+
+local enableKeyboardUnitMovement = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_UNIT_MOVEMENT");
+
+local keyboardTargetingKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
+local keepKeyboardTargetOnScreen = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_KEEP_TARGET_ONSCREEN",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_KEEP_TARGET_ONSCREEN_TOOLTIP");
+
+local directionNEKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD9),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_NE");
+local directionEKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD6),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_E");
+local directionSEKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD3),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_SE");
+local directionSWKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD1),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_SW");
+local directionWKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD4),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_W");
+local directionNWKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD7),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_NW");
+
+local moveKeyboardTargetToScreenCenterKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD2),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_TO_CENTER_OF_SCREEN");
+local moveScreenToKeyboardTargetKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD8),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_CENTER_SCREEN_ON_SELECTION");
+
+local selectNextKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_DECIMAL),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_NEXT", 
+    "LOC_MORE_KEY_BINDINGS_SELECT_NEXT_TOOLTIP");
+local selectPreviousKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD0),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS",
+    "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS_TOOLTIP");
 
 -- ===========================================================================
 --	FUNCTIONS
@@ -235,13 +289,13 @@ end
 function ProcessPan( panX :number, panY :number )
 
 	if( panY == 0.0 ) then
-		if( m_isUPpressed ) then panY = panY + PAN_SPEED; end 
-		if( m_isDOWNpressed) then panY = panY - PAN_SPEED; end
+		if( m_isUPpressed ) then panY = panY + PAN_SPEED * mapPanSpeed.Value / 100; end 
+		if( m_isDOWNpressed) then panY = panY - PAN_SPEED * mapPanSpeed.Value / 100; end
 	end
 
 	if( panX == 0.0 ) then 
-		if( m_isRIGHTpressed ) then panX = panX + PAN_SPEED; end
-		if( m_isLEFTpressed ) then panX = panX - PAN_SPEED; end
+		if( m_isRIGHTpressed ) then panX = panX + PAN_SPEED * mapPanSpeed.Value / 100; end
+		if( m_isLEFTpressed ) then panX = panX - PAN_SPEED * mapPanSpeed.Value / 100; end
 	end
 
 	UI.PanMap( panX, panY );
@@ -297,58 +351,57 @@ end
 
 -- ===========================================================================
 function GetCurrentlySelectUnitIndex( unitList:table, ePlayer:number )
-	local iSelectedUnit :number = -1;	-- Which unit index is selected.  This is the unit index for the player's units, not all the units in the list
-	local iCount		:number = 0;	-- # of units in the list owned by the player
+	local iCount		:number = 1;	-- # of units in the list owned by the player
 	for i, pUnit in ipairs(unitList) do
 		-- Owned by the local player?
 		if (pUnit:GetOwner() == ePlayer) then
 			-- Already selected?  
 			if UI.IsUnitSelected(pUnit) then
-				iSelectedUnit = iCount;
+				return iCount;
 			end
 			iCount = iCount + 1;
 		end
 	end
+end
 
-	return iSelectedUnit;
+function SelectNextFrom(list:table, currentlySelectedIndex:number, wrap:boolean, reverse:boolean)
+print("SelectNextFrom", currentlySelectedIndex);
+  local index = currentlySelectedIndex;
+  if reverse then 
+    if currentlySelectedIndex then
+      index = index - 1;
+      if index < 1 and wrap then
+        index = #list;
+      end
+    else 
+      index = #list;
+    end
+  else
+    if currentlySelectedIndex then
+      index = index + 1;
+      if index > #list and wrap then 
+        index = 1;
+      end
+    else 
+      index = 1;
+    end
+  end
+  print("SelectNextFrom done", index);
+  return list[index];
 end
 
 -- ===========================================================================
-function SelectNextUnit(unitList:table, iCurrentlySelectedUnit:number, ePlayer:number, bWrap:boolean)
-	if iCurrentlySelectedUnit == -1 then
-		-- Nothing selected yet
-		for i, pUnit in ipairs(unitList) do
-			-- Owned by the player?
-			if (pUnit:GetOwner() == ePlayer) then
-				SelectUnit(pUnit);
-			end
-		end
-	else
-		local bSelected = false;
-		local iCount = 0;	-- number of units in the list owned by the player
-		for i, pUnit in ipairs(unitList) do
-			-- Owned by the player?
-			if (pUnit:GetOwner() == ePlayer) then
-				if (iCount > iCurrentlySelectedUnit) then
-					SelectUnit(pUnit);
-					bSelected = true;
-					break;
-				end
-				iCount = iCount + 1;
-			end
-		end
-
-		if not bSelected and bWrap then
-			-- Either the input was wrong or we wrapped, go back and select the first one.
-			for i, pUnit in ipairs(unitList) do
-				-- Owned by the player?
-				if (pUnit:GetOwner() == ePlayer) then
-					SelectUnit(pUnit);
-					break;
-				end
-			end
-		end
-	end
+function SelectNextUnit(unitList:table, iCurrentlySelectedUnit:number, ePlayer:number, bWrap:boolean, reverse:boolean)
+  local playerList = {};
+  for i, unit in ipairs(unitList) do 
+    if unit:GetOwner() == ePlayer then
+      table.insert(playerList, unit);
+    end
+  end
+  local selectedUnit = SelectNextFrom(playerList, iCurrentlySelectedUnit, bWrap, reverse);
+  if selectedUnit then 
+    SelectUnit(selectedUnit);
+  end
 end
 
 -- ===========================================================================
@@ -378,7 +431,7 @@ end
 -- ===========================================================================
 --	Selects the unit or city at the plot passed in.
 -- ===========================================================================
-function SelectInPlot( plotX:number, plotY:number )
+function SelectInPlot( plotX:number, plotY:number, reverse:boolean )
 
 	local kUnitList		:table	= Units.GetUnitsInPlotLayerID( plotX, plotY, MapLayers.ANY );
 	local tryCity		:boolean= false;
@@ -396,7 +449,7 @@ function SelectInPlot( plotX:number, plotY:number )
 		local iSelected:number = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
 		
 		-- Cycle to the next, or select the first one if nothing was selected and there is no city
-		SelectNextUnit(kUnitList, iSelected, eLocalPlayer, pCity == nil);
+		SelectNextUnit(kUnitList, iSelected, eLocalPlayer, pCity == nil, reverse);
 
 		local iNewSelected = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
 		if (iNewSelected == -1 or (iNewSelected == iSelected and pCity ~= nil)) then
@@ -1318,7 +1371,7 @@ end
 --	Zoom
 -- ===========================================================================
 function OnMouseWheelZoom( pInputStruct:table )
-	local wheelValue = pInputStruct:GetWheel() * (-( (1.0/12000.0) * MOUSE_SCALAR));		-- Wheel values come in as multiples of 120, make it so that one 'click' is %1, modified by a speed scalar.
+	local wheelValue = pInputStruct:GetWheel() * (-( (1.0/12000.0) * MOUSE_SCALAR * mapZoomSpeed.Value / 100));		-- Wheel values come in as multiples of 120, make it so that one 'click' is %1, modified by a speed scalar.
 	local normalizedX		:number, normalizedY:number = UIManager:GetNormalizedMousePos();
 	local oldZoom = UI.GetMapZoom();
 	local newZoom = oldZoom + wheelValue;
@@ -3054,6 +3107,73 @@ function Test()
 	return true;
 end
 
+-- ===========================================================================
+-- Keyboard targeting
+-- ===========================================================================
+
+local keyboardTargetingPlot = nil;
+
+function MoveKeyboardTargetingTo(plot:table)
+  if plot then
+    keyboardTargetingPlot = plot;
+    LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY());
+
+    if keepKeyboardTargetOnScreen.Value then
+      -- Normalized screen pos is from [-1, -1] at bottom left to [1, 1] at top right with [0,0]
+      -- being in the center of the window.
+      local worldBLX, worldBLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, -0.9);
+      local worldTLX, worldTLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, 0.9);
+      local worldBRX, worldBRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, -0.9);
+      local worldTRX, worldTRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, 0.9);
+
+      -- True if x,y is left of the line defined by (startX, startY) (endX, endY)
+      -- and looking from start to end.
+      local function IsLeftOf(startX:number, startY:number, endX:number, endY:number, x:number, y:number)
+        return ((endX - startX) * (y - startY)) > ((endY - startY) * (x - startX));
+      end
+
+      local worldX, worldY = UI.GridToWorld(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY());
+      if not (IsLeftOf(worldTLX, worldTLY, worldBLX, worldBLY, worldX, worldY) and 
+              IsLeftOf(worldBLX, worldBLY, worldBRX, worldBRY, worldX, worldY) and
+              IsLeftOf(worldBRX, worldBRY, worldTRX, worldTRY, worldX, worldY) and
+              IsLeftOf(worldTRX, worldTRY, worldTLX, worldTRY, worldX, worldY)) then
+        UI.LookAtPlot(keyboardTargetingPlot);
+      end
+    end
+  end
+end
+
+function MoveKeyboardTargetingToScreenCenter()
+  MoveKeyboardTargetingTo(Map.GetPlot(UI.GetPlotCoordFromNormalizedScreenPos(0,0)));
+end
+
+function MoveKeyboardTargetingInDirection(direction:number)
+  if keyboardTargetingPlot then
+    MoveKeyboardTargetingTo(Map.GetAdjacentPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), direction));
+  end
+end
+
+function SelectNextInKeyboardTargetingHexPlot()
+  if not keyboardTargetingPlot then 
+    return;
+  end
+  SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY());
+end
+
+function SelectPreviousInKeyboardTargetingHexPlot()
+  if not keyboardTargetingPlot then 
+    return;
+  end
+  SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), true);
+end
+
+function CenterScreenOnKeyboardTargeting()
+  if keyboardTargetingPlot then
+    UI.LookAtPlot(keyboardTargetingPlot);
+  end
+end
+
+
 
 -- ===========================================================================
 --	UI Event
@@ -3152,7 +3272,7 @@ function OnInputHandler( pInputStruct:table )
   end
  	if KeyBindingHelper.InputMatches(mapPanWestKeyBinding.Value, pInputStruct, mapPanKeyDownMatchOptions) then
 		keyPanChanged = true;
-		m_isRIGHTpressed = true;
+		m_isLEFTpressed = true;
 	end
 	if KeyBindingHelper.InputMatches(mapPanSouthKeyBinding.Value, pInputStruct, mapPanKeyDownMatchOptions) then
 		keyPanChanged = true;
@@ -3160,14 +3280,14 @@ function OnInputHandler( pInputStruct:table )
 	end
 	if KeyBindingHelper.InputMatches(mapPanEastKeyBinding.Value, pInputStruct, mapPanKeyDownMatchOptions) then
 		keyPanChanged = true;
-		m_isLEFTpressed = true;
+		m_isRIGHTpressed = true;
 	end
   if KeyBindingHelper.InputMatches(mapPanNorthKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
     keyPanChanged = true;
     m_isUPpressed = false;
   end
   if KeyBindingHelper.InputMatches(mapPanWestKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
-		m_isRIGHTpressed = false;
+		m_isLEFTpressed = false;
 		keyPanChanged = true;
 	end
 	if KeyBindingHelper.InputMatches(mapPanSouthKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
@@ -3175,7 +3295,7 @@ function OnInputHandler( pInputStruct:table )
 		keyPanChanged = true;
 	end
 	if KeyBindingHelper.InputMatches(mapPanEastKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
-		m_isLEFTpressed = false;
+		m_isRIGHTpressed = false;
 		keyPanChanged = true;
 	end
 	if keyPanChanged then
@@ -3185,12 +3305,12 @@ function OnInputHandler( pInputStruct:table )
 
   if KeyBindingHelper.InputMatches(mapZoomInKeyBinding.Value, pInputStruct, mapZoomKeyDownMatchOptions) then
     local oldZoom = UI.GetMapZoom();
-	  UI.SetMapZoom( oldZoom - ZOOM_SPEED, 0.0, 0.0 );
+	  UI.SetMapZoom( oldZoom - ZOOM_SPEED * mapZoomSpeed.Value / 100, 0.0, 0.0 );
 		return true;
   end
   if KeyBindingHelper.InputMatches(mapZoomOutKeyBinding.Value, pInputStruct, mapZoomKeyDownMatchOptions) then
     local oldZoom = UI.GetMapZoom();
-	  UI.SetMapZoom( oldZoom + ZOOM_SPEED, 0.0, 0.0 );
+	  UI.SetMapZoom( oldZoom + ZOOM_SPEED * mapZoomSpeed.Value / 100, 0.0, 0.0 );
 		return true;
   end
 
@@ -3210,7 +3330,7 @@ function OnInputHandler( pInputStruct:table )
     Options.SetAudioOption("Sound", "Master Volume", math.max(0, math.min(100, currentValue - changeAmount)), 1);
     return true;
   end
-  if KeyBindingHelper.InputMatches(volumeMuteKeyBinding.Value, pInputStruct) then
+  if KeyBindingHelper.InputMatches(volumeMuteKeyBinding.Value, pInputStruct, volumeChangeKeyDownMatchOptions) then
     local changeAmount = volumeChangeAmountSetting.Value;
     local currentValue = Options.GetAudioOption("Sound", "Master Volume");
     if currentValue == 0 then
@@ -3232,6 +3352,42 @@ function OnInputHandler( pInputStruct:table )
   if KeyBindingHelper.InputMatches(minimapSizeDecreaseKeyBinding.Value, pInputStruct, minimapSizeKeyDownMatchOptions) then
     minimapSize = math.max(0, math.min(1, minimapSize - minimapChangeAmountSetting.Value / 100));
     UI.SetMinimapSize(minimapSize);
+    return true;
+  end
+
+  if enableKeyboardPlotTargeting.Value then 
+    if KeyBindingHelper.InputMatches(moveKeyboardTargetToScreenCenterKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      MoveKeyboardTargetingToScreenCenter();
+      return true;
+    elseif KeyBindingHelper.InputMatches(moveScreenToKeyboardTargetKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      CenterScreenOnKeyboardTargeting();
+      return true;
+    elseif KeyBindingHelper.InputMatches(directionNEKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_NORTHEAST);
+      return true;
+    elseif KeyBindingHelper.InputMatches(directionEKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_EAST);
+      return true;
+    elseif KeyBindingHelper.InputMatches(directionSEKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_SOUTHEAST);
+      return true;
+    elseif KeyBindingHelper.InputMatches(directionSWKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_SOUTHWEST);
+      return true;
+    elseif KeyBindingHelper.InputMatches(directionWKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_WEST);
+      return true;
+    elseif KeyBindingHelper.InputMatches(directionNWKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
+      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_NORTHWEST);
+      return true;
+    end
+  end
+  
+  if KeyBindingHelper.InputMatches(selectNextKeyBinding.Value, pInputStruct) then
+    SelectNextInKeyboardTargetingHexPlot();
+    return true;
+  elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct) then
+    SelectPreviousInKeyboardTargetingHexPlot();
     return true;
   end
 
@@ -3606,6 +3762,7 @@ function Initialize()
 	Events.CycleUnitSelectionRequest.Add( OnCycleUnitSelectionRequest );
 	Events.InputActionTriggered.Add( OnInputActionTriggered );
 	Events.InterfaceModeChanged.Add(OnInterfaceModeChanged);
+  Events.LoadScreenClose.Add(MoveKeyboardTargetingToScreenCenter);
 	Events.MultiplayerGameLastPlayer.Add(OnMultiplayerGameLastPlayer);
 	Events.MultiplayerGameAbandoned.Add(OnMultiplayerGameAbandoned);
 	Events.UnitSelectionChanged.Add( OnUnitSelectionChanged );

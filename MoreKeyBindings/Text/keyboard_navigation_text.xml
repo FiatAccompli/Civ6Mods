@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <LocalizedText>
+    <!-- Unit movement/plot navigation -->
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_NAVIGATION_CONTROLS">
+      <Text>Keyboard Navigation</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_UNIT_MOVEMENT">
+      <Text>Use keyboard unit movement</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_PLOT_TARGETING">
+      <Text>Use keyboard hex targeting/selection</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_PLOT_TARGETING_TOOLTIP">
+      <Text>Allows navigation and selection of hexes with the keyboard as an alternative option for what can only be done with the mouse.</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_KEEP_TARGET_ONSCREEN">
+      <Text>Keep keyboard target on-screen.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_KEEP_TARGET_ONSCREEN_TOOLTIP">
+      <Text>If checked, when the keyboard target is moved off-screen the screen will be recentered on the location of the keyboard target</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_INDICATOR_STYLE">
+      Keyboard targeting indicator behavior
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_INDICATOR_STYLE_HIDE_INACTIVE">
+      <Text>Hide when mouse is used</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_INDICATOR_STYLE_FADE_INACTIVE">
+      <Text>Fade when mouse is used</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_INDICATOR_STYLE_ALWAYS_VISIBLE">
+      <Text>Always visible</Text>
+    </Row>
+    
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_NE">
+      <Text>Move unit/selection northeast</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_E">
+      <Text>Move unit/selection east</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_SE">
+      <Text>Move unit/selection southeast</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_SW">
+      <Text>Move unit/selection southwest</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_W">
+      <Text>Move unit/selection west</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_NW">
+      <Text>Move unit/selection northwest</Text>
+    </Row>
+
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_CENTER_SCREEN_ON_SELECTION">
+      <Text>Center screen on keyboard target</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_TO_CENTER_OF_SCREEN">
+      <Text>Keyboard target to center of screen</Text>
+    </Row>
+
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_SELECT_NEXT">
+      <Text>Select next</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_SELECT_NEXT_TOOLTIP">
+      <Text>Select next unit/city in hex or next eligible target (when in targeting modes)</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS">
+      <Text>Select previous</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS_TOOLTIP">
+      <Text>Select previous unit/city in hex or previous eligible target (when in targeting modes)</Text>
+    </Row>
+
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE">
+      <Text>Keyboard target display</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_ALWAYS">
+      <Text>Always visible</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_HIDE_ON_MOUSE_USE">
+      <Text>Hide on mouse use</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_FADE_ON_MOUSE_USE">
+      <Text>Fade on mouse use</Text>
+    </Row>
+  </LocalizedText>
+</GameData>
