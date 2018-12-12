@@ -267,6 +267,7 @@ local selectPlotMatchOptions = {
       [InterfaceModeTypes.CITY_RANGE_ATTACK] = true, 
       [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true, 
       [InterfaceModeTypes.AIR_ATTACK] = true, 
+      [InterfaceModeTypes.PRIORITY_TARGET] = true, 
     } };
 local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PLOT",
