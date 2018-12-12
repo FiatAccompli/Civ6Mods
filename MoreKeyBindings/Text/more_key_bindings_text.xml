@@ -68,6 +68,15 @@
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MUTE_VOLUME">
       <Text>Mute/Unmute</Text>
     </Row>
-    
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_CITY_COMMAND_CONTROLS">
+      <Text>City commands</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_DISTRICT_RANGED_ATTACK">
+      <Text>City/district ranged attack</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_DISTRICT_RANGED_ATTACK_TOOLTIP">
+      <Text>Perform a ranged attack with the city or district in the current keyboard target hex.</Text>
+    </Row>
   </LocalizedText>
 </GameData>

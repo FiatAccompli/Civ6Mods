@@ -205,7 +205,7 @@ local volumeToDeMute = -1;
 
 
 ------------------- Unit movement/plot selection navigation ------------------
-local volumeHeaderSetting = ModSettings.Header:new(
+local keyboardNavigationHeaderSetting = ModSettings.Header:new(
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_NAVIGATION_CONTROLS");
 
 local enableKeyboardPlotTargeting = ModSettings.Boolean:new(
@@ -265,6 +265,7 @@ local selectPlotMatchOptions = {
       [InterfaceModeTypes.FORM_CORPS] = true, 
       [InterfaceModeTypes.RANGE_ATTACK] = true, 
       [InterfaceModeTypes.CITY_RANGE_ATTACK] = true, 
+      [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true, 
     } };
 local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PLOT",
@@ -275,6 +276,13 @@ local autoMoveKeyboardTargetToFirstEligibleTarget = ModSettings.Boolean:new(
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
     "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_FIRST_ELIGIBLE_TARGET",
     "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_FIRST_ELIGIBLE_TARGET_TOOLTIP");
+
+----------------------------- City commands -----------------------------------
+local cityCommandsHeaderSettings = ModSettings.Header:new(
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_CITY_COMMAND_CONTROLS");
+local districtRangedAttackKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.R, {Shift=true}),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_DISTRICT_RANGED_ATTACK", 
+    "LOC_MORE_KEY_BINDINGS_DISTRICT_RANGED_ATTACK_TOOLTIP");
 
 -- ===========================================================================
 --	FUNCTIONS
@@ -2641,12 +2649,15 @@ function OnInterfaceModeLeave_CityRangeAttack(eNewMode)
 end
 
 -------------------------------------------------------------------------------
-function DistrictRangeAttack( pInputStruct )
+function OnPointerDistrictRangeAttack( pInputStruct )
 	if ClearRangeAttackDragging() then
 		return true;
 	end
 
-	local plotID = UI.GetCursorPlotID();
+	DistrictRangeAttack(UI.GetCursorPlotID());
+end
+
+function DistrictRangeAttack(plotID:number)
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -2660,7 +2671,7 @@ function DistrictRangeAttack( pInputStruct )
 			CityManager.RequestCommand( pSelectedDistrict, CityCommandTypes.RANGE_ATTACK, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
 		end
-	end						
+	end
 	return true;
 end
 -------------------------------------------------------------------------------
@@ -2700,7 +2711,15 @@ function OnInterfaceModeChange_DistrictRangeAttack(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
-								
+				
+        local keyboardTargetPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
+        if autoMoveKeyboardTargetToFirstEligibleTarget.Value then
+          if not IsInList(g_targetPlots, keyboardTargetPlotID) then
+            local newTargetPlotID = g_targetPlots[1];
+            MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID));
+          end
+        end
+        RealizeRangedAttackPreview(keyboardTargetPlotID);		
 			end
 		end
 	end
@@ -3448,6 +3467,33 @@ function OnInputHandler( pInputStruct:table )
     return true;
   end
 
+  if KeyBindingHelper.InputMatches(districtRangedAttackKeyBinding.Value, pInputStruct) then
+    local localPlayerID = Game.GetLocalPlayer();
+    local city = UI.GetHeadSelectedCity();
+    if not city then
+      city = CityManager.GetCityAt(keyboardTargetingPlot);
+    end
+    if city and city:GetOwner() == localPlayerID then
+      if CityManager.CanStartCommand(city, CityCommandTypes.RANGE_ATTACK) then
+        UI.SelectCity(city);
+        UI.SetInterfaceMode(InterfaceModeTypes.CITY_RANGE_ATTACK);
+      end
+      return true;
+    end
+    
+    local district = UI.GetHeadSelectedDistrict();
+    if not district then 
+      district = CityManager.GetDistrictAt(keyboardTargetingPlot);
+    end
+    if district and district:GetOwner() == localPlayerID then 
+      if CityManager.CanStartCommand(district, CityCommandTypes.RANGE_ATTACK) then
+        UI.SelectDistrict(district);
+        UI.SetInterfaceMode(InterfaceModeTypes.DISTRICT_RANGE_ATTACK);
+      end
+    end
+    return true;
+  end
+
 	local isHandled:boolean = false;
 
 	-- Get the handler for the mode
@@ -3728,7 +3774,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitRangeAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.NATURAL_WONDER]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();  -- Not actually a plot selection mode.  Just picks up esc key behavior.
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]		[KeyEvents.KeyUp]		= OnPlacementKeyUp(CityRangeAttack);
-	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp(DistrictRangeAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
@@ -3765,7 +3811,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.LButtonUp]		= OnMouseUnitRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.MouseMove]	= OnMouseMoveRangeAttack;
-	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.LButtonUp]	= DistrictRangeAttack;	
+	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.LButtonUp]	= OnPointerDistrictRangeAttack;	
 	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.LButtonUp]		= OnMouseBuildingPlacementEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.RButtonUp]		= OnMouseBuildingPlacementCancel;
 	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.MouseMove]		= OnMouseBuildingPlacementMove;
@@ -3811,7 +3857,7 @@ function Initialize()
 		InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.PointerUpdate]	= OnTouchUpdate;
 		InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.PointerUp]		= OnTouchBuildingPlacementEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.PointerUp]		= OnPointerCityRangeAttack;
-		InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.PointerUp]	= DistrictRangeAttack;
+		InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.PointerUp]	= OnPointerDistrictRangeAttack;
 		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormArmy);
 		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormCorps);
 		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= Airlift;

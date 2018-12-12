@@ -269,6 +269,7 @@ local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
     [InterfaceModeTypes.FORM_ARMY] = "ICON_UNITCOMMAND_FORM_ARMY",
     [InterfaceModeTypes.RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
     [InterfaceModeTypes.CITY_RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
+    [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
 };
 
 function UpdateKeyboardTargetIcon(interfaceMode:number)
