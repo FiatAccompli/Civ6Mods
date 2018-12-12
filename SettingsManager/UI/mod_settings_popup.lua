@@ -216,7 +216,7 @@ setmetatable(duplicateBindings,
     end 
   });
 
-function InitializeBaseGameKeyBindingsForDuplication() 
+function InitializeKeyBindingsForDuplication() 
   for k, _ in pairs(duplicateBindings) do 
     duplicateBindings[k] = nil;
   end
@@ -586,10 +586,9 @@ function OnShow()
   labelsManager:DestroyInstances();
   tabsManager:DestroyInstances();
 
-  -- Trigger registration of settings.  This is necessary when working on this ui and it gets reloaded.
-  LuaEvents.ModSettingsManager_UIReadyForRegistration();
   Controls.DuplicateBindingsPopup:SetHide(true);
-  InitializeBaseGameKeyBindingsForDuplication();
+  InitializeKeyBindingsForDuplication();
+  LuaEvents.ModSettingsManager_UIReadyForRegistration();
   Controls.CategoriesStack:SortChildren(CompareCategories);
 
   local firstCategory = nil;

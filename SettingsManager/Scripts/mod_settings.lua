@@ -238,7 +238,7 @@ local KeyBindingSetting = {
     [Keys.VK_DOWN] = "LOC_OPTIONS_KEY_DOWN",
     [Keys.E] = "LOC_OPTIONS_KEY_E",
     [Keys.VK_END] = "LOC_OPTIONS_KEY_END",
-    -- Used throughout the UI as a "back" or "escape" key.
+    -- Hardcoded throughout the UI as a "back" or "escape" key.
     -- "LOC_OPTIONS_KEY_ESCAPE"
     [Keys.F] = "LOC_OPTIONS_KEY_F",
     [Keys.VK_F1] = "LOC_OPTIONS_KEY_F1",
@@ -350,8 +350,8 @@ local KeyBindingSetting = {
     [Keys.VK_OEM_2] = "LOC_OPTIONS_KEY_SLASH",
     [Keys.VK_SPACE] = "LOC_OPTIONS_KEY_SPACE",
     [Keys.T] = "LOC_OPTIONS_KEY_T",
-    -- Not allowed to bind it in main game options.
-    -- "LOC_OPTIONS_KEY_TAB"
+    -- Not allowed to bind it in main game options, but seems ok to allow it to be bound.
+    [Keys.VK_TAB] = "LOC_OPTIONS_KEY_TAB",
     -- Is this meant to be the backtick key `?  If so, it's not bindable in main game options.
     -- "LOC_OPTIONS_KEY_TILDE"
     [Keys.U] = "LOC_OPTIONS_KEY_U",
