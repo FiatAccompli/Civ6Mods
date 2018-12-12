@@ -67,24 +67,8 @@ function OnInterfaceModeLeave_UnitParadrop(eNewMode:number)
 end
 
 
-
-
-
-
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'PriorityTarget' mode
-------------------------------------------------------------------------------------------------
-function OnMousePriorityTargetEnd(pInputStruct)
-	-- If a drag was occurring, end it; otherwise raise event.
-	if g_isMouseDragging then
-		g_isMouseDragging = false;
-	elseif IsSelectionAllowedAt( UI.GetCursorPlotID() ) then		
-		PriorityTarget(UI.GetCursorPlotID());
-	end
-	EndDragMap();
-	g_isMouseDownInWorld = false;
-	return true;
-end
 ------------------------------------------------------------------------------------------------
 function PriorityTarget(plotID:number)
 	if Map.IsPlot(plotID) then
@@ -142,12 +126,12 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET] = {};
 	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][INTERFACEMODE_ENTER]= OnInterfaceModeChange_PriorityTarget;
 	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][INTERFACEMODE_LEAVE] = OnInterfaceModeLeave_PriorityTarget;
-	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.LButtonUp] = OnMousePriorityTargetEnd;
+	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.LButtonUp] = OnPlotPointerSelect(PriorityTarget);
 	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][KeyEvents.KeyUp]		= OnPlacementKeyUp(PriorityTarget);
 	
 	if g_isTouchEnabled then
 		InterfaceModeMessageHandler[InterfaceModeTypes.PARADROP][MouseEvents.PointerUp] = OnMouseParadropEnd;
-		InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.PointerUp] = OnMousePriorityTargetEnd;
+		InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.PointerUp] = OnPlotPointerSelect(PriorityTarget);
 	end
 end
 Initialize();
