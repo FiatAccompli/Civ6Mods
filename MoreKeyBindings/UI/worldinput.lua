@@ -266,6 +266,7 @@ local selectPlotMatchOptions = {
       [InterfaceModeTypes.RANGE_ATTACK] = true, 
       [InterfaceModeTypes.CITY_RANGE_ATTACK] = true, 
       [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true, 
+      [InterfaceModeTypes.AIR_ATTACK] = true, 
     } };
 local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PLOT",
@@ -330,11 +331,11 @@ function MoveKeyboardTargetingTo(plot:table)
 
     if keepKeyboardTargetOnScreen.Value then
       -- Normalized screen pos is from [-1, -1] at bottom left to [1, 1] at top right with [0,0]
-      -- being in the center of the window.
-      local worldBLX, worldBLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, -0.9);
-      local worldTLX, worldTLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, 0.9);
-      local worldBRX, worldBRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, -0.9);
-      local worldTRX, worldTRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, 0.9);
+      -- being in the center of the window.  Recenter if we're within 7.5% of any screen edge.
+      local worldBLX, worldBLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.85, -0.85);
+      local worldTLX, worldTLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.85, 0.85);
+      local worldBRX, worldBRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.85, -0.85);
+      local worldTRX, worldTRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.85, 0.85);
 
       -- True if x,y is left of the line defined by (startX, startY) (endX, endY)
       -- and looking from start to end.
@@ -388,6 +389,14 @@ function CenterScreenOnKeyboardTargeting()
   end
 end
 
+function MaybeMoveKeyboardTargetToFirstEligible()
+  if autoMoveKeyboardTargetToFirstEligibleTarget.Value then
+    if not IsInList(g_targetPlots, keyboardTargetingPlot and keyboardTargetingPlot:GetIndex()) then
+      local newTargetPlotID = g_targetPlots[1];
+      MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID));
+    end
+  end
+end
 
 -- ===========================================================================
 --	Empty function (to override default)
@@ -2056,14 +2065,8 @@ function OnInterfaceModeChange_UnitRangeAttack(eNewMode)
 
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
-        local keyboardTargetPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-        if autoMoveKeyboardTargetToFirstEligibleTarget.Value then
-          if not IsInList(g_targetPlots, keyboardTargetPlotID) then
-            local newTargetPlotID = g_targetPlots[1];
-            MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID));
-          end
-        end
-        RealizeRangedAttackPreview(keyboardTargetPlotID);
+        MaybeMoveKeyboardTargetToFirstEligible();
+        RealizeRangedAttackPreview(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -2077,8 +2080,7 @@ end
 -- ===========================================================================
 --	Code related to the Unit Air Attack interface mode
 -- ===========================================================================
-function UnitAirAttack( pInputStruct )
-	local plotID = UI.GetCursorPlotID();
+function UnitAirAttack(plotID:number)
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 		local plotX = plot:GetX();
@@ -2133,6 +2135,7 @@ function OnInterfaceModeChange_Air_Attack(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots);
+        MaybeMoveKeyboardTargetToFirstEligible();
 			end
 		end
 	end
@@ -2630,14 +2633,8 @@ function OnInterfaceModeChange_CityRangeAttack(eNewMode)
 				
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
-        local keyboardTargetPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-        if autoMoveKeyboardTargetToFirstEligibleTarget.Value then
-          if not IsInList(g_targetPlots, keyboardTargetPlotID) then
-            local newTargetPlotID = g_targetPlots[1];
-            MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID));
-          end
-        end
-        RealizeRangedAttackPreview(keyboardTargetPlotID);
+        MaybeMoveKeyboardTargetToFirstEligible();
+        RealizeRangedAttackPreview(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -2712,14 +2709,8 @@ function OnInterfaceModeChange_DistrictRangeAttack(eNewMode)
 				
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 				
-        local keyboardTargetPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-        if autoMoveKeyboardTargetToFirstEligibleTarget.Value then
-          if not IsInList(g_targetPlots, keyboardTargetPlotID) then
-            local newTargetPlotID = g_targetPlots[1];
-            MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID));
-          end
-        end
-        RealizeRangedAttackPreview(keyboardTargetPlotID);		
+        MaybeMoveKeyboardTargetToFirstEligible();
+        RealizeRangedAttackPreview(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -2933,6 +2924,7 @@ function OnInterfaceModeChange_UnitFormCorps(eNewMode)
 		UILens.ToggleLayerOn(LensLayers.HEX_COLORING_PLACEMENT);
 		UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_PLACEMENT, player, unitPlots);
 		g_targetPlots = unitPlots;
+    MaybeMoveKeyboardTargetToFirstEligible();
 	end
 end
 
@@ -2983,6 +2975,7 @@ function OnInterfaceModeChange_UnitFormArmy(eNewMode)
 		UILens.ToggleLayerOn(LensLayers.HEX_COLORING_PLACEMENT);
 		UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_PLACEMENT, player, unitPlots);
 		g_targetPlots = unitPlots;
+    MaybeMoveKeyboardTargetToFirstEligible();
 	end
 end
 
@@ -3777,7 +3770,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp(DistrictRangeAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitAirAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
@@ -3820,7 +3813,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormCorps);
 	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormArmy);
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.LButtonUp]		= OnMouseAirliftEnd;
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.LButtonUp]		= UnitAirAttack;
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitAirAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.LButtonUp]		= OnWMDStrikeEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.LButtonUp]		= OnICBMStrikeEnd;
@@ -3862,7 +3855,7 @@ function Initialize()
 		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormCorps);
 		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= Airlift;
 		InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.PointerUp]		= OnTouchUnitRangeAttack;
-		InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.PointerUp]		= UnitAirAttack;
+		InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitAirAttack);
 		InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.PointerUp]		= OnWMDStrikeEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.PointerUp]		= OnICBMStrikeEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.PointerUp]		= AirUnitDeploy;

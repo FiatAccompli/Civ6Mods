@@ -270,6 +270,7 @@ local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
     [InterfaceModeTypes.RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
     [InterfaceModeTypes.CITY_RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
     [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
+    [InterfaceModeTypes.AIR_ATTACK] = "ICON_UNITOPERATION_AIR_ATTACK",
 };
 
 function UpdateKeyboardTargetIcon(interfaceMode:number)
