@@ -244,10 +244,27 @@ local moveKeyboardTargetToScreenCenterKeyBinding = ModSettings.KeyBinding:new(Mo
 local moveScreenToKeyboardTargetKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD8),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_CENTER_SCREEN_ON_SELECTION");
 
+-- Valid modes match the behavior of unit flag clicks from UnitFlagManager.lua.
+local selectNextPreviousInPlotMatchOptions = { 
+    InterfaceModes = {
+      [InterfaceModeTypes.SELECTION] = true, 
+      [InterfaceModeTypes.MAKE_TRADE_ROUTE] = true,
+      [InterfaceModeTypes.SPY_CHOOSE_MISSION] = true,
+      [InterfaceModeTypes.SPY_TRAVEL_TO_CITY] = true, 
+      [InterfaceModeTypes.VIEW_MODAL_LENS] = true } };
 local selectNextKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_DECIMAL),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_NEXT", 
     "LOC_MORE_KEY_BINDINGS_SELECT_NEXT_TOOLTIP");
 local selectPreviousKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD0),
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS",
+    "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS_TOOLTIP");
+
+local selectPlotMatchOptions = { 
+    InterfaceModes = {
+      [InterfaceModeTypes.FORM_ARMY] = true, 
+      [InterfaceModeTypes.FORM_CORPS] = true, 
+    } };
+local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS",
     "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS_TOOLTIP");
 
@@ -274,6 +291,72 @@ function clear()				m_debugTrace = {};									end
 --										OPERATIONS
 --
 -- .,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,
+
+-- ===========================================================================
+-- Keyboard targeting
+-- ===========================================================================
+
+local keyboardTargetingPlot = nil;
+
+function MoveKeyboardTargetingTo(plot:table)
+  if plot then
+    keyboardTargetingPlot = plot;
+    LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY());
+
+    if keepKeyboardTargetOnScreen.Value then
+      -- Normalized screen pos is from [-1, -1] at bottom left to [1, 1] at top right with [0,0]
+      -- being in the center of the window.
+      local worldBLX, worldBLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, -0.9);
+      local worldTLX, worldTLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, 0.9);
+      local worldBRX, worldBRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, -0.9);
+      local worldTRX, worldTRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, 0.9);
+
+      -- True if x,y is left of the line defined by (startX, startY) (endX, endY)
+      -- and looking from start to end.
+      local function IsLeftOf(startX:number, startY:number, endX:number, endY:number, x:number, y:number)
+        return ((endX - startX) * (y - startY)) > ((endY - startY) * (x - startX));
+      end
+
+      local worldX, worldY = UI.GridToWorld(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY());
+      if not (IsLeftOf(worldTLX, worldTLY, worldBLX, worldBLY, worldX, worldY) and 
+              IsLeftOf(worldBLX, worldBLY, worldBRX, worldBRY, worldX, worldY) and
+              IsLeftOf(worldBRX, worldBRY, worldTRX, worldTRY, worldX, worldY) and
+              IsLeftOf(worldTRX, worldTRY, worldTLX, worldTRY, worldX, worldY)) then
+        UI.LookAtPlot(keyboardTargetingPlot);
+      end
+    end
+  end
+end
+
+function MoveKeyboardTargetingToScreenCenter()
+  MoveKeyboardTargetingTo(Map.GetPlot(UI.GetPlotCoordFromNormalizedScreenPos(0,0)));
+end
+
+function MoveKeyboardTargetingInDirection(direction:number)
+  if keyboardTargetingPlot then
+    MoveKeyboardTargetingTo(Map.GetAdjacentPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), direction));
+  end
+end
+
+function SelectNextInKeyboardTargetingHexPlot()
+  if not keyboardTargetingPlot then 
+    return;
+  end
+  SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY());
+end
+
+function SelectPreviousInKeyboardTargetingHexPlot()
+  if not keyboardTargetingPlot then 
+    return;
+  end
+  SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), true);
+end
+
+function CenterScreenOnKeyboardTargeting()
+  if keyboardTargetingPlot then
+    UI.LookAtPlot(keyboardTargetingPlot);
+  end
+end
 
 
 -- ===========================================================================
@@ -364,8 +447,36 @@ function GetCurrentlySelectUnitIndex( unitList:table, ePlayer:number )
 	end
 end
 
+function SelectNextFrom2(list:table, currentlySelected, wrap:boolean, reverse:boolean)
+  local index = 0;
+  for i, v in ipairs(list) do
+    if v == currentlySelected then 
+      index = i;
+    end
+  end
+  if reverse then 
+    if currentlySelected then
+      index = index - 1;
+      if index < 1 and wrap then
+        index = #list;
+      end
+    else 
+      index = #list;
+    end
+  else
+    if currentlySelected then
+      index = index + 1;
+      if index > #list and wrap then 
+        index = 1;
+      end
+    else 
+      index = 1;
+    end
+  end
+  return list[index];
+end
+
 function SelectNextFrom(list:table, currentlySelectedIndex:number, wrap:boolean, reverse:boolean)
-print("SelectNextFrom", currentlySelectedIndex);
   local index = currentlySelectedIndex;
   if reverse then 
     if currentlySelectedIndex then
@@ -386,7 +497,6 @@ print("SelectNextFrom", currentlySelectedIndex);
       index = 1;
     end
   end
-  print("SelectNextFrom done", index);
   return list[index];
 end
 
@@ -402,6 +512,7 @@ function SelectNextUnit(unitList:table, iCurrentlySelectedUnit:number, ePlayer:n
   if selectedUnit then 
     SelectUnit(selectedUnit);
   end
+  return selectedUnit;
 end
 
 -- ===========================================================================
@@ -449,10 +560,15 @@ function SelectInPlot( plotX:number, plotY:number, reverse:boolean )
 		local iSelected:number = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
 		
 		-- Cycle to the next, or select the first one if nothing was selected and there is no city
-		SelectNextUnit(kUnitList, iSelected, eLocalPlayer, pCity == nil, reverse);
+    print(iSelected, reverse, pCity);
+    if not iSelected and not reverse and pCity ~= nil then
+      tryCity = true;
+    else
+		  SelectNextUnit(kUnitList, iSelected, eLocalPlayer, pCity == nil, reverse);
+    end
 
 		local iNewSelected = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
-		if (iNewSelected == -1 or (iNewSelected == iSelected and pCity ~= nil)) then
+		if not iNewSelected or (iNewSelected == iSelected and pCity ~= nil) then
 			-- No valid units to select
 			UI.DeselectAllUnits();
 			tryCity = true;
@@ -1154,14 +1270,40 @@ end
 -- ===========================================================================
 --	Placing a building, wonder, or district; ESC to leave 
 -- ===========================================================================
-function OnPlacementKeyUp( pInputStruct:table )
-	if m_isPauseMenuOpen then return; end
-	local uiKey			:number = pInputStruct:GetKey();
-	if uiKey == Keys.VK_ESCAPE then
-		UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-		return true;
-	end
-	return DefaultKeyUpHandler( uiKey );	
+function OnPlacementKeyUp(onSelect:ifunction)
+  return function(pInputStruct:table)
+    print("OnPlacementKeyUp", onSelect);
+	  if m_isPauseMenuOpen then return; end
+	  local uiKey			:number = pInputStruct:GetKey();
+	  if uiKey == Keys.VK_ESCAPE then
+		  UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+		  return true;
+	  end
+    if KeyBindingHelper.InputMatches(selectPlotKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
+      if keyboardTargetingPlot and onSelect then
+        onSelect(keyboardTargetingPlot:GetIndex());
+      end
+      return true;
+    elseif KeyBindingHelper.InputMatches(selectNextKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
+      local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
+      local nextPlotID = SelectNextFrom2(g_targetPlots, currentPlotID, true);
+      MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
+    elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
+      local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
+      local nextPlotID = SelectNextFrom2(g_targetPlots, currentPlotID, true, true);
+      MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
+    end
+	  return DefaultKeyUpHandler( uiKey );
+  end
+end
+
+function OnPlotPointerSelect(onSelect:ifunction)
+  return function(input:table)
+    if onSelect then
+      onSelect(UI.GetCursorPlotID());
+      return true;
+    end
+  end
 end
 
 
@@ -1246,7 +1388,7 @@ function OnMouseSelectionEnd( pInputStruct:table )
 		if IsSelectionAllowedAt( UI.GetCursorPlotID() ) then
 			local plotX:number, plotY:number = UI.GetCursorPlotCoord();
 			SelectInPlot( plotX, plotY );
-		end
+    end
 	end
 	EndDragMap();					-- Reset any dragging
 	g_isMouseDownInWorld = false;
@@ -2752,8 +2894,8 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'Form Corps' mode
 ------------------------------------------------------------------------------------------------
-function FormCorps( pInputStruct )
-	local plotID = UI.GetCursorPlotID();
+
+function FormCorps(plotID:number)
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 		local unitList	= Units.GetUnitsInPlotLayerID(  plot:GetX(), plot:GetY(), MapLayers.ANY );
@@ -2802,8 +2944,7 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'Form Army' mode
 ------------------------------------------------------------------------------------------------
-function FormArmy( pInputStruct )
-	local plotID = UI.GetCursorPlotID();
+function FormArmy(plotID:number)
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 		local unitList	= Units.GetUnitsInPlotLayerID(  plot:GetX(), plot:GetY(), MapLayers.ANY );
@@ -3108,74 +3249,6 @@ function Test()
 end
 
 -- ===========================================================================
--- Keyboard targeting
--- ===========================================================================
-
-local keyboardTargetingPlot = nil;
-
-function MoveKeyboardTargetingTo(plot:table)
-  if plot then
-    keyboardTargetingPlot = plot;
-    LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY());
-
-    if keepKeyboardTargetOnScreen.Value then
-      -- Normalized screen pos is from [-1, -1] at bottom left to [1, 1] at top right with [0,0]
-      -- being in the center of the window.
-      local worldBLX, worldBLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, -0.9);
-      local worldTLX, worldTLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.9, 0.9);
-      local worldBRX, worldBRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, -0.9);
-      local worldTRX, worldTRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.9, 0.9);
-
-      -- True if x,y is left of the line defined by (startX, startY) (endX, endY)
-      -- and looking from start to end.
-      local function IsLeftOf(startX:number, startY:number, endX:number, endY:number, x:number, y:number)
-        return ((endX - startX) * (y - startY)) > ((endY - startY) * (x - startX));
-      end
-
-      local worldX, worldY = UI.GridToWorld(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY());
-      if not (IsLeftOf(worldTLX, worldTLY, worldBLX, worldBLY, worldX, worldY) and 
-              IsLeftOf(worldBLX, worldBLY, worldBRX, worldBRY, worldX, worldY) and
-              IsLeftOf(worldBRX, worldBRY, worldTRX, worldTRY, worldX, worldY) and
-              IsLeftOf(worldTRX, worldTRY, worldTLX, worldTRY, worldX, worldY)) then
-        UI.LookAtPlot(keyboardTargetingPlot);
-      end
-    end
-  end
-end
-
-function MoveKeyboardTargetingToScreenCenter()
-  MoveKeyboardTargetingTo(Map.GetPlot(UI.GetPlotCoordFromNormalizedScreenPos(0,0)));
-end
-
-function MoveKeyboardTargetingInDirection(direction:number)
-  if keyboardTargetingPlot then
-    MoveKeyboardTargetingTo(Map.GetAdjacentPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), direction));
-  end
-end
-
-function SelectNextInKeyboardTargetingHexPlot()
-  if not keyboardTargetingPlot then 
-    return;
-  end
-  SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY());
-end
-
-function SelectPreviousInKeyboardTargetingHexPlot()
-  if not keyboardTargetingPlot then 
-    return;
-  end
-  SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), true);
-end
-
-function CenterScreenOnKeyboardTargeting()
-  if keyboardTargetingPlot then
-    UI.LookAtPlot(keyboardTargetingPlot);
-  end
-end
-
-
-
--- ===========================================================================
 --	UI Event
 --	Input Event Processing
 -- ===========================================================================
@@ -3383,10 +3456,10 @@ function OnInputHandler( pInputStruct:table )
     end
   end
   
-  if KeyBindingHelper.InputMatches(selectNextKeyBinding.Value, pInputStruct) then
+  if KeyBindingHelper.InputMatches(selectNextKeyBinding.Value, pInputStruct, selectNextPreviousInPlotMatchOptions) then
     SelectNextInKeyboardTargetingHexPlot();
     return true;
-  elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct) then
+  elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct, selectNextPreviousInPlotMatchOptions) then
     SelectPreviousInKeyboardTargetingHexPlot();
     return true;
   end
@@ -3664,24 +3737,24 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_UnitAirlift;
 
 	-- Keyboard Events (all happen on up!)
-	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]			[KeyEvents.KeyUp]		= OnPlacementKeyUp; 
-	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.MOVE_TO]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]			[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.NATURAL_WONDER]			[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.TELEPORT_TO_CITY]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(); 
+	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.MOVE_TO]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.NATURAL_WONDER]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.TELEPORT_TO_CITY]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(FormCorps);
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(FormArmy);
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 
 
 	-- Mouse Events
@@ -3714,8 +3787,8 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.MouseMove]		= OnMouseBuildingPlacementMove;
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.LButtonUp]		= CityRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.LButtonUp]		= FormCorps;
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.LButtonUp]		= FormArmy;
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormCorps);
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormArmy);
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.LButtonUp]		= OnMouseAirliftEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.LButtonUp]		= UnitAirAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.LButtonUp]		= OnWMDStrikeEnd;
@@ -3755,8 +3828,8 @@ function Initialize()
 		InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.PointerUp]		= OnTouchBuildingPlacementEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.PointerUp]		= CityRangeAttack;
 		InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.PointerUp]	= DistrictRangeAttack;
-		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.PointerUp]		= FormArmy;
-		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.PointerUp]		= FormCorps;
+		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormArmy);
+		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormCorps);
 		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= Airlift;
 		InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.PointerUp]		= OnTouchUnitRangeAttack;
 		InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.PointerUp]		= UnitAirAttack;

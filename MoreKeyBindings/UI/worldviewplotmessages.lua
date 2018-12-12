@@ -38,7 +38,7 @@ local keyboardTargetMouseMoveSettingValues = {
     "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_HIDE_ON_MOUSE_USE",
     "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_FADE_ON_MOUSE_USE"};
 keyboardTargetMouseMoveSetting = ModSettings.Select:new(
-    keyboardTargetMouseMoveSettingValues, 2, 
+    keyboardTargetMouseMoveSettingValues, 3, 
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY",
     "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE");
 
@@ -263,13 +263,25 @@ function OnUpdateKeyboardTargetingPlot(hexX:number, hexY:number)
   UpdateKeyboardTargetingVisibility(true);
 end
 
-function OnUnitSelectionChanged(playerID:number, unitID:number, hexI:number, hexJ:number, hexK:number, isSelected:boolean, isEditable:boolean)
-  if isSelected then
-    Controls.KeyboardTargetAction:SetIcon("ICON_MORE_KEY_BINDINGS_MOVEMENT_INDICATOR_63");
-  else 
-    Controls.KeyboardTargetAction:SetIcon("ICON_MORE_KEY_BINDINGS_KEYBOARD");
-  end
+local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
+    [InterfaceModeTypes.FORM_CORPS] = "ICON_UNITCOMMAND_FORM_CORPS",
+    [InterfaceModeTypes.FORM_ARMY] = "ICON_UNITCOMMAND_FORM_ARMY",
+};
+
+function UpdateKeyboardTargetIcon(interfaceMode:number)
+  local modeIcon = KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE[UI.GetInterfaceMode()];
+  modeIcon = modeIcon or "ICON_MORE_KEY_BINDINGS_KEYBOARD";
+  Controls.KeyboardTargetAction:SetIcon(modeIcon);
 end
+
+function OnUnitSelectionChanged(playerID:number, unitID:number, hexI:number, hexJ:number, hexK:number, isSelected:boolean, isEditable:boolean)
+  UpdateKeyboardTargetIcon(UI.GetInterfaceMode());
+end
+
+function OnInterfaceModeChanged(oldMode:number, newMode:number)
+  UpdateKeyboardTargetIcon(newMode);
+end
+
 
 function OnInputHandler(input:table)
 	if input:GetMessageType() == MouseEvents.MouseMove and input:GetMouseDX() ~= 0 and input:GetMouseDY() ~= 0 then
@@ -284,6 +296,7 @@ function Initialize()
     UpdateKeyboardTargetingVisibility(false);
   end);
   Events.UnitSelectionChanged.Add(OnUnitSelectionChanged);
+  Events.InterfaceModeChanged.Add(OnInterfaceModeChanged);
   LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
 end
 
