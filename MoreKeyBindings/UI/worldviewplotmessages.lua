@@ -233,10 +233,12 @@ end
 -- tied to lua context order, so it pretty much has to live here.  Which is kind of reasonable - 
 -- it is a plot info message of a certain form.
 
+-- Keep track of visibility so we don't start refading it every time the mouse moves.  
+-- That would look as stupid as the background fading when switching between tech/civic screens
+-- (and other similar level screen popups).
 local targetVisibility = true;
 
 function UpdateKeyboardTargetingVisibility(visible:boolean)
-  --print("Update visibility: " , visible, keyboardTargetMouseMoveSetting.Value);
   if visible then
     Controls.KeyboardPlotTargetingAnchor:SetHide(false);
     Controls.KeyboardPlotTargetAlpha:SetToBeginning();
@@ -245,7 +247,6 @@ function UpdateKeyboardTargetingVisibility(visible:boolean)
       Controls.KeyboardPlotTargetingAnchor:SetHide(true);
     elseif keyboardTargetMouseMoveSetting.Value == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_FADE_ON_MOUSE_USE" then
       if targetVisibility then
-            print("Real Fade");
         Controls.KeyboardPlotTargetAlpha:SetToBeginning();
         Controls.KeyboardPlotTargetAlpha:Play();
       end

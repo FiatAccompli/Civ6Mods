@@ -447,7 +447,7 @@ function GetCurrentlySelectUnitIndex( unitList:table, ePlayer:number )
 	end
 end
 
-function SelectNextFrom2(list:table, currentlySelected, wrap:boolean, reverse:boolean)
+function SelectNextFrom(list:table, currentlySelected, wrap:boolean, reverse:boolean)
   local index = 0;
   for i, v in ipairs(list) do
     if v == currentlySelected then 
@@ -455,7 +455,7 @@ function SelectNextFrom2(list:table, currentlySelected, wrap:boolean, reverse:bo
     end
   end
   if reverse then 
-    if currentlySelected then
+    if index > 0 then
       index = index - 1;
       if index < 1 and wrap then
         index = #list;
@@ -464,7 +464,7 @@ function SelectNextFrom2(list:table, currentlySelected, wrap:boolean, reverse:bo
       index = #list;
     end
   else
-    if currentlySelected then
+    if index > 0 then
       index = index + 1;
       if index > #list and wrap then 
         index = 1;
@@ -474,45 +474,6 @@ function SelectNextFrom2(list:table, currentlySelected, wrap:boolean, reverse:bo
     end
   end
   return list[index];
-end
-
-function SelectNextFrom(list:table, currentlySelectedIndex:number, wrap:boolean, reverse:boolean)
-  local index = currentlySelectedIndex;
-  if reverse then 
-    if currentlySelectedIndex then
-      index = index - 1;
-      if index < 1 and wrap then
-        index = #list;
-      end
-    else 
-      index = #list;
-    end
-  else
-    if currentlySelectedIndex then
-      index = index + 1;
-      if index > #list and wrap then 
-        index = 1;
-      end
-    else 
-      index = 1;
-    end
-  end
-  return list[index];
-end
-
--- ===========================================================================
-function SelectNextUnit(unitList:table, iCurrentlySelectedUnit:number, ePlayer:number, bWrap:boolean, reverse:boolean)
-  local playerList = {};
-  for i, unit in ipairs(unitList) do 
-    if unit:GetOwner() == ePlayer then
-      table.insert(playerList, unit);
-    end
-  end
-  local selectedUnit = SelectNextFrom(playerList, iCurrentlySelectedUnit, bWrap, reverse);
-  if selectedUnit then 
-    SelectUnit(selectedUnit);
-  end
-  return selectedUnit;
 end
 
 -- ===========================================================================
@@ -543,57 +504,35 @@ end
 --	Selects the unit or city at the plot passed in.
 -- ===========================================================================
 function SelectInPlot( plotX:number, plotY:number, reverse:boolean )
-
 	local kUnitList		:table	= Units.GetUnitsInPlotLayerID( plotX, plotY, MapLayers.ANY );
 	local tryCity		:boolean= false;
 	local eLocalPlayer	:number = Game.GetLocalPlayer();
 	local pCity			:table = Cities.GetCityInPlot( plotX, plotY );
+  local selectableItems = {};
 	if pCity ~= nil then
 		if (pCity:GetOwner() ~= eLocalPlayer) then
 			pCity = nil;
 		end
 	end
 
-	-- If there are units to try selecting...
-	if table.count(kUnitList) ~= 0 then		
-		-- Get any currently selected unit so we can cycle to the next.
-		local iSelected:number = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
-		
-		-- Cycle to the next, or select the first one if nothing was selected and there is no city
-    print(iSelected, reverse, pCity);
-    if not iSelected and not reverse and pCity ~= nil then
-      tryCity = true;
-    else
-		  SelectNextUnit(kUnitList, iSelected, eLocalPlayer, pCity == nil, reverse);
+  if pCity ~= nil then
+    table.insert(selectableItems, pCity);
+  end
+  for i, unit in ipairs(kUnitList) do 
+    if unit:GetOwner() == eLocalPlayer then
+      table.insert(selectableItems, unit);
     end
+  end
 
-		local iNewSelected = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
-		if not iNewSelected or (iNewSelected == iSelected and pCity ~= nil) then
-			-- No valid units to select
-			UI.DeselectAllUnits();
-			tryCity = true;
-		else
-			if (iNewSelected ~= -1 and iNewSelected ~= iSelected) then
-				local pNewSelectedUnit = UI.GetHeadSelectedUnit();
-				if (pNewSelectedUnit ~= nil and UI.RebuildSelectionList ~= nil) then		-- Checking UI.RebuildSelectionList, so that if an artist fetches the scripts before the next build, they won't be stuck.  Remove that check ASAP.
-					-- The user has manually selected a unit, rebuild the selection list from that unit.
-					UI.RebuildSelectionList(pNewSelectedUnit);
-				end
-			end
-		end
-	else
-		UI.DeselectAllUnits();
-		tryCity = true;
+	-- If there are units to try selecting...
+  if #selectableItems > 0 then
+    local nextSelect = SelectNextFrom(selectableItems, UI.GetHeadSelectedCity() or UI.GetHeadSelectedUnit(), true, reverse);
+    if nextSelect == pCity then
+      UI.SelectCity(pCity);
+    else
+      SelectUnit(nextSelect);
+    end
 	end
-	
-	if tryCity then
-		if pCity ~= nil then
-			UI.SelectCity(pCity);
-		end
-		-- No else, as this would be the case when click on a city banner,
-		-- and so the CityBannerManager will handle the selection.
-	end
-
 	return true;
 end
 
@@ -1272,7 +1211,6 @@ end
 -- ===========================================================================
 function OnPlacementKeyUp(onSelect:ifunction)
   return function(pInputStruct:table)
-    print("OnPlacementKeyUp", onSelect);
 	  if m_isPauseMenuOpen then return; end
 	  local uiKey			:number = pInputStruct:GetKey();
 	  if uiKey == Keys.VK_ESCAPE then
@@ -1286,11 +1224,11 @@ function OnPlacementKeyUp(onSelect:ifunction)
       return true;
     elseif KeyBindingHelper.InputMatches(selectNextKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
       local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-      local nextPlotID = SelectNextFrom2(g_targetPlots, currentPlotID, true);
+      local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true);
       MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
     elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
       local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-      local nextPlotID = SelectNextFrom2(g_targetPlots, currentPlotID, true, true);
+      local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true, true);
       MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
     end
 	  return DefaultKeyUpHandler( uiKey );
