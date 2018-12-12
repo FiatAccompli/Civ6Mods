@@ -74,6 +74,18 @@
     <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS_TOOLTIP">
       <Text>Select previous unit/city in hex or previous eligible target (when in targeting modes)</Text>
     </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_SELECT_PLOT">
+      <Text>Select current hex as target</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_SELECT_PLOT_TOOLTIP">
+      <Text>Select current keyboard target hex as action target (for modes where you would click the mouse to select a hex).  In non-targetting modes does the same as "select next".</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_FIRST_ELIGIBLE_TARGET">
+      <Text>Auto select first eligible target</Text>
+    </Row>
+    <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_FIRST_ELIGIBLE_TARGET_TOOLTIP">
+      <Text>When entering a targeting mode that requires a hex selection (ranged unit attack, air attack, district placement, etc) automatically move the keyboard target to the first eligible hex for the action if the current hex is not eligible.</Text>
+    </Row>
 
     <Row Language="en_us" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE">
       <Text>Keyboard target display</Text>
