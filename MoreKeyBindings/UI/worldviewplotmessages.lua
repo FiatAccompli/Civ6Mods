@@ -267,6 +267,7 @@ end
 local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
     [InterfaceModeTypes.FORM_CORPS] = "ICON_UNITCOMMAND_FORM_CORPS",
     [InterfaceModeTypes.FORM_ARMY] = "ICON_UNITCOMMAND_FORM_ARMY",
+    [InterfaceModeTypes.RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
 };
 
 function UpdateKeyboardTargetIcon(interfaceMode:number)
@@ -281,6 +282,17 @@ end
 
 function OnInterfaceModeChanged(oldMode:number, newMode:number)
   UpdateKeyboardTargetIcon(newMode);
+end
+
+-- Hide keyboard targeting display during battle so it doesn't interfere with the grand 
+-- view of your troops impaling the enemy. /s
+function OnCombatVisBegin(data:table)
+  Controls.KeyboardPlotTargetingAnchor:SetHide(true);
+end
+
+function OnCombatVisEnd(data:table)
+  Controls.KeyboardPlotTargetingAnchor:SetHide(false);
+  UpdateKeyboardTargetingVisibility(targetVisibility);
 end
 
 
@@ -298,6 +310,8 @@ function Initialize()
   end);
   Events.UnitSelectionChanged.Add(OnUnitSelectionChanged);
   Events.InterfaceModeChanged.Add(OnInterfaceModeChanged);
+  Events.CombatVisBegin.Add(OnCombatVisBegin);
+  Events.CombatVisEnd.Add(OnCombatVisEnd);
   LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
 end
 

@@ -263,6 +263,7 @@ local selectPlotMatchOptions = {
     InterfaceModes = {
       [InterfaceModeTypes.FORM_ARMY] = true, 
       [InterfaceModeTypes.FORM_CORPS] = true, 
+      [InterfaceModeTypes.RANGE_ATTACK] = true, 
     } };
 local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS",
@@ -324,6 +325,11 @@ function MoveKeyboardTargetingTo(plot:table)
               IsLeftOf(worldTRX, worldTRY, worldTLX, worldTRY, worldX, worldY)) then
         UI.LookAtPlot(keyboardTargetingPlot);
       end
+    end
+
+    local uiMode = UI.GetInterfaceMode();
+    if uiMode == InterfaceModeTypes.RANGE_ATTACK then
+      RealizeRangedAttackPreview(plot:GetIndex());
     end
   end
 end
@@ -1598,11 +1604,7 @@ function OnMouseUnitRangeAttack( pInputStruct:table )
 end
 
 -- ===========================================================================
-function OnMouseMoveRangeAttack( pInputStruct:table )
-	OnMouseMove( pInputStruct );
-		
-	local plotID:number = UI.GetCursorPlotID();
-
+function RealizeRangedAttackPreview(plotID)
 	if (Map.IsPlot(plotID)) then
 		if m_focusedTargetPlot ~= plotID then
 			if m_focusedTargetPlot ~= -1 then
@@ -1627,6 +1629,13 @@ function OnMouseMoveRangeAttack( pInputStruct:table )
 		end
 	end
 	return true;
+end
+
+function OnMouseMoveRangeAttack( pInputStruct:table )
+  OnMouseMove( pInputStruct );
+  if pInputStruct:GetMouseDX() ~= 0 or pInputStruct:GetMouseDY() ~= 0 then
+    RealizeRangedAttackPreview(UI.GetCursorPlotID());
+  end
 end
 
 -- ===========================================================================
@@ -3679,7 +3688,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(); 
 	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.MOVE_TO]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
-	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitRangeAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.NATURAL_WONDER]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp();
