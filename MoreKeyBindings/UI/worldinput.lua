@@ -356,7 +356,7 @@ function MoveKeyboardTargetingTo(plot:table)
 
     local uiMode = UI.GetInterfaceMode();
     if uiMode == InterfaceModeTypes.RANGE_ATTACK or uiMode == InterfaceModeTypes.CITY_RANGE_ATTACK or uiMode == InterfaceModeTypes.DISTRICT_RANGE_ATTACK then
-      RealizeRangedAttackPreview(plot:GetIndex());
+      RealizeRangedAttackArrow(plot:GetIndex());
     end
   end
 end
@@ -1648,7 +1648,7 @@ function OnMouseUnitRangeAttack( pInputStruct:table )
 end
 
 -- ===========================================================================
-function RealizeRangedAttackPreview(plotID)
+function RealizeRangedAttackArrow(plotID)
 	if (Map.IsPlot(plotID)) then
 		if m_focusedTargetPlot ~= plotID then
 			if m_focusedTargetPlot ~= -1 then
@@ -1678,7 +1678,7 @@ end
 function OnMouseMoveRangeAttack( pInputStruct:table )
   OnMouseMove( pInputStruct );
   if pInputStruct:GetMouseDX() ~= 0 or pInputStruct:GetMouseDY() ~= 0 then
-    RealizeRangedAttackPreview(UI.GetCursorPlotID());
+    RealizeRangedAttackArrow(UI.GetCursorPlotID());
   end
 end
 
@@ -2077,7 +2077,7 @@ function OnInterfaceModeChange_UnitRangeAttack(eNewMode)
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
         MaybeMoveKeyboardTargetToFirstEligible();
-        RealizeRangedAttackPreview(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
+        RealizeRangedAttackArrow(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -2632,7 +2632,7 @@ function OnInterfaceModeChange_CityRangeAttack(eNewMode)
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
         MaybeMoveKeyboardTargetToFirstEligible();
-        RealizeRangedAttackPreview(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
+        RealizeRangedAttackArrow(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -2709,7 +2709,7 @@ function OnInterfaceModeChange_DistrictRangeAttack(eNewMode)
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 				
         MaybeMoveKeyboardTargetToFirstEligible();
-        RealizeRangedAttackPreview(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
+        RealizeRangedAttackArrow(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end

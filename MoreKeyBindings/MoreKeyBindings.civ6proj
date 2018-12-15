@@ -17,7 +17,7 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>MoreKeyBindings</AssemblyName>
     <RootNamespace>MoreKeyBindings</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="UIImports"><File>UI/worldinput.lua</File><File>UI/worldinput.xml</File><File>UI/worldviewplotmessages.lua</File><File>UI/worldviewplotmessages.xml</File><File>UI/worldinput_expansion1.lua</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/more_key_bindings_text.xml</File><File>Text/keyboard_navigation_text.xml</File></UpdateText><ImportFiles id="ImportTextures"><File>Textures/keyboard_targeting_indicator.dds</File><File>Textures/keyboard_navigation_icons.dds</File><File>Textures/movement_indicators.dds</File></ImportFiles><UpdateIcons id="UpdateIcons"><File>Icons/more_key_binding_icons.xml</File></UpdateIcons></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="UIImports"><File>UI/worldinput.lua</File><File>UI/worldinput.xml</File><File>UI/worldviewplotmessages.lua</File><File>UI/worldviewplotmessages.xml</File><File>UI/worldinput_expansion1.lua</File><File>UI/unitpanel.lua</File><File>UI/unitpanel.xml</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/more_key_bindings_text.xml</File><File>Text/keyboard_navigation_text.xml</File></UpdateText><ImportFiles id="ImportTextures"><File>Textures/keyboard_targeting_indicator.dds</File><File>Textures/keyboard_navigation_icons.dds</File><File>Textures/movement_indicators.dds</File></ImportFiles><UpdateIcons id="UpdateIcons"><File>Icons/more_key_binding_icons.xml</File></UpdateIcons></InGameActions>]]></InGameActionData>
     <AssociationData><![CDATA[<Associations>
   <Dependency type="Mod" title="ModSettingsManager" id="1cb1beaf-0428-4aad-b11d-e3168429c071" />
 </Associations>]]></AssociationData>
@@ -45,6 +45,12 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Text\keyboard_navigation_text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\unitpanel.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\unitpanel.xml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="UI\worldinput.lua">

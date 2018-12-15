@@ -3039,7 +3039,7 @@ function OnHideCombat()
 end
 
 -- ===========================================================================         
-function InspectWhatsBelowTheCursor()
+function PossiblyInspectPlot(plotId:number)
 	local localPlayerID			:number = Game.GetLocalPlayer();
 	if (localPlayerID == -1) then
 		return;
@@ -3058,7 +3058,6 @@ function InspectWhatsBelowTheCursor()
 		end
 	end
 
-	local plotId = UI.GetCursorPlotID();
 	if (plotId ~= m_plotId) then
 		m_plotId = plotId;
 		local plot = Map.GetPlotByIndex(plotId);
@@ -3071,6 +3070,14 @@ function InspectWhatsBelowTheCursor()
 			end
 		end
 	end
+end
+
+function InspectWhatsBelowTheCursor()
+  PossiblyInspectPlot(UI.GetCursorPlotID());
+end
+
+function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number)
+  PossiblyInspectPlot(Map.GetPlotIndex(plotX, plotY));
 end
 
 -- ===========================================================================
@@ -3694,7 +3701,7 @@ function OnInputHandler( pInputStruct:table )
 	end
 
 	-- If moved, there is a possibility of moving into a new hex.
-	if( uiMsg == MouseEvents.MouseMove ) then	
+	if( uiMsg == MouseEvents.MouseMove and (pInputStruct:GetMouseDX() ~= 0 or pInputStruct:GetMouseDY() ~= 0)) then	
 		InspectWhatsBelowTheCursor();
 	end
 
@@ -3988,6 +3995,8 @@ function Initialize()
 	LuaEvents.UnitFlagManager_PointerEntered.Add(		OnUnitFlagPointerEntered );
 	LuaEvents.UnitFlagManager_PointerExited.Add(		OnUnitFlagPointerExited );
 	LuaEvents.PlayerChange_Close.Add(					OnPlayerChangeClose );
+
+  LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
 
 	-- Setup settlement water guide colors
 	local FreshWaterColor:number = UI.GetColorValue("COLOR_BREATHTAKING_APPEAL");

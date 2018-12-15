@@ -256,10 +256,10 @@ function UpdateKeyboardTargetingVisibility(visible:boolean)
 end
 
 
-function OnUpdateKeyboardTargetingPlot(hexX:number, hexY:number)
+function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:boolean)
   -- Apparently you can't just send it as a tuple to SetWorldPositionVal because there's a 4th element
   -- that is ... who the fuck knows.  The game doesn't seem to use it anywhere.
-  local worldX, worldY, worldZ = UI.GridToWorld(hexX, hexY);
+  local worldX, worldY, worldZ = UI.GridToWorld(plotX, plotY);
   Controls.KeyboardPlotTargetingAnchor:SetWorldPositionVal(worldX, worldY, worldZ);
   UpdateKeyboardTargetingVisibility(true);
 end
