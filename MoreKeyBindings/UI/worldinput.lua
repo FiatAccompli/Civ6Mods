@@ -326,10 +326,10 @@ end
 
 local keyboardTargetingPlot = nil;
 
-function MoveKeyboardTargetingTo(plot:table)
+function MoveKeyboardTargetingTo(plot:table, implicit:boolean)
   if plot then
     keyboardTargetingPlot = plot;
-    LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY());
+    LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY(), implicit or false);
 
     if keepKeyboardTargetOnScreen.Value then
       -- Normalized screen pos is from [-1, -1] at bottom left to [1, 1] at top right with [0,0]
@@ -352,11 +352,6 @@ function MoveKeyboardTargetingTo(plot:table)
               IsLeftOf(worldTRX, worldTRY, worldTLX, worldTRY, worldX, worldY)) then
         UI.LookAtPlot(keyboardTargetingPlot);
       end
-    end
-
-    local uiMode = UI.GetInterfaceMode();
-    if uiMode == InterfaceModeTypes.RANGE_ATTACK or uiMode == InterfaceModeTypes.CITY_RANGE_ATTACK or uiMode == InterfaceModeTypes.DISTRICT_RANGE_ATTACK then
-      RealizeRangedAttackArrow(plot:GetIndex());
     end
   end
 end
@@ -395,8 +390,21 @@ function MaybeMoveKeyboardTargetToFirstEligible()
   if autoMoveKeyboardTargetToFirstEligibleTarget.Value then
     if not IsInList(g_targetPlots, keyboardTargetingPlot and keyboardTargetingPlot:GetIndex()) then
       local newTargetPlotID = g_targetPlots[1];
-      MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID));
+      MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID), true);
+      return
     end
+  end
+
+  -- Rebroadcast the current plot if it's a valid target
+  if IsInList(g_targetPlots, keyboardTargetingPlot and keyboardTargetingPlot:GetIndex()) then
+    MoveKeyboardTargetingTo(keyboardTargetingPlot, true);
+  end
+end
+
+function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:boolean)
+  local uiMode = UI.GetInterfaceMode();
+  if uiMode == InterfaceModeTypes.RANGE_ATTACK or uiMode == InterfaceModeTypes.CITY_RANGE_ATTACK or uiMode == InterfaceModeTypes.DISTRICT_RANGE_ATTACK then
+    RealizeRangedAttackArrow(Map.GetPlotIndex(plotX, plotY));
   end
 end
 
@@ -2077,7 +2085,6 @@ function OnInterfaceModeChange_UnitRangeAttack(eNewMode)
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
         MaybeMoveKeyboardTargetToFirstEligible();
-        RealizeRangedAttackArrow(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -2632,7 +2639,6 @@ function OnInterfaceModeChange_CityRangeAttack(eNewMode)
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
         MaybeMoveKeyboardTargetToFirstEligible();
-        RealizeRangedAttackArrow(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -2709,7 +2715,6 @@ function OnInterfaceModeChange_DistrictRangeAttack(eNewMode)
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 				
         MaybeMoveKeyboardTargetToFirstEligible();
-        RealizeRangedAttackArrow(keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1);
 			end
 		end
 	end
@@ -3891,6 +3896,8 @@ function Initialize()
 
 	LuaEvents.InGameTopOptionsMenu_Show.Add(function() m_isPauseMenuOpen = true; end);
 	LuaEvents.InGameTopOptionsMenu_Close.Add(function() m_isPauseMenuOpen = false; ClearAllCachedInputState(); end);
+
+  LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
 
 	-- UI Events
 	ContextPtr:SetInputHandler( OnInputHandler, true );

@@ -236,7 +236,7 @@ end
 -- Keep track of visibility so we don't start refading it every time the mouse moves.  
 -- That would look as stupid as the background fading when switching between tech/civic screens
 -- (and other similar level screen popups).
-local targetVisibility = true;
+local keyboardTargetingVisibility = true;
 
 function UpdateKeyboardTargetingVisibility(visible:boolean)
   if visible then
@@ -246,13 +246,13 @@ function UpdateKeyboardTargetingVisibility(visible:boolean)
     if keyboardTargetMouseMoveSetting.Value == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_HIDE_ON_MOUSE_USE" then 
       Controls.KeyboardPlotTargetingAnchor:SetHide(true);
     elseif keyboardTargetMouseMoveSetting.Value == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_FADE_ON_MOUSE_USE" then
-      if targetVisibility then
+      if keyboardTargetingVisibility then
         Controls.KeyboardPlotTargetAlpha:SetToBeginning();
         Controls.KeyboardPlotTargetAlpha:Play();
       end
     end
   end
-  targetVisibility = visible;
+  keyboardTargetingVisibility = visible;
 end
 
 
@@ -261,7 +261,12 @@ function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:bool
   -- that is ... who the fuck knows.  The game doesn't seem to use it anywhere.
   local worldX, worldY, worldZ = UI.GridToWorld(plotX, plotY);
   Controls.KeyboardPlotTargetingAnchor:SetWorldPositionVal(worldX, worldY, worldZ);
-  UpdateKeyboardTargetingVisibility(true);
+
+  local visibility = keyboardTargetingVisibility;
+  if not implicit then
+    visibility = true;
+  end
+  UpdateKeyboardTargetingVisibility(visibility);
 end
 
 local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
@@ -297,7 +302,7 @@ end
 
 function OnCombatVisEnd(data:table)
   Controls.KeyboardPlotTargetingAnchor:SetHide(false);
-  UpdateKeyboardTargetingVisibility(targetVisibility);
+  UpdateKeyboardTargetingVisibility(keyboardTargetingVisibility);
 end
 
 

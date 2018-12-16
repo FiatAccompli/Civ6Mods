@@ -181,7 +181,6 @@ end
 --	An action icon which will shows up immediately above the unit panel
 -- ===========================================================================
 function AddActionButton( instance:table, action:table )
-
 	instance.UnitActionIcon:SetIcon(action.IconId);
 	instance.UnitActionButton:SetDisabled( action.Disabled );
 	instance.UnitActionButton:SetAlpha( (action.Disabled and 0.7) or 1 );
@@ -197,7 +196,7 @@ function AddActionButton( instance:table, action:table )
 	instance.UnitActionButton:SetVoid1( action.CallbackVoid1 );
 	instance.UnitActionButton:SetVoid2( action.CallbackVoid2 );
 	instance.UnitActionButton:SetTag( action.userTag );
-    instance.UnitActionButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
+  instance.UnitActionButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 
 	-- Track # of icons added for whatever is the current group
 	m_numIconsInCurrentIconGroup = m_numIconsInCurrentIconGroup + 1;
@@ -1489,7 +1488,6 @@ function OnShowCombat( showCombat )
 	end
 
 	if (showCombat) then
-
 		ShowCombatAssessment();
 		--scale the unit panels to accomodate combat details
 		Controls.UnitPanelBaseContainer:SetSizeY(190);
@@ -3039,7 +3037,7 @@ function OnHideCombat()
 end
 
 -- ===========================================================================         
-function PossiblyInspectPlot(plotId:number)
+function PossiblyInspectPlot(plotId:number, force:boolean)
 	local localPlayerID			:number = Game.GetLocalPlayer();
 	if (localPlayerID == -1) then
 		return;
@@ -3058,7 +3056,7 @@ function PossiblyInspectPlot(plotId:number)
 		end
 	end
 
-	if (plotId ~= m_plotId) then
+	if (plotId ~= m_plotId or force) then
 		m_plotId = plotId;
 		local plot = Map.GetPlotByIndex(plotId);
 		if plot ~= nil then
@@ -3076,8 +3074,8 @@ function InspectWhatsBelowTheCursor()
   PossiblyInspectPlot(UI.GetCursorPlotID());
 end
 
-function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number)
-  PossiblyInspectPlot(Map.GetPlotIndex(plotX, plotY));
+function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:boolean)
+  PossiblyInspectPlot(Map.GetPlotIndex(plotX, plotY), true);
 end
 
 -- ===========================================================================
@@ -3608,9 +3606,37 @@ function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
 		SetStandardActionButtonSelectedByOperation("UNITOPERATION_AIR_ATTACK", false);
 	end
 
+  if (eNewMode == InterfaceModeTypes.PRIORITY_TARGET) then
+    SetStandardActionButtonSelectedByHash(UnitCommandTypes.PRIORITY_TARGET, true);
+	elseif (eOldMode == InterfaceModeTypes.PRIORITY_TARGET) then
+		SetStandardActionButtonSelectedByHash(UnitCommandTypes.PRIORITY_TARGET, false);
+	end
+  if (eNewMode == InterfaceModeTypes.FORM_CORPS) then
+    SetStandardActionButtonSelectedByHash(UnitCommandTypes.FORM_CORPS, true);
+	elseif (eOldMode == InterfaceModeTypes.FORM_CORPS) then
+		SetStandardActionButtonSelectedByHash(UnitCommandTypes.FORM_CORPS, false);
+	end
+  if (eNewMode == InterfaceModeTypes.FORM_ARMY) then
+    SetStandardActionButtonSelectedByHash(UnitCommandTypes.FORM_ARMY, true);
+	elseif (eOldMode == InterfaceModeTypes.FORM_ARMY) then
+		SetStandardActionButtonSelectedByHash(UnitCommandTypes.FORM_ARMY, false);
+	end
+
+  -- This selects both types of wmd strike buttons.  Which is annoying, but fixing it would 
+  -- be way more involved than I want to get.
+  if (eNewMode == InterfaceModeTypes.WMD_STRIKE) then
+    SetStandardActionButtonSelectedByOperation("UNITOPERATION_WMD_STRIKE", true);
+	elseif (eOldMode == InterfaceModeTypes.WMD_STRIKE) then
+		SetStandardActionButtonSelectedByOperation("UNITOPERATION_WMD_STRIKE", false);
+	end
+
 	if (eOldMode == InterfaceModeTypes.CITY_RANGE_ATTACK or eOldMode == InterfaceModeTypes.DISTRICT_RANGE_ATTACK) then
 		ContextPtr:SetHide(true);
-	end
+	elseif (eOldMode == InterfaceModeTypes.RANGE_ATTACK or 
+          eOldMode == InterfaceModeTypes.AIR_ATTACK or 
+          eOldMode == InterfaceModeTypes.PRIORITY_TARGET) then
+    OnShowCombat(false);
+  end
 end
 
 -- ===========================================================================
@@ -3632,19 +3658,24 @@ end
 
 -- ===========================================================================
 function SetStandardActionButtonSelectedByOperation( operationString:string, isSelected:boolean )
-	for i=1,m_standardActionsIM.m_iCount,1 do
-		local instance:table = m_standardActionsIM:GetAllocatedInstance(i);
+  SetStandardActionButtonSelectedByHash(DB.MakeHash(operationString), isSelected);
+end
+
+function SetStandardActionButtonSelectedByHash(hash:number, isSelected:boolean)
+  -- So, for reasons that can be explained only by the idiots working at Firaxis, db hashes 
+  -- are 32 bit signed integers, but the numbers exposed by GetTag are 32 bit *un*signed integers.
+  if hash < 0 then 
+    hash = hash + 0x100000000;
+  end
+  for i=1,m_standardActionsIM.m_iCount,1 do
+    local instance:table = m_standardActionsIM:GetAllocatedInstance(i);
 		if instance then
 			local actionHash = instance.UnitActionButton:GetTag();
-			local unitOperation = GameInfo.UnitOperations[actionHash];
-			if unitOperation then
-				local operation = unitOperation.OperationType;
-				if operation == operationString then
-					instance.UnitActionButton:SetSelected(isSelected);
-				end
+			if actionHash == hash then
+				instance.UnitActionButton:SetSelected(isSelected);
 			end
 		end
-	end
+  end
 end
 
 -- ===========================================================================
