@@ -3564,6 +3564,12 @@ function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
 		SetStandardActionButtonSelected("INTERFACEMODE_REBASE", false);
 	end
 
+  if (eNewMode == InterfaceModeTypes.COASTAL_RAID) then
+		SetStandardActionButtonSelected("INTERFACEMODE_COASTAL_RAID", true);
+	elseif (eOldMode == InterfaceModeTypes.COASTAL_RAID) then
+		SetStandardActionButtonSelected("INTERFACEMODE_COASTAL_RAID", false);
+	end
+
 	-- Set DEPLOY Selected
 	if (eNewMode == InterfaceModeTypes.DEPLOY) then
 		SetStandardActionButtonSelectedByOperation("UNITOPERATION_DEPLOY", true);
@@ -3606,6 +3612,9 @@ function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
 		SetStandardActionButtonSelectedByOperation("UNITOPERATION_AIR_ATTACK", false);
 	end
 
+  -- We can't use either of the existing SetStandardActionButton... methods here because 
+  -- there's no UnitOperation for PRIORITY_TARGET.  Why?  Probably because some Firaxis 
+  -- employee had no idea what they were doing.  Similarly for the others.
   if (eNewMode == InterfaceModeTypes.PRIORITY_TARGET) then
     SetStandardActionButtonSelectedByHash(UnitCommandTypes.PRIORITY_TARGET, true);
 	elseif (eOldMode == InterfaceModeTypes.PRIORITY_TARGET) then
@@ -3620,6 +3629,11 @@ function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
     SetStandardActionButtonSelectedByHash(UnitCommandTypes.FORM_ARMY, true);
 	elseif (eOldMode == InterfaceModeTypes.FORM_ARMY) then
 		SetStandardActionButtonSelectedByHash(UnitCommandTypes.FORM_ARMY, false);
+	end
+  if (eNewMode == InterfaceModeTypes.AIRLIFT) then
+    SetStandardActionButtonSelectedByHash(UnitCommandTypes.AIRLIFT, true);
+	elseif (eOldMode == InterfaceModeTypes.AIRLIFT) then
+		SetStandardActionButtonSelectedByHash(UnitCommandTypes.AIRLIFT, false);
 	end
 
   -- This selects both types of wmd strike buttons.  Which is annoying, but fixing it would 

@@ -269,6 +269,8 @@ local selectPlotMatchOptions = {
       [InterfaceModeTypes.AIR_ATTACK] = true, 
       [InterfaceModeTypes.PRIORITY_TARGET] = true, 
       [InterfaceModeTypes.REBASE] = true, 
+      [InterfaceModeTypes.AIRLIFT] = true, 
+      [InterfaceModeTypes.COASTAL_RAID] = true, 
     } };
 local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PLOT",
@@ -2379,8 +2381,7 @@ end
 -- ===========================================================================
 --	Code related to the Coastal Raid interface mode
 -- ===========================================================================
-function CoastalRaid( pInputStruct )
-	local plotID = UI.GetCursorPlotID();
+function CoastalRaid(plotID:number)
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -2427,6 +2428,7 @@ function OnInterfaceModeChange_CoastalRaid(eNewMode)
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots);
 			end
+      MaybeMoveKeyboardTargetToFirstEligible();
 		end
 	end
 end
@@ -2992,23 +2994,7 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'Airlift' mode
 ------------------------------------------------------------------------------------------------
-function OnMouseAirliftEnd( pInputStruct )
-	-- If a drag was occurring, end it; otherwise raise event.
-	if g_isMouseDragging then
-		g_isMouseDragging = false;
-	else
-		if IsSelectionAllowedAt( UI.GetCursorPlotID() ) then
-			UI.PlaySound("Unit_Airlift");
-			UnitAirlift(pInputStruct);
-		end
-	end
-	EndDragMap();
-	g_isMouseDownInWorld = false;
-	return true;
-end
-------------------------------------------------------------------------------------------------
-function UnitAirlift( pInputStruct )
-	local plotID = UI.GetCursorPlotID();
+function UnitAirlift(plotID:number)
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -3043,6 +3029,7 @@ function OnInterfaceModeChange_UnitAirlift(eNewMode)
 			UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
 			UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, eLocalPlayer, g_targetPlots);
 		end
+    MaybeMoveKeyboardTargetToFirstEligible();
 	end
 end
 --------------------------------------------------------------------------------------------------
@@ -3774,13 +3761,13 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitAirAttack);
-	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(CoastalRaid);
 	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(AirUnitReBase);
 	InterfaceModeMessageHandler[InterfaceModeTypes.TELEPORT_TO_CITY]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
 	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(FormCorps);
 	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(FormArmy);
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[KeyEvents.KeyUp]		= OnPlacementKeyUp();
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitAirlift);
 
 
 	-- Mouse Events
@@ -3815,7 +3802,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormCorps);
 	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormArmy);
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.LButtonUp]		= OnMouseAirliftEnd;
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitAirlift);
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitAirAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.LButtonUp]		= OnWMDStrikeEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
@@ -3823,7 +3810,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.LButtonUp]		= OnMouseDeployEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]				[MouseEvents.LButtonUp]		= OnPlotPointerSelect(AirUnitReBase);
-	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.LButtonUp]		= CoastalRaid;
+	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.LButtonUp]		= OnPlotPointerSelect(CoastalRaid);
 	InterfaceModeMessageHandler[InterfaceModeTypes.PLACE_MAP_PIN]		[MouseEvents.LButtonUp]		= PlaceMapPin;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WB_SELECT_PLOT]		[MouseEvents.LButtonUp]		= OnMouseEnd_WBSelectPlot;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WB_SELECT_PLOT]		[MouseEvents.RButtonUp]		= OnRButtonUp_WBSelectPlot;
@@ -3856,14 +3843,14 @@ function Initialize()
 		InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.PointerUp]	= OnPointerDistrictRangeAttack;
 		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormArmy);
 		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormCorps);
-		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= Airlift;
+		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitAirlift);
 		InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.PointerUp]		= OnTouchUnitRangeAttack;
 		InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitAirAttack);
 		InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.PointerUp]		= OnWMDStrikeEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.PointerUp]		= OnICBMStrikeEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.PointerUp]		= AirUnitDeploy;
 		InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]				[MouseEvents.PointerUp]		= OnPlotPointerSelect(AirUnitReBase);
-		InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.PointerUp]		= CoastalRaid;
+		InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.PointerUp]		= OnPlotPointerSelect(CoastalRaid);
 		InterfaceModeMessageHandler[InterfaceModeTypes.PLACE_MAP_PIN]		[MouseEvents.PointerUp]		= PlaceMapPin;
 		InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]		[MouseEvents.PointerUp]		= OnDoNothing;
 	end

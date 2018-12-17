@@ -278,10 +278,12 @@ local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
     [InterfaceModeTypes.AIR_ATTACK] = "ICON_UNITOPERATION_AIR_ATTACK",
     [InterfaceModeTypes.PRIORITY_TARGET] = "ICON_UNITCOMMAND_PRIORITY_TARGET",
     [InterfaceModeTypes.REBASE] = "ICON_UNITOPERATION_REBASE",
+    [InterfaceModeTypes.AIRLIFT] = "ICON_UNITCOMMAND_AIRLIFT",
+    [InterfaceModeTypes.COASTAL_RAID] = "ICON_UNITOPERATION_COASTAL_RAID",
 };
 
 function UpdateKeyboardTargetIcon(interfaceMode:number)
-  local modeIcon = KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE[UI.GetInterfaceMode()];
+  local modeIcon = KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE[interfaceMode];
   modeIcon = modeIcon or "ICON_MORE_KEY_BINDINGS_KEYBOARD";
   Controls.KeyboardTargetAction:SetIcon(modeIcon);
 end
