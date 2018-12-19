@@ -78,5 +78,50 @@
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_DISTRICT_RANGED_ATTACK_TOOLTIP">
       <Text>Perform a ranged attack with the city or district in the current keyboard target hex.</Text>
     </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_TOOLTIP">
+      <Text>Controls if and how the keyboard target is automatically moved when entering the targeting mode.[NEWLINE][ICON_Bullet]None - keyboard target is not moved[NEWLINE][ICON_Bullet]Previous - keyboard target is moved to last target for the mode (if still valid)[NEWLINE][ICON_Bullet]Closest to previous - keyboard target is moved to the valid plot closest to the last target for the mode[NEWLINE][ICON_Bullet]First - keyboard target is moved to the first valid target (first is defined by the game code - it's pretty much random)[NEWLINE][ICON_Bullet]Closest to source - keyboard target is moved to the valid plot closest to the unit/city/district executing the action</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_DISABLED">
+      <Text>None</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_PREVIOUS">
+      <Text>Previous</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST_TO_PREVIOUS">
+      <Text>Closest to previous</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_FIRST">
+      <Text>First valid</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST">
+      <Text>Closest to source</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_ATTACK">
+      <Text>Keyboard target auto select for attack</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_FORM_CORPS">
+      <Text>Keyboard target auto select for form corps</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_FORM_ARMY">
+      <Text>Keyboard target auto select for form army</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_AIR_ATTACK">
+      <Text>Keyboard target auto select for air attack</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_REBASE">
+      <Text>Keyboard target auto select for rebase</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_AIRLIFT">
+      <Text>Keyboard target auto select for form airlift</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_COASTAL_RAID">
+      <Text>Keyboard target auto select for coastal raid</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_PRIORITY_TARGET">
+      <Text>Keyboard target auto select for priority target</Text>
+    </Row>
   </LocalizedText>
 </GameData>

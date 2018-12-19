@@ -276,11 +276,84 @@ local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.M
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PLOT",
     "LOC_MORE_KEY_BINDINGS_SELECT_PLOT_TOOLTIP");
 
-local autoMoveKeyboardTargetToFirstEligibleTarget = ModSettings.Boolean:new(
-    true,
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_FIRST_ELIGIBLE_TARGET",
-    "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_FIRST_ELIGIBLE_TARGET_TOOLTIP");
+local autoMoveKeyboardTargetModeValues = {
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_DISABLED",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_PREVIOUS",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST_TO_PREVIOUS",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_FIRST",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST" };
+
+AutoMoveKeyboardTargetHandler = {};
+AutoMoveKeyboardTargetHandler.__index = AutoMoveKeyboardTargetHandler;
+
+function AutoMoveKeyboardTargetHandler:new(mode:string, defaultIndex:number)
+  local setting = ModSettings.Select:new(
+      autoMoveKeyboardTargetModeValues, defaultIndex or 1, 
+      "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY",
+      "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_" .. mode,
+      "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_TOOLTIP");
+
+  local handler = setmetatable({setting = setting, previousPlotIndex = -1}, self);
+  return handler;
+end
+
+function AutoMoveKeyboardTargetHandler:RecordLastTargetPlot(plot:table) 
+  self.lastTargetPlot = plot;
+end
+
+function AutoMoveKeyboardTargetHandler:FindClosest(plot:table)
+  local closest = nil;
+  local closestDistance = 1000000;
+  for _, plotIndex in ipairs(g_targetPlots) do 
+    if Map.IsPlot(plotIndex) then
+      local p = Map.GetPlotByIndex(plotIndex);
+      local distance = Map.GetPlotDistance(plot:GetX(), plot:GetY(), p:GetX(), p:GetY());
+      if distance < closestDistance then
+        closestDistance = distance;
+        closest = p;
+      end
+    end
+  end
+  return closest;
+end
+
+function AutoMoveKeyboardTargetHandler:MaybeMoveKeyboardTarget(sourcePlot:table)
+  local targetPlot = keyboardTargetingPlot;
+  local mode = self.setting.Value;
+
+  if mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_PREVIOUS" then
+    if self.lastTargetPlot and IsInList(g_targetPlots, self.lastTargetPlot:GetIndex()) then
+      targetPlot = self.lastTargetPlot;
+    end
+  elseif mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST_TO_PREVIOUS" then
+    targetPlot = self:FindClosest(self.lastTargetPlot or sourcePlot);
+  elseif mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_FIRST" then
+    targetPlot = g_targetPlots[1] and Map.GetPlotByIndex(g_targetPlots[1]);
+  elseif mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST" then
+    print("Looking for closest");
+    targetPlot = self:FindClosest(sourcePlot);
+  end
+  if targetPlot then
+    MoveKeyboardTargetingTo(targetPlot, true);
+    return;
+  end
+
+  -- Rebroadcast the current plot if it's a valid target.  This allows stuff like combat preview to 
+  -- be triggered.
+  if IsInList(g_targetPlots, keyboardTargetingPlot and keyboardTargetingPlot:GetIndex()) then
+    MoveKeyboardTargetingTo(keyboardTargetingPlot, true);
+  end
+end
+
+local autoMoveKeyboardTargetForAttack = AutoMoveKeyboardTargetHandler:new("ATTACK", 3);
+local autoMoveKeyboardTargetForFormCorps = AutoMoveKeyboardTargetHandler:new("FORM_CORPS", 3);
+local autoMoveKeyboardTargetForFormArmy = AutoMoveKeyboardTargetHandler:new("FORM_ARMY", 3);
+local autoMoveKeyboardTargetForAirAttack = AutoMoveKeyboardTargetHandler:new("AIR_ATTACK", 3);
+local autoMoveKeyboardTargetForRebase = AutoMoveKeyboardTargetHandler:new("REBASE", 3);
+local autoMoveKeyboardTargetForAirlift = AutoMoveKeyboardTargetHandler:new("AIRLIFT", 3);
+local autoMoveKeyboardTargetForCoastalRaid = AutoMoveKeyboardTargetHandler:new("COASTAL_RAID", 3);
+-- Not local since used in worldinput_expansion1
+autoMoveKeyboardTargetForPriorityTarget = AutoMoveKeyboardTargetHandler:new("PRIORITY_TARGET", 3);
 
 ----------------------------- City commands -----------------------------------
 local cityCommandsHeaderSettings = ModSettings.Header:new(
@@ -385,21 +458,6 @@ end
 function CenterScreenOnKeyboardTargeting()
   if keyboardTargetingPlot then
     UI.LookAtPlot(keyboardTargetingPlot);
-  end
-end
-
-function MaybeMoveKeyboardTargetToFirstEligible()
-  if autoMoveKeyboardTargetToFirstEligibleTarget.Value then
-    if not IsInList(g_targetPlots, keyboardTargetingPlot and keyboardTargetingPlot:GetIndex()) then
-      local newTargetPlotID = g_targetPlots[1];
-      MoveKeyboardTargetingTo(Map.GetPlotByIndex(newTargetPlotID), true);
-      return
-    end
-  end
-
-  -- Rebroadcast the current plot if it's a valid target
-  if IsInList(g_targetPlots, keyboardTargetingPlot and keyboardTargetingPlot:GetIndex()) then
-    MoveKeyboardTargetingTo(keyboardTargetingPlot, true);
   end
 end
 
@@ -909,6 +967,7 @@ function UnitRangeAttack( plotID:number )
 
 	if UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.RANGE_ATTACK, nil, tParameters) then
 		UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.RANGE_ATTACK, tParameters);
+    autoMoveKeyboardTargetForAttack:RecordLastTargetPlot(plot);
 	else
 		-- LClicking on an empty hex, deselect unit.
 		UI.DeselectUnit( pSelectedUnit );
@@ -2086,7 +2145,7 @@ function OnInterfaceModeChange_UnitRangeAttack(eNewMode)
 
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
-        MaybeMoveKeyboardTargetToFirstEligible();
+        autoMoveKeyboardTargetForAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(unitPlotID));
 			end
 		end
 	end
@@ -2129,6 +2188,7 @@ function UnitAirAttack(plotID:number)
 			if (UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.AIR_ATTACK, nil, tParameters)) then
 				UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.AIR_ATTACK, tParameters);
 				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+        autoMoveKeyboardTargetForAirAttack:RecordLastTargetPlot(plot);
 			end
 		end
 	end						
@@ -2155,7 +2215,7 @@ function OnInterfaceModeChange_Air_Attack(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots);
-        MaybeMoveKeyboardTargetToFirstEligible();
+        autoMoveKeyboardTargetForAirAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 			end
 		end
 	end
@@ -2404,6 +2464,7 @@ function CoastalRaid(plotID:number)
 			if (UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.COASTAL_RAID, nil, tParameters)) then
 				UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.COASTAL_RAID, tParameters);
 				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+        autoMoveKeyboardTargetForCoastalRaid:RecordLastTargetPlot(plot);
 			end
 		end
 	end						
@@ -2428,7 +2489,7 @@ function OnInterfaceModeChange_CoastalRaid(eNewMode)
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots);
 			end
-      MaybeMoveKeyboardTargetToFirstEligible();
+      autoMoveKeyboardTargetForCoastalRaid:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 		end
 	end
 end
@@ -2524,6 +2585,7 @@ function AirUnitReBase(plotID:number)
 		if (UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.REBASE, nil, tParameters)) then
 			UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.REBASE, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      autoMoveKeyboardTargetForRebase:RecordLastPlotTarget(plot);
 		end
 	end
 	return true;
@@ -2547,7 +2609,7 @@ function OnInterfaceModeChange_ReBase(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, eLocalPlayer, g_targetPlots);
-        MaybeMoveKeyboardTargetToFirstEligible();
+        autoMoveKeyboardTargetForRebase:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 			end
 		end
 	end
@@ -2598,6 +2660,7 @@ function CityRangeAttack(plotID:number)
 		if (CityManager.CanStartCommand( pSelectedCity, CityCommandTypes.RANGE_ATTACK, tParameters)) then
 			CityManager.RequestCommand( pSelectedCity, CityCommandTypes.RANGE_ATTACK, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      autoMoveKeyboardTargetForAttack:RecordLastTargetPlot(plot);
 		end
 	end						
 	return true;
@@ -2640,7 +2703,7 @@ function OnInterfaceModeChange_CityRangeAttack(eNewMode)
 				
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 
-        MaybeMoveKeyboardTargetToFirstEligible();
+        autoMoveKeyboardTargetForAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(sourcePlotID));
 			end
 		end
 	end
@@ -2674,6 +2737,7 @@ function DistrictRangeAttack(plotID:number)
 		if (CityManager.CanStartCommand( pSelectedDistrict, CityCommandTypes.RANGE_ATTACK, tParameters)) then
 			CityManager.RequestCommand( pSelectedDistrict, CityCommandTypes.RANGE_ATTACK, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      autoMoveKeyboardTargetForAttack:RecordLastTargetPlot(plot);
 		end
 	end
 	return true;
@@ -2716,7 +2780,7 @@ function OnInterfaceModeChange_DistrictRangeAttack(eNewMode)
 				
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
 				
-        MaybeMoveKeyboardTargetToFirstEligible();
+        autoMoveKeyboardTargetForAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(sourcePlotID));
 			end
 		end
 	end
@@ -2906,6 +2970,7 @@ function FormCorps(plotID:number)
 			if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.FORM_CORPS, tParameters)) then
 				UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.FORM_CORPS, tParameters);
 				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);	
+        autoMoveKeyboardTargetForFormCorps:RecordLastTargetPlot(plot);
 			end
 		end
 	end						
@@ -2929,7 +2994,7 @@ function OnInterfaceModeChange_UnitFormCorps(eNewMode)
 		UILens.ToggleLayerOn(LensLayers.HEX_COLORING_PLACEMENT);
 		UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_PLACEMENT, player, unitPlots);
 		g_targetPlots = unitPlots;
-    MaybeMoveKeyboardTargetToFirstEligible();
+    autoMoveKeyboardTargetForFormCorps:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 	end
 end
 
@@ -2955,7 +3020,8 @@ function FormArmy(plotID:number)
 			tParameters[UnitCommandTypes.PARAM_UNIT_ID] = pUnit:GetID();
 			if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.FORM_ARMY, tParameters)) then
 				UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.FORM_ARMY, tParameters);
-				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);	
+				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+        autoMoveKeyboardTargetForFormArmy:RecordLastTargetPlot(plot);
 			end
 		end
 	end
@@ -2980,7 +3046,7 @@ function OnInterfaceModeChange_UnitFormArmy(eNewMode)
 		UILens.ToggleLayerOn(LensLayers.HEX_COLORING_PLACEMENT);
 		UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_PLACEMENT, player, unitPlots);
 		g_targetPlots = unitPlots;
-    MaybeMoveKeyboardTargetToFirstEligible();
+    autoMoveKeyboardTargetForFormArmy:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 	end
 end
 
@@ -3007,6 +3073,7 @@ function UnitAirlift(plotID:number)
 		if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.AIRLIFT, nil, tParameters)) then
 			UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.AIRLIFT, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      autoMoveKeyboardTargetForAirlift:RecordLastTargetPlot(plot);
 		end
 	end						
 	return true;
@@ -3029,7 +3096,7 @@ function OnInterfaceModeChange_UnitAirlift(eNewMode)
 			UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
 			UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, eLocalPlayer, g_targetPlots);
 		end
-    MaybeMoveKeyboardTargetToFirstEligible();
+    autoMoveKeyboardTargetForAirlift:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 	end
 end
 --------------------------------------------------------------------------------------------------

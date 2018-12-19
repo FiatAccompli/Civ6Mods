@@ -82,6 +82,7 @@ function PriorityTarget(plotID:number)
 		if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.PRIORITY_TARGET, tParameters)) then
 			UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.PRIORITY_TARGET, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      autoMoveKeyboardTargetForPriorityTarget:RecordLastTargetPlot(plot);
 		end
 	end
 	return true;
@@ -104,7 +105,7 @@ function OnInterfaceModeChange_PriorityTarget(eNewMode)
 		if (table.count(g_targetPlots) ~= 0) then
 			UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 			UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, Game.GetLocalPlayer(), g_targetPlots);
-      MaybeMoveKeyboardTargetToFirstEligible();
+      autoMoveKeyboardTargetForPriorityTarget:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 		end
 	end
 end

@@ -33,15 +33,6 @@ end
 
 local g_QueuedMessages						= {};
 
-local keyboardTargetMouseMoveSettingValues = {
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_ALWAYS",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_HIDE_ON_MOUSE_USE",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_FADE_ON_MOUSE_USE"};
-keyboardTargetMouseMoveSetting = ModSettings.Select:new(
-    keyboardTargetMouseMoveSettingValues, 3, 
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE");
-
 ----------------------------------------------------------------        
 -- Return the first queued message that is for the specified plot index.
 function GetFirstQueuedMessageAt( plotIndex )
@@ -232,6 +223,15 @@ end
 -- and unit flags but beneath all hud and screen stuff).  And apparently z-order is implicit and 
 -- tied to lua context order, so it pretty much has to live here.  Which is kind of reasonable - 
 -- it is a plot info message of a certain form.
+
+local keyboardTargetMouseMoveSettingValues = {
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_ALWAYS",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_HIDE_ON_MOUSE_USE",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE_FADE_ON_MOUSE_USE"};
+local keyboardTargetMouseMoveSetting = ModSettings.Select:new(
+    keyboardTargetMouseMoveSettingValues, 3, 
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY",
+    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_DISPLAY_MODE");
 
 -- Keep track of visibility so we don't start refading it every time the mouse moves.  
 -- That would look as stupid as the background fading when switching between tech/civic screens
