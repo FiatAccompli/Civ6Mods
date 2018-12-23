@@ -652,7 +652,7 @@ function EndIconGroup()
 	local width		:number = instance.UnitActionButton:GetSizeX();
 	m_standardActionsIM:ReleaseInstance( instance );
 
-	m_currentIconGroup.Top:SetSizeX( width * m_numIconsInCurrentIconGroup );
+	m_currentIconGroup.Top:SetSizeX( width * m_numIconsInCurrentIconGroup + 2 * (m_numIconsInCurrentIconGroup - 1) + 1);
 
 	m_currentIconGroup = nil;
 	Controls.PrimaryArtStack:CalculateSize();
@@ -3593,7 +3593,6 @@ function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
 
 	-- Set AIR_ATTACK Selected
 	if (eNewMode == InterfaceModeTypes.AIR_ATTACK) then
-
 		local pSelectedUnit = UI.GetHeadSelectedUnit();
 		if (pSelectedUnit ~= nil) then
 			local tResults = UnitManager.GetOperationTargets(pSelectedUnit, UnitOperationTypes.AIR_ATTACK );

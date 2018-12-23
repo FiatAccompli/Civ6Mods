@@ -28,7 +28,7 @@
            <Label				ID="CombatAssessmentText"	Anchor="C,C" Offset="-6,-76"	Align="Center" WrapWidth="110" Style="UnitPanelHeader" />
         </Container>
 
-		    <Stack	ID="PrimaryArtStack"	Anchor="R,T"	Offset="6,-2"	AnchorSide="I,O"	StackGrowth="Right" Padding="2" />
+		    <Stack	ID="PrimaryArtStack"	Anchor="R,T"	Offset="2,-2"	AnchorSide="I,O"	StackGrowth="Right" Padding="1" />
         <!-- ACTIONS PANEL -->
         <Stack ID="ActionsStack" Anchor="R,T" Offset="2,-4" AnchorSide="I,O" StackGrowth="Left" StackPadding="2">
           <Stack ID="StandardActionsStack" Anchor="C,B" StackGrowth="Right" Padding="2" ConsumeMouse="1" />
@@ -495,6 +495,7 @@
 	<Instance Name="UnitActionInstance" >
 		<Button		ID="UnitActionButton" Anchor="L,T" Size="44,53" Texture="UnitPanel_ActionButton">
 			<Image	ID="UnitActionIcon"		Anchor="C,C" Offset="0,-2" Size="38,38"  Texture="UnitActions"/>
+      <Label ID="UnitActionKeyBinding" Anchor="C,B" Offset="0,2"/>
 		</Button>
 	</Instance>
 	
