@@ -176,6 +176,9 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
   `keyCode` should be one of the values from the `Keys` table. (Note that not all keys in the `Keys`
   table are available for binding.  See the source for details.)  `modifiers` is a table containing 
   modifier key info. Set `Shift`, `Ctrl`, and/or `Alt` to true in it to require those modifier keys.
+* `ModSettings.KeyBinding.ValueToString(value)` - 
+  A static method to turn a value from `MakeValue` into a nicely localized string suitable for 
+  displaying to the user.
 * `KeyBindingHelper.InputMatches(value, input, options)` - From mod_settings_key_binding_helper.lua. 
   Returns true if `input` is a key event that matches the `value` of a key binding.
   * `value` is the `.Value` of a keybind setting.

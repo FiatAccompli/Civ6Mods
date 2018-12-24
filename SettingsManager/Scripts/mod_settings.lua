@@ -389,6 +389,13 @@ function KeyBindingSetting.MakeValue(keyCode:number, modifiers:table)
   end
 end
 
+function KeyBindingSetting.ValueToString(value:table)
+  return (value.IsShift and (Locale.Lookup("LOC_OPTIONS_KEY_SHIFT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+         (value.IsControl and (Locale.Lookup("LOC_OPTIONS_KEY_CONTROL") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+         (value.IsAlt and (Locale.Lookup("LOC_OPTIONS_KEY_ALT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
+         Locale.Lookup(ModSettings.KeyBinding.KeyLocalizations[value.KeyCode]);
+end
+
 function KeyBindingSetting:ToStringValue() 
   local value = self.Value;
   if value == nil then
