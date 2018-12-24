@@ -62,5 +62,12 @@
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_TOOLTIP">
       <Text>The key binding that will bring up this configuration window.</Text>
     </Row>
+
+    <!-- Control -> Ctrl for en_US.  Because Control is annoyingly long to display in some parts of the ui.  
+         And who the hell actually uses the full form in english anyway. -->
+    <Update>
+      <Where Language="en_US" Tag="LOC_OPTIONS_KEY_CONTROL"/>
+      <Set Text="Ctrl"/>
+    </Update>
   </LocalizedText>
 </GameData>
