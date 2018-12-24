@@ -94,8 +94,18 @@ function RequestRefresh()
 end
 
 -- Keybindings for all possible unit actions (minus the ones that the game handles already)
--- Maps from operation or command name to setting.
+-- Maps from operation or command name to key bind setting.
 local actionKeyBindings = {};
+
+-- Keybindings for building improvements (farms, mines, uniques, etc).  Maps from hash for 
+-- improvement to key bind setting.
+local improvementKeyBindings = {};
+
+-- "Generic" key bindings to be used for improvements that do not have a specific one assigned
+-- (such as for custom civs with unique improvements).
+local unassignedImprovementKeyBindings = {};
+
+local unassignedImprovmentKeyBindingsNextUseIndex = 1;
 
 -- Map from key binding setting values to a callback to execute the associated action.
 -- Only includes the actions the current unit can use.
@@ -113,6 +123,18 @@ function CreateActionBinding(operationNames:table, action:string, keyBindingValu
   end
 end
 
+function CreateImprovementBinding(improvementName:string, keyBindingValue:table)
+  local improvement = GameInfo.Improvements["IMPROVEMENT_" .. improvementName];
+  
+  -- Skip if no data.  Happens if you don't have a 
+  if improvement then
+    local setting = ModSettings.KeyBinding:new(keyBindingValue, "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+        "LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_BUILD_" .. improvementName);
+    setting:AddChangedHandler(RequestRefresh);
+    improvementKeyBindings[improvement.Hash] = setting;
+  end
+end
+
 ModSettings.Header:new("LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_UNIT_ACTION_CONTROLS");
 
 local showUnitActionsKeyboardBindings = ModSettings.Boolean:new(
@@ -121,13 +143,6 @@ local showUnitActionsKeyboardBindings = ModSettings.Boolean:new(
     "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS",
     "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS_TOOLTIP");
 showUnitActionsKeyboardBindings:AddChangedHandler(RequestRefresh);
-
-local showBuildActionsKeyboardBindings = ModSettings.Boolean:new(
-    true,
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS",
-    "LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS_TOOLTIP");
-showBuildActionsKeyboardBindings:AddChangedHandler(RequestRefresh);
 
 CreateActionBinding({"UNITOPERATION_AIR_ATTACK"}, "AIR_ATTACK", ModSettings.KeyBinding.MakeValue(Keys.S));
 CreateActionBinding({"UNITCOMMAND_PRIORITY_TARGET"}, "PRIORITY_TARGET", ModSettings.KeyBinding.MakeValue(Keys.S, {Shift=true}));
@@ -176,10 +191,49 @@ CreateActionBinding({"UNITCOMMAND_PARADROP"}, "PARADROP", ModSettings.KeyBinding
 CreateActionBinding({"UNITCOMMAND_DISTRICT_PRODUCTION", "UNITCOMMAND_WONDER_PRODUCTION", "UNITCOMMAND_PROJECT_PRODUCTION"},
                     "PRODUCTION", ModSettings.KeyBinding.MakeValue(Keys.L, {Ctrl=true}));
 
-
 -- Everything that behaves like a rebase action
 CreateActionBinding({"UNITOPERATION_REBASE", "UNITOPERATION_SPY_TRAVEL_NEW_CITY", "UNITOPERATION_TELEPORT_TO_CITY", "UNITCOMMAND_AIRLIFT"}, 
                     "REBASE", ModSettings.KeyBinding.MakeValue(Keys.X));
+
+
+ModSettings.Header:new("LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_IMPROVEMENTS_CONTROLS");
+
+local showBuildActionsKeyboardBindings = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS",
+    "LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS_TOOLTIP");
+showBuildActionsKeyboardBindings:AddChangedHandler(
+    function(value:boolean, oldValue:boolean)
+      RequestRefresh();
+      Controls.RecommendedActionKeyBinding:SetHide(not value);
+    end, true);
+
+local recommendedBuildFunction = nil;
+local recommendedBuildKeyBinding = ModSettings.KeyBinding:new(
+     ModSettings.KeyBinding.MakeValue(Keys.B, {Ctrl=true, Shift=true}), 
+     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+     "LOC_MORE_KEY_BINDINGS_ACTION_BINDING_RECOMMENDED_BUILD");
+recommendedBuildKeyBinding:AddChangedHandler(
+    function(value:table, oldValue:table)
+      Controls.RecommendedActionKeyBinding:SetText(ModSettings.KeyBinding.ValueToString(value));
+    end,
+    true);
+
+CreateImprovementBinding("FARM", ModSettings.KeyBinding.MakeValue(Keys.N, {Ctrl=true}));
+
+local useUnassignedImprovmentKeyBindings = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_USE_UNASSIGNED_IMPROVEMENT_KEY_BINDINGS",
+    "LOC_MORE_KEY_BINDINGS_USE_UNASSIGNED_IMPROVEMENT_KEY_BINDINGS_TOOLTIP");
+
+for i = 1,9 do
+  unassignedImprovementKeyBindings[i] = ModSettings.KeyBinding:new(
+      ModSettings.KeyBinding.MakeValue(Keys[tostring(i)], {Ctrl=true}), 
+      "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+      "LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UNASSIGNED_BUILD_" .. i);
+end
 
 -- ===========================================================================
 --	FUNCTIONS
@@ -371,6 +425,7 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
 		end;
 
   local keyBindingString = nil;
+  local keyBindingSetting = nil;
   
   -- WMD strikes are annoying as the type of WMD is an argument of the operation.
   local commandType = action.CommandType or action.OperationType;
@@ -401,7 +456,17 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
 			UI.DataError("Cannot set hotkey on Unitpanel for action with icon '"..action.IconId.."' because engine doesn't have actionId of '"..action.HotkeyId.."'.");
 		end
   elseif actionKeyBindings[commandType] then
-    local keyBindingSetting = actionKeyBindings[commandType];
+    keyBindingSetting = actionKeyBindings[commandType];
+  elseif action.ImprovementType then
+    print("Improvement", callbackVoid1, callbackVoid2, keyBindingSetting, improvementKeyBindings[callbackVoid1]);
+    keyBindingSetting = improvementKeyBindings[callbackVoid1];
+    if not keyBindingSetting and useUnassignedImprovmentKeyBindings.Value then
+      keyBindingSetting = unassignedImprovementKeyBindings[unassignedImprovmentKeyBindingsNextUseIndex];
+      unassignedImprovmentKeyBindingsNextUseIndex = unassignedImprovmentKeyBindingsNextUseIndex + 1;
+    end
+  end
+
+  if keyBindingSetting then 
     keyBindingString = ModSettings.KeyBinding.ValueToString(keyBindingSetting.Value);
     if not disabled then
       activeKeyBindings[keyBindingSetting.Value] = 
@@ -946,10 +1011,15 @@ function View(data)
 			Controls.RecommendedActionButton:RegisterCallback( Mouse.eLClick, bestBuildAction.CallbackFunc );
 			Controls.RecommendedActionButton:SetVoid1( bestBuildAction.CallbackVoid1 );
 			Controls.RecommendedActionButton:SetVoid2( bestBuildAction.CallbackVoid2 );
+      recommendedBuildFunction = 
+          function() 
+            bestBuildAction.CallbackFunc(bestBuildAction.CallbackVoid1, bestBuildAction.CallbackVoid2);
+          end
 		else
 			Controls.RecommendedActionButton:SetHide(true);
 			Controls.BuildActionsPanel:SetSizeY( buildStackHeight + BUILD_PANEL_ART_PADDING_Y);
 			Controls.BuildActionsStack:SetOffsetY(0);
+      recommendedBuildFunction = nil;
 		end
 
 	else
@@ -2244,6 +2314,7 @@ function Refresh(player, unitId)
 		m_kHotkeyCV2 = {};
     m_kSoundCV1 = {};
     activeKeyBindings = {};
+    unassignedImprovmentKeyBindingsNextUseIndex = 1;
 
 		local units = Players[player]:GetUnits(); 
 		local unit = units:FindID(unitId);
@@ -3883,6 +3954,10 @@ function OnInputHandler( pInputStruct:table )
 		return false;
 	end
 
+  if KeyBindingHelper.InputMatches(recommendedBuildKeyBinding.Value, pInputStruct, actionKeyMatchOptions) and recommendedBuildFunction then
+    recommendedBuildFunction();
+    return true;
+  end
   for value, action in pairs(activeKeyBindings) do
     if KeyBindingHelper.InputMatches(value, pInputStruct, actionKeyMatchOptions) then
       action();

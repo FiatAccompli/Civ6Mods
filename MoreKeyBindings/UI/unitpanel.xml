@@ -10,6 +10,7 @@
         <Button					ID="RecommendedActionButton"	Anchor="C,T" Offset="1,-23" Size="44,53" Texture="UnitPanel_ActionButton"		>
           <Image				ID="RecommendedActionIcon"		Anchor="C,C" Offset="-1,-1" Size="38,38"		/>
           <Image				ID="RecommendedActionFrame"		Anchor="C,T" Offset="0,-1"	Texture="UnitPanel_RecommendedActionFrame" />
+          <Label ID="RecommendedActionKeyBinding" String="CTRL+SHIFT+B" Anchor="C,B" Offset="0,-4" Style="FontNormal10" Color="255,255,255,180"/>
         </Button>
         <Stack					ID="BuildActionsStack"				Anchor="R,T" Offset="11,26" StackGrowth="Left" Padding="6" />
       </Grid>
