@@ -76,9 +76,10 @@ ModSettings.<Type>:new(...)
 #### Setting Methods
 
 * `Change(value)` - Update the setting to the given value. *Note that this does not persist the change.*
-* `AddChangedHandler(onChanged)` - Register a function to be called after the setting value has changed.
-  This is equivalent to adding a listener to `LuaEvents.ModSettingsManager_SettingValueChanged` and filtering
-  to matching categoryName/settingName.
+* `AddChangedHandler(onChanged, callImmediately)` - Register a function `onChanged(value, oldValue)` to be called 
+  after the setting value has changed.  This is equivalent to adding a listener to 
+  `LuaEvents.ModSettingsManager_SettingValueChanged` and filtering to matching categoryName/settingName.
+  If `callImmediately` is true, then `onChanged` will also be invoked with only the current setting value.
   
 #### Events
 

@@ -56,7 +56,7 @@ function BaseSetting:ToStringValue()
   return tostring(self.Value);
 end
 
-function BaseSetting:AddChangedHandler(onChanged:ifunction)
+function BaseSetting:AddChangedHandler(onChanged:ifunction, callImmediately:boolean)
   local categoryName = self.categoryName;
   local settingName = self.settingName;
   LuaEvents.ModSettingsManager_SettingValueChanged.Add(
@@ -65,6 +65,9 @@ function BaseSetting:AddChangedHandler(onChanged:ifunction)
         onChanged(value, oldValue);
       end
     end);
+  if callImmediately then
+    onChanged(self.Value, nil);
+  end
 end
 
 function BaseSetting:LoadSavedValue()
