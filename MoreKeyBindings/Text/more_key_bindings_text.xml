@@ -137,15 +137,25 @@
       <Text>Move to</Text>
     </Row>
 
+    
+    <!--****************************** Unit Panel ************************************-->
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNIT_ACTION_CONTROLS">
       <Text>Unit Actions</Text>
     </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS">
+    
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS">
       <Text>Show unit actions key bindings</Text>
     </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS_TOOLTIP">
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS_TOOLTIP">
       <Text>Controls whether key bindings are shown below the buttons in the unit action panel.</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS">
+      <Text>Show build actions key bindings</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS_TOOLTIP">
+      <Text>Controls whether key bindings are shown below the buttons in the unit build actions panel.</Text>
+    </Row>
+    
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_AIR_ATTACK">
       <Text>Air attack</Text>
     </Row>
@@ -157,6 +167,108 @@
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UPGRADE">
       <Text>Upgrade</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_BUILD_ROUTE">
+      <Text>Build road</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_CLEAR_CONTAMINATION">
+      <Text>Clear contamination</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_CONVERT_BARBARIANS">
+      <Text>Convert barbarians</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_DEPLOY">
+      <Text>Deploy fighter</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_DESIGNATE_PARK">
+      <Text>Designate national park</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_EXCAVATE">
+      <Text>Excavate artifact</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_HEAL">
+      <Text>Fortify until healed</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_FOUND_RELIGION">
+      <Text>Found religion/Evangelize belief</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_HARVEST_RESOURCE">
+      <Text>Harvest resource</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_LAUNCH_INQUISITION">
+      <Text>Launch inquisition/Remove heresy</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_SPREAD_RELIGION">
+      <Text>Spread religion</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_MAKE_TRADE_ROUTE">
+      <Text>Make trade route</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_WMD_STRIKE_0">
+      <Text>Nuclear strike</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_WMD_STRIKE_1">
+      <Text>Thermonuclear strike</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_WAKE">
+      <Text>Wake</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_COASTAL_RAID">
+      <Text>Coastal raid</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_PILLAGE">
+      <Text>Pillage</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_PILLAGE_ROUTE">
+      <Text>Pillage road</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_PLANT_FOREST">
+      <Text>Plant forest</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_REMOVE_FEATURE">
+      <Text>Remove feature</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_REMOVE_IMPROVEMENT">
+      <Text>Remove improvement</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_REPAIR">
+      <Text>Repair</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_REPAIR_ROUTE">
+      <Text>Repair road</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_SPY_COUNTERSPY">
+      <Text>Spy</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_FORM_CORPS">
+      <Text>Form corps</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_FORM_ARMY">
+      <Text>Form army</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_NAME_UNIT">
+      <Text>Name unit</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_ENTER_FORMATION">
+      <Text>Enter/exit formation</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_ACTIVATE_GREAT_PERSON">
+      <Text>Activate great person</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_CANCEL">
+      <Text>Cancel</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_PLUNDER_TRADE_ROUTE">
+      <Text>Plunder trade route</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_CONDEMN_HERETIC">
+      <Text>Condemn heretic</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_PARADROP">
+      <Text>Paradrop</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_PRODUCTION">
+      <Text>Wonder/District/Project production</Text>
     </Row>
   </LocalizedText>
 </GameData>

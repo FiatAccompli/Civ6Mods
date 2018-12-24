@@ -495,7 +495,7 @@
 	<Instance Name="UnitActionInstance" >
 		<Button		ID="UnitActionButton" Anchor="L,T" Size="44,53" Texture="UnitPanel_ActionButton">
 			<Image	ID="UnitActionIcon"		Anchor="C,C" Offset="0,-2" Size="38,38"  Texture="UnitActions"/>
-      <Label ID="UnitActionKeyBinding" Anchor="C,B" String="" Offset="0,2" Style="FontNormal10" Color="255,255,255,180"/>
+      <Label ID="UnitActionKeyBinding" Anchor="C,B" Offset="0,2" Style="FontNormal10" Color="255,255,255,180"/>
 		</Button>
 	</Instance>
 	
@@ -503,6 +503,7 @@
 	<Instance Name="BuildActionInstance" >
 		<Button		ID="UnitActionButton" Anchor="L,T" Offset="-4,-4" Size="44,53" Texture="Controls_IconButton.dds">
 			<Image	ID="UnitActionIcon"		Anchor="C,C" Offset="-1,-1" Size="38,38" Texture="UnitActions"/>
+      <Label ID="UnitActionKeyBinding" Anchor="C,B" Offset="0,4" Style="FontNormal10" Color="255,255,255,180"/>
 		</Button>
 	</Instance>
 

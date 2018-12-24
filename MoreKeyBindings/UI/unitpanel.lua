@@ -115,20 +115,71 @@ end
 
 ModSettings.Header:new("LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_UNIT_ACTION_CONTROLS");
 
-local showUnitActionKeyboardBindings = ModSettings.Boolean:new(
+local showUnitActionsKeyboardBindings = ModSettings.Boolean:new(
     true,
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS",
-    "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS_TOOLTIP");
-showUnitActionKeyboardBindings:AddChangedHandler(RequestRefresh);
+    "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS",
+    "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS_TOOLTIP");
+showUnitActionsKeyboardBindings:AddChangedHandler(RequestRefresh);
 
-CreateActionBinding({"UNITOPERATION_AIR_ATTACK"}, 'AIR_ATTACK', ModSettings.KeyBinding.MakeValue(Keys.S));
-CreateActionBinding({"UNITCOMMAND_PRIORITY_TARGET"}, 'PRIORITY_TARGET', ModSettings.KeyBinding.MakeValue(Keys.S, {Shift=true}));
-CreateActionBinding({"UNITCOMMAND_UPGRADE"}, 'UPGRADE', ModSettings.KeyBinding.MakeValue(Keys.U));
+local showBuildActionsKeyboardBindings = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS",
+    "LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS_TOOLTIP");
+showBuildActionsKeyboardBindings:AddChangedHandler(RequestRefresh);
+
+CreateActionBinding({"UNITOPERATION_AIR_ATTACK"}, "AIR_ATTACK", ModSettings.KeyBinding.MakeValue(Keys.S));
+CreateActionBinding({"UNITCOMMAND_PRIORITY_TARGET"}, "PRIORITY_TARGET", ModSettings.KeyBinding.MakeValue(Keys.S, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_DEPLOY"}, "DEPLOY", ModSettings.KeyBinding.MakeValue(Keys.D, {Ctrl=true}));
+CreateActionBinding({"UNITOPERATION_HEAL", "UNITOPERATION_RELIGIOUS_HEAL", "UNITOPERATION_REST_REPAIR"}, "HEAL", ModSettings.KeyBinding.MakeValue(Keys.F, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_WMD_STRIKE_0"}, "WMD_STRIKE_0", ModSettings.KeyBinding.MakeValue(Keys.W, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_WMD_STRIKE_1"}, "WMD_STRIKE_1", ModSettings.KeyBinding.MakeValue(Keys.W, {Alt=true}));
+CreateActionBinding({"UNITOPERATION_COASTAL_RAID"}, "COASTAL_RAID", ModSettings.KeyBinding.MakeValue(Keys.A, {Alt=true}));
+CreateActionBinding({"UNITOPERATION_PILLAGE"}, "PILLAGE", ModSettings.KeyBinding.MakeValue(Keys.V, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_PILLAGE_ROUTE"}, "PILLAGE_ROUTE", ModSettings.KeyBinding.MakeValue(Keys.V, {Alt=true}));
+CreateActionBinding({"UNITCOMMAND_PLUNDER_TRADE_ROUTE"}, "PLUNDER_TRADE_ROUTE", ModSettings.KeyBinding.MakeValue(Keys.B, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_SPY_COUNTERSPY"}, "SPY_COUNTERSPY", ModSettings.KeyBinding.MakeValue(Keys.S, {Alt=true}));
+CreateActionBinding({"UNITCOMMAND_ACTIVATE_GREAT_PERSON"}, "ACTIVATE_GREAT_PERSON", ModSettings.KeyBinding.MakeValue(Keys.A, {Ctrl=true, Alt=true}));
+CreateActionBinding({"UNITCOMMAND_CANCEL"}, "CANCEL", ModSettings.KeyBinding.MakeValue(Keys.Z, {Alt=true}));
+
+
+CreateActionBinding({"UNITOPERATION_MAKE_TRADE_ROUTE"}, "MAKE_TRADE_ROUTE", ModSettings.KeyBinding.MakeValue(Keys.T, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_BUILD_ROUTE"}, "BUILD_ROUTE", ModSettings.KeyBinding.MakeValue(Keys.R, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_CLEAR_CONTAMINATION"}, "CLEAR_CONTAMINATION", ModSettings.KeyBinding.MakeValue(Keys.C, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_DESIGNATE_PARK"}, "DESIGNATE_PARK", ModSettings.KeyBinding.MakeValue(Keys.P, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_EXCAVATE"}, "EXCAVATE", ModSettings.KeyBinding.MakeValue(Keys.E, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_HARVEST_RESOURCE"}, "HARVEST_RESOURCE", ModSettings.KeyBinding.MakeValue(Keys.Q, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_PLANT_FOREST"}, "PLANT_FOREST", ModSettings.KeyBinding.MakeValue(Keys.Q, {Alt=true}));
+CreateActionBinding({"UNITOPERATION_REMOVE_FEATURE"}, "REMOVE_FEATURE", ModSettings.KeyBinding.MakeValue(Keys.Q, {Ctrl=true}));
+CreateActionBinding({"UNITOPERATION_REMOVE_IMPROVEMENT"}, "REMOVE_IMPROVEMENT", ModSettings.KeyBinding.MakeValue(Keys.W, {Ctrl=true}));
+CreateActionBinding({"UNITOPERATION_REPAIR"}, "REPAIR", ModSettings.KeyBinding.MakeValue(Keys.D, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_REPAIR_ROUTE"}, "REPAIR_ROUTE", ModSettings.KeyBinding.MakeValue(Keys.D, {Alt=true}));
+
+
+-- Untested
+CreateActionBinding({"UNITOPERATION_CONVERT_BARBARIANS"}, "CONVERT_BARBARIANS", ModSettings.KeyBinding.MakeValue(Keys.J, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_FOUND_RELIGION", "UNITOPERATION_EVANGELIZE_BELIEF"}, "FOUND_RELIGION", ModSettings.KeyBinding.MakeValue(Keys.I, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_REMOVE_HERESY", "UNITOPERATION_LAUNCH_INQUISITION"}, "LAUNCH_INQUISITION", ModSettings.KeyBinding.MakeValue(Keys.O, {Shift=true}));
+CreateActionBinding({"UNITOPERATION_SPREAD_RELIGION"}, "SPREAD_RELIGION", ModSettings.KeyBinding.MakeValue(Keys.L, {Shift=true}));
+CreateActionBinding({"UNITCOMMAND_CONDEMN_HERETIC"}, "CONDEMN_HERETIC", ModSettings.KeyBinding.MakeValue(Keys.U, {Alt=true}));
+
+CreateActionBinding({"UNITCOMMAND_UPGRADE", "UNITCOMMAND_PROMOTE"}, "UPGRADE", ModSettings.KeyBinding.MakeValue(Keys.U));
+CreateActionBinding({"UNITCOMMAND_WAKE"}, "WAKE", ModSettings.KeyBinding.MakeValue(Keys.Z, {Shift=true}));
+
+CreateActionBinding({"UNITCOMMAND_FORM_CORPS"}, "FORM_CORPS", ModSettings.KeyBinding.MakeValue(Keys.F, {Shift=true}));
+CreateActionBinding({"UNITCOMMAND_FORM_ARMY"}, "FORM_ARMY", ModSettings.KeyBinding.MakeValue(Keys.F, {Ctrl=true}));
+CreateActionBinding({"UNITCOMMAND_NAME_UNIT"}, "NAME_UNIT", ModSettings.KeyBinding.MakeValue(Keys.N, {Shift=true}));
+CreateActionBinding({"UNITCOMMAND_ENTER_FORMATION", "UNITCOMMAND_EXIT_FORMATION"}, "ENTER_FORMATION", ModSettings.KeyBinding.MakeValue(Keys.Y, {Shift=true}));
+CreateActionBinding({"UNITCOMMAND_PARADROP"}, "PARADROP", ModSettings.KeyBinding.MakeValue(Keys.L, {Shift=true}));
+
+CreateActionBinding({"UNITCOMMAND_DISTRICT_PRODUCTION", "UNITCOMMAND_WONDER_PRODUCTION", "UNITCOMMAND_PROJECT_PRODUCTION"},
+                    "PRODUCTION", ModSettings.KeyBinding.MakeValue(Keys.L, {Ctrl=true}));
+
 
 -- Everything that behaves like a rebase action
 CreateActionBinding({"UNITOPERATION_REBASE", "UNITOPERATION_SPY_TRAVEL_NEW_CITY", "UNITOPERATION_TELEPORT_TO_CITY", "UNITCOMMAND_AIRLIFT"}, 
-                    'REBASE', ModSettings.KeyBinding.MakeValue(Keys.X));
+                    "REBASE", ModSettings.KeyBinding.MakeValue(Keys.X));
 
 -- ===========================================================================
 --	FUNCTIONS
@@ -233,7 +284,7 @@ function AddActionButton( instance:table, action:table )
 	instance.UnitActionButton:SetAlpha( (action.Disabled and 0.7) or 1 );
 	instance.UnitActionButton:SetToolTipString( action.helpString );
   instance.UnitActionKeyBinding:SetText(action.KeyBindingString or "");
-  instance.UnitActionKeyBinding:SetHide(not showUnitActionKeyboardBindings.Value);
+  instance.UnitActionKeyBinding:SetHide(not showUnitActionsKeyboardBindings.Value);
 	instance.UnitActionButton:RegisterCallback( Mouse.eLClick, 
 		function(void1,void2)
 			if action.Sound ~= nil and action.Sound ~= "" then
@@ -311,7 +362,7 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
 	-- up the range attack lens layer.
 	local wrappedCallback:ifunction = 
 		function(void1,void2)
-		currentMode = UI.GetInterfaceMode(); 
+		currentMode = UI.GetInterfaceMode();
 			if currentMode ~= InterfaceModeTypes.SELECTION then
 				print("Unit panel forcing interface mode back to selection before performing operation/action"); --Debug
 				UI.SetInterfaceMode( InterfaceModeTypes.SELECTION );
@@ -320,13 +371,20 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
 		end;
 
   local keyBindingString = nil;
+  
+  -- WMD strikes are annoying as the type of WMD is an argument of the operation.
   local commandType = action.CommandType or action.OperationType;
+  if commandType == "UNITOPERATION_WMD_STRIKE" then 
+    commandType = "UNITOPERATION_WMD_STRIKE_" .. callbackVoid1;
+  end
+
   -- Who knows why the fuck Firaxis hard-coded delete into this file instead of just setting the 
   -- HotkeyId in the database row.  Probably their top-notch talent at work ...
   if action.Hash == UnitCommandTypes.DELETE then
     keyBindingString = Input.GetGestureDisplayString(Input.GetActionId("DeleteUnit"), 0) or
                        Input.GetGestureDisplayString(Input.GetActionId("DeleteUnit"), 1);
   end
+
 	-- Hotkey support
 	if action.HotkeyId then
 		local actionId = Input.GetActionId( action.HotkeyId );
@@ -334,7 +392,7 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
       keyBindingString = Input.GetGestureDisplayString(Input.GetActionId(action.HotkeyId), 0) or
                          Input.GetGestureDisplayString(Input.GetActionId(action.HotkeyId), 1);
       if not disabled then
-			  m_kHotkeyActions[actionId] = callbackFunc;
+			  m_kHotkeyActions[actionId] = wrappedCallback;
 			  m_kHotkeyCV1[actionId] = callbackVoid1;
 			  m_kHotkeyCV2[actionId] = callbackVoid2;
         m_kSoundCV1[actionId] = action.Sound;
@@ -352,10 +410,12 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
             if action.Sound then 
               UI.PlaySound(action.Sound);
             end
-            callbackFunc(callbackVoid1, callbackVoid2);
+            wrappedCallback(callbackVoid1, callbackVoid2);
           end
     end
   end
+
+  print("Action", commandType, keyBindingString);
 
 	table.insert( actionsCategoryTable, {
 		IconId				= (overrideIcon and overrideIcon) or action.Icon,
@@ -654,7 +714,7 @@ function GetUnitActionsTable( pUnit )
 							end
 						end
 
-						AddActionToTable( actionsTable, operationRow, isWMDTypeDisabled, toolTipString, actionHash, callBack ); 						
+						AddActionToTable( actionsTable, operationRow, isWMDTypeDisabled, toolTipString, actionHash, callBack, wmd ); 						
 					end
 				end
 			else
@@ -852,6 +912,8 @@ function View(data)
 					instance.UnitActionButton:RegisterCallback( Mouse.eLClick, action.CallbackFunc );
 					instance.UnitActionButton:SetVoid1( action.CallbackVoid1 );
 					instance.UnitActionButton:SetVoid2( action.CallbackVoid2 );
+          instance.UnitActionKeyBinding:SetText(action.KeyBindingString or "");
+          instance.UnitActionKeyBinding:SetHide(not showBuildActionsKeyboardBindings.Value);
 
 					-- PLACEHOLDER, currently sets first non-disabled build command; change to best build command.
 					if ( action.IsBestImprovement ~= nil and action.IsBestImprovement == true ) then
@@ -2387,6 +2449,10 @@ function OnUnitActionClicked_WMDStrike( eWMD, dummy )
 		if (pSelectedUnit ~= nil) then
 			local tParameters = {};
 			tParameters[UnitOperationTypes.PARAM_WMD_TYPE] = eWMD;
+      -- If changing WMD type go back to selection mode because otherwise it will not actually switch
+      if UI.GetInterfaceMode() == InterfaceModeTypes.WMD_STRIKE and eWMD ~= UI.GetInterfaceModeParameter(UnitOperationTypes.PARAM_WMD_TYPE) then
+        UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      end
 			UI.SetInterfaceMode(InterfaceModeTypes.WMD_STRIKE, tParameters);
 		end
 		ContextPtr:RequestRefresh();
@@ -3710,10 +3776,8 @@ function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
 		SetStandardActionButtonSelectedByHash(UnitCommandTypes.AIRLIFT, false);
 	end
 
-  -- This selects both types of wmd strike buttons.  Which is annoying, but fixing it would 
-  -- be way more involved than I want to get.
   if (eNewMode == InterfaceModeTypes.WMD_STRIKE) then
-    SetStandardActionButtonSelectedByOperation("UNITOPERATION_WMD_STRIKE", true);
+    SetStandardActionButtonSelectedByOperation("UNITOPERATION_WMD_STRIKE", true, UI.GetInterfaceModeParameter(UnitOperationTypes.PARAM_WMD_TYPE));
 	elseif (eOldMode == InterfaceModeTypes.WMD_STRIKE) then
 		SetStandardActionButtonSelectedByOperation("UNITOPERATION_WMD_STRIKE", false);
 	end
@@ -3745,11 +3809,11 @@ function SetStandardActionButtonSelected( interfaceModeString:string, isSelected
 end
 
 -- ===========================================================================
-function SetStandardActionButtonSelectedByOperation( operationString:string, isSelected:boolean )
-  SetStandardActionButtonSelectedByHash(DB.MakeHash(operationString), isSelected);
+function SetStandardActionButtonSelectedByOperation( operationString:string, isSelected:boolean, callbackVoid1:number)
+  SetStandardActionButtonSelectedByHash(DB.MakeHash(operationString), isSelected, callbackVoid1);
 end
 
-function SetStandardActionButtonSelectedByHash(hash:number, isSelected:boolean)
+function SetStandardActionButtonSelectedByHash(hash:number, isSelected:boolean, callbackVoid1:number)
   -- So, for reasons that can be explained only by the idiots working at Firaxis, db hashes 
   -- are 32 bit signed integers, but the numbers exposed by GetTag are 32 bit *un*signed integers.
   if hash < 0 then 
@@ -3759,7 +3823,7 @@ function SetStandardActionButtonSelectedByHash(hash:number, isSelected:boolean)
     local instance:table = m_standardActionsIM:GetAllocatedInstance(i);
 		if instance then
 			local actionHash = instance.UnitActionButton:GetTag();
-			if actionHash == hash then
+			if actionHash == hash and (not callbackVoid1 or callbackVoid1 == instance.UnitActionButton:GetVoid1()) then
 				instance.UnitActionButton:SetSelected(isSelected);
 			end
 		end
@@ -3821,7 +3885,6 @@ function OnInputHandler( pInputStruct:table )
 
   for value, action in pairs(activeKeyBindings) do
     if KeyBindingHelper.InputMatches(value, pInputStruct, actionKeyMatchOptions) then
-      print("Running the action");
       action();
       return true;
     end
