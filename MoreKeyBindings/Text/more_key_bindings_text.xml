@@ -99,29 +99,64 @@
       <Text>Closest to source</Text>
     </Row>
 
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODES_HEADER">
+      <Text>Keyboard target auto select modes</Text>
+    </Row>
+
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_ATTACK">
-      <Text>Keyboard target auto select for attack</Text>
+      <Text>Attack</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_FORM_CORPS">
-      <Text>Keyboard target auto select for form corps</Text>
+      <Text>Form corps</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_FORM_ARMY">
-      <Text>Keyboard target auto select for form army</Text>
+      <Text>Form army</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_AIR_ATTACK">
-      <Text>Keyboard target auto select for air attack</Text>
+      <Text>Air attack</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_REBASE">
-      <Text>Keyboard target auto select for rebase</Text>
+      <Text>Rebase</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_AIRLIFT">
-      <Text>Keyboard target auto select for form airlift</Text>
+      <Text>Airlift</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_COASTAL_RAID">
-      <Text>Keyboard target auto select for coastal raid</Text>
+      <Text>Coastal raid</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_PRIORITY_TARGET">
-      <Text>Keyboard target auto select for priority target</Text>
+      <Text>Priority target</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_TELEPORT">
+      <Text>Transfer trader</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_NUCLEAR_STRIKE">
+      <Text>WMD strike</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_MOVE_TO">
+      <Text>Move to</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNIT_ACTION_CONTROLS">
+      <Text>Unit Actions</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS">
+      <Text>Show unit actions key bindings</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS_TOOLTIP">
+      <Text>Controls whether key bindings are shown below the buttons in the unit action panel.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_AIR_ATTACK">
+      <Text>Air attack</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_PRIORITY_TARGET">
+      <Text>Priority target</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_REBASE">
+      <Text>Rebase/Transfer trader/Move spy/Airlift</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UPGRADE">
+      <Text>Upgrade</Text>
     </Row>
   </LocalizedText>
 </GameData>

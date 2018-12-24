@@ -9,6 +9,8 @@ include( "PopupDialog" );
 include( "Civ6Common" );
 include( "EspionageSupport" );
 
+include("mod_settings.lua");
+include("mod_settings_key_binding_helper.lua");
 
 -- ===========================================================================
 --	CONSTANTS
@@ -82,6 +84,51 @@ local pSpyInfo = GameInfo.Units["UNIT_SPY"];
 
 local m_AttackHotkeyId			= Input.GetActionId("Attack");
 local m_DeleteHotkeyId			= Input.GetActionId("DeleteUnit");
+
+-- ===========================================================================
+-- More key bindings
+-- ===========================================================================
+
+function RequestRefresh()
+  ContextPtr:RequestRefresh();
+end
+
+-- Keybindings for all possible unit actions (minus the ones that the game handles already)
+-- Maps from operation or command name to setting.
+local actionKeyBindings = {};
+
+-- Map from key binding setting values to a callback to execute the associated action.
+-- Only includes the actions the current unit can use.
+local activeKeyBindings = {};
+
+local actionKeyMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
+
+function CreateActionBinding(operationNames:table, action:string, keyBindingValue:table)
+  local setting = ModSettings.KeyBinding:new(keyBindingValue, "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+      "LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_" .. action);
+  setting:AddChangedHandler(RequestRefresh);
+  for _, name in ipairs(operationNames) do
+    -- Skip if no data.  Happens for R+F only actions.
+    actionKeyBindings[name] = setting;
+  end
+end
+
+ModSettings.Header:new("LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_UNIT_ACTION_CONTROLS");
+
+local showUnitActionKeyboardBindings = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS",
+    "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTION_KEY_BINDINGS_TOOLTIP");
+showUnitActionKeyboardBindings:AddChangedHandler(RequestRefresh);
+
+CreateActionBinding({"UNITOPERATION_AIR_ATTACK"}, 'AIR_ATTACK', ModSettings.KeyBinding.MakeValue(Keys.S));
+CreateActionBinding({"UNITCOMMAND_PRIORITY_TARGET"}, 'PRIORITY_TARGET', ModSettings.KeyBinding.MakeValue(Keys.S, {Shift=true}));
+CreateActionBinding({"UNITCOMMAND_UPGRADE"}, 'UPGRADE', ModSettings.KeyBinding.MakeValue(Keys.U));
+
+-- Everything that behaves like a rebase action
+CreateActionBinding({"UNITOPERATION_REBASE", "UNITOPERATION_SPY_TRAVEL_NEW_CITY", "UNITOPERATION_TELEPORT_TO_CITY", "UNITCOMMAND_AIRLIFT"}, 
+                    'REBASE', ModSettings.KeyBinding.MakeValue(Keys.X));
 
 -- ===========================================================================
 --	FUNCTIONS
@@ -185,6 +232,8 @@ function AddActionButton( instance:table, action:table )
 	instance.UnitActionButton:SetDisabled( action.Disabled );
 	instance.UnitActionButton:SetAlpha( (action.Disabled and 0.7) or 1 );
 	instance.UnitActionButton:SetToolTipString( action.helpString );
+  instance.UnitActionKeyBinding:SetText(action.KeyBindingString or "");
+  instance.UnitActionKeyBinding:SetHide(not showUnitActionKeyboardBindings.Value);
 	instance.UnitActionButton:RegisterCallback( Mouse.eLClick, 
 		function(void1,void2)
 			if action.Sound ~= nil and action.Sound ~= "" then
@@ -268,7 +317,45 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
 				UI.SetInterfaceMode( InterfaceModeTypes.SELECTION );
 			end
 			callbackFunc(void1,void2, currentMode);
-		end;	
+		end;
+
+  local keyBindingString = nil;
+  local commandType = action.CommandType or action.OperationType;
+  -- Who knows why the fuck Firaxis hard-coded delete into this file instead of just setting the 
+  -- HotkeyId in the database row.  Probably their top-notch talent at work ...
+  if action.Hash == UnitCommandTypes.DELETE then
+    keyBindingString = Input.GetGestureDisplayString(Input.GetActionId("DeleteUnit"), 0) or
+                       Input.GetGestureDisplayString(Input.GetActionId("DeleteUnit"), 1);
+  end
+	-- Hotkey support
+	if action.HotkeyId then
+		local actionId = Input.GetActionId( action.HotkeyId );
+		if actionId ~= nil then
+      keyBindingString = Input.GetGestureDisplayString(Input.GetActionId(action.HotkeyId), 0) or
+                         Input.GetGestureDisplayString(Input.GetActionId(action.HotkeyId), 1);
+      if not disabled then
+			  m_kHotkeyActions[actionId] = callbackFunc;
+			  m_kHotkeyCV1[actionId] = callbackVoid1;
+			  m_kHotkeyCV2[actionId] = callbackVoid2;
+        m_kSoundCV1[actionId] = action.Sound;
+      end
+		else
+			UI.DataError("Cannot set hotkey on Unitpanel for action with icon '"..action.IconId.."' because engine doesn't have actionId of '"..action.HotkeyId.."'.");
+		end
+  elseif actionKeyBindings[commandType] then
+    local keyBindingSetting = actionKeyBindings[commandType];
+    keyBindingString = ModSettings.KeyBinding.ValueToString(keyBindingSetting.Value);
+    if not disabled then
+      activeKeyBindings[keyBindingSetting.Value] = 
+          function()
+            UI.PlaySound("Play_UI_Click");
+            if action.Sound then 
+              UI.PlaySound(action.Sound);
+            end
+            callbackFunc(callbackVoid1, callbackVoid2);
+          end
+    end
+  end
 
 	table.insert( actionsCategoryTable, {
 		IconId				= (overrideIcon and overrideIcon) or action.Icon,
@@ -279,23 +366,10 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
 		CallbackVoid1		= callbackVoid1,
 		CallbackVoid2		= callbackVoid2,
 		IsBestImprovement	= action.IsBestImprovement,
-		Sound				= action.Sound
+		Sound				= action.Sound,
+		KeyBindingString = keyBindingString,
 		});
-
-	-- Hotkey support
-	if (action.HotkeyId~=nil) and disabled==false then
-		local actionId = Input.GetActionId( action.HotkeyId );
-		if actionId ~= nil then
-			m_kHotkeyActions[actionId] = callbackFunc;
-			m_kHotkeyCV1[actionId] = callbackVoid1;
-			m_kHotkeyCV2[actionId] = callbackVoid2;
-            m_kSoundCV1[actionId] = action.Sound;
-		else
-			UI.DataError("Cannot set hotkey on Unitpanel for action with icon '"..action.IconId.."' because engine doesn't have actionId of '"..action.HotkeyId.."'.");
-		end
-	end
 end
-
 
 -- ===========================================================================
 --	Refresh unit actions
@@ -2106,7 +2180,8 @@ function Refresh(player, unitId)
 		m_kHotkeyActions = {};
 		m_kHotkeyCV1 = {};
 		m_kHotkeyCV2 = {};
-        m_kSoundCV1 = {};
+    m_kSoundCV1 = {};
+    activeKeyBindings = {};
 
 		local units = Players[player]:GetUnits(); 
 		local unit = units:FindID(unitId);
@@ -3740,17 +3815,24 @@ function OnInputHandler( pInputStruct:table )
 
 	-- If not the current turn or current unit is dictated by cursor/touch
 	-- hanging over a flag
-	if ( not m_isOkayToProcess or m_isFlagFocused ) then
+	if not m_isOkayToProcess then
 		return false;
 	end
 
+  for value, action in pairs(activeKeyBindings) do
+    if KeyBindingHelper.InputMatches(value, pInputStruct, actionKeyMatchOptions) then
+      print("Running the action");
+      action();
+      return true;
+    end
+  end
+
 	-- If moved, there is a possibility of moving into a new hex.
-	if( uiMsg == MouseEvents.MouseMove and (pInputStruct:GetMouseDX() ~= 0 or pInputStruct:GetMouseDY() ~= 0)) then	
+	if uiMsg == MouseEvents.MouseMove and (not m_isFlagFocused) and (pInputStruct:GetMouseDX() ~= 0 or pInputStruct:GetMouseDY() ~= 0) then	
 		InspectWhatsBelowTheCursor();
 	end
-
-    return false;
-
+  
+  return false;
 end
 
 -- ===========================================================================
@@ -4029,6 +4111,9 @@ function Initialize()
 	Events.UnitOperationDeactivated.Add( OnUnitOperationDeactivated );
 	Events.UnitRemovedFromMap.Add( OnUnitRemovedFromMap );
 	Events.UnitSelectionChanged.Add( OnUnitSelectionChanged );
+
+  -- Doesn't work because key binding changes are not an option that is broadcast via this event
+  -- Events.UserOptionChanged.Add(RequestRefresh);
 	
 	LuaEvents.TradeOriginChooser_SetTradeUnitStatus.Add(OnSetTradeUnitStatus );
 	LuaEvents.TradeRouteChooser_SetTradeUnitStatus.Add(	OnSetTradeUnitStatus );
