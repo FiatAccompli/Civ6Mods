@@ -156,7 +156,7 @@ setting = ModSettings.Text:new(defaultValue, categoryName, settingName, tooltip,
 ```
 * `defaultValue` should be a string
 
-The `Value` of the setting is the user-providede string.
+The `Value` of the setting is the user-provided string.
 
 ---
   
@@ -217,7 +217,7 @@ The `Value` of the setting is meaningless.
 
 ---
 
-### Header
+#### Header
 
 A psuedo-setting that shows up in the configuration UI as a section header.
 

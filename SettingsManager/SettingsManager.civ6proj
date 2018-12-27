@@ -32,9 +32,9 @@
     <Content Include="Database\_mod_settings_default_values.sql">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="modinfo_fixer.xml">
+    <None Include="modinfo_fixer.xml">
       <SubType>Content</SubType>
-    </Content>
+    </None>
     <Content Include="Scripts\mod_settings.lua">
       <SubType>Content</SubType>
     </Content>

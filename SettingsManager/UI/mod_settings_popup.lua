@@ -117,10 +117,9 @@ function SelectSettingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
 
   ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER", Locale.Lookup(setting.settingName)));
+  ui.SettingName:LocalizeAndSetToolTip(setting.tooltip);
 
   local pulldown = ui.SettingPulldown;
-  pulldown:LocalizeAndSetToolTip(setting.tooltip);
-
   for i, v in ipairs(setting.values) do
     local instance = {};
     pulldown:BuildEntry("InstanceOne", instance);
@@ -151,7 +150,7 @@ function TextSettingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
 
   ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER", Locale.Lookup(setting.settingName)));
-  ui.SettingText:LocalizeAndSetToolTip(setting.tooltip);
+  ui.SettingName:LocalizeAndSetToolTip(setting.tooltip);
   ui.SettingText:RegisterStringChangedCallback(function() 
       local value = ui.SettingText:GetText();
       if value ~= setting.Value then
@@ -280,7 +279,7 @@ function KeyBindingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
 
   ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_FORMATTER", Locale.Lookup(setting.settingName)));
-  ui.Binding:LocalizeAndSetToolTip(setting.tooltip);
+  ui.SettingName:LocalizeAndSetToolTip(setting.tooltip);
   ui.Binding:RegisterCallback(Mouse.eLClick, 
     function()
       StartActiveKeyBinding(result);
@@ -358,7 +357,7 @@ function RangeSettingUIHandler:new(setting:table, ui:table)
   local result = BaseSettingUIHandler.new(self, setting, ui);
 
   ui.SettingName:SetText(Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER", Locale.Lookup(setting.settingName)));
-  ui.SettingSlider:LocalizeAndSetToolTip(setting.tooltip);
+  ui.SettingName:LocalizeAndSetToolTip(setting.tooltip);
   local steps = setting.steps;
   if steps and steps > 0 then
     ui.SettingSlider:SetNumSteps(steps);
