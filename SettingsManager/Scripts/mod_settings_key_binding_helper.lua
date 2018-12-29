@@ -13,7 +13,7 @@ local techTreeOpen = false;
 local civicTreeOpen = false;
 
 LuaEvents.CivicsTree_CloseCivicsTree.Add(function() civicTreeOpen=false; end);
-LuaEvents.CivicsTree_OpenCivicsTree.Add(function() print("Civic Tree Open"); civicTreeOpen=true; end);
+LuaEvents.CivicsTree_OpenCivicsTree.Add(function() civicTreeOpen=true; end);
 LuaEvents.TechTree_CloseTechTree.Add(function() techTreeOpen=false; end);
 LuaEvents.TechTree_OpenTechTree.Add(function() techTreeOpen=true; end);
 
