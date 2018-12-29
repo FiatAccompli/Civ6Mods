@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
+  <xsl:strip-space elements="*"/>
+  
+  <xsl:template match="/Mod/Properties">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+    <LocalizedText>
+      <Text id="LOC_GLOBAL_KEY_BINDINGS_MOD_NAME">
+        <en_US>Global Key Bindings</en_US>
+        <de_DE>Global Key Bindings</de_DE>
+        <es_ES>Global Key Bindings</es_ES>
+        <fr_FR>Global Key Bindings</fr_FR>
+        <it_IT>Global Key Bindings</it_IT>
+        <pl_PL>Global Key Bindings</pl_PL>
+        <pt_BR>Global Key Bindings</pt_BR>
+        <ru_RU>Global Key Bindings</ru_RU>
+        <ja_JP>Global Key Bindings</ja_JP>
+        <ko_KR>Global Key Bindings</ko_KR>
+        <zh_Hans_CN>Global Key Bindings</zh_Hans_CN>
+        <zh_Hant_HK>Global Key Bindings</zh_Hant_HK>
+      </Text>
+      <Text id="LOC_GLOBAL_KEY_BINDINGS_TEASER">
+        <en_US>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</en_US>
+        <de_DE>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</de_DE>
+        <es_ES>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</es_ES>
+        <fr_FR>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</fr_FR>
+        <it_IT>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</it_IT>
+        <pl_PL>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</pl_PL>
+        <pt_BR>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</pt_BR>
+        <ru_RU>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</ru_RU>
+        <ja_JP>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</ja_JP>
+        <ko_KR>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</ko_KR>
+        <zh_Hans_CN>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</zh_Hans_CN>
+        <zh_Hant_HK>Adds keybindings to control minimap size, volume levels, and toggle quick combat and movement.</zh_Hant_HK>
+      </Text>
+    </LocalizedText>
+  </xsl:template>
+
+  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
+  <xsl:template match="/Mod/LocalizedText"/>
+
+  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
+       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
+  <xsl:template match="@priority">
+    <xsl:attribute name="Priority">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
+  </xsl:template>
+
+  <!--Identity template, provides default behavior that copies all content into the output -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>

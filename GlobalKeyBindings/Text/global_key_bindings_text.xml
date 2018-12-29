@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <LocalizedText>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY">
+      <Text>Global hotkeys</Text>
+    </Row>
+
+    <!-- Map control -->
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MINIMAP_CONTROLS">
+      <Text>Minimap</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT">
+      <Text>Minimap size change amount</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT_TOOLTIP">
+      <Text>Amount the minimap changes each time the increase minimap size or decrease minimap size keys are pressed as percent of allowable range.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MINIMAP_INCREASE_SIZE">
+      <Text>Increase minimap size</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MINIMAP_DECREASE_SIZE">
+      <Text>Decrease minimap size</Text>
+    </Row>
+
+    <!-- Sound control -->
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_SOUND_CONTROLS">
+      <Text>Audio</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT">
+      <Text>Volume change amount</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_PAGE_UP_PAGE_DOWN">
+      <Text>Use page up/page down keys</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_PAGE_UP_PAGE_DOWN_TOOLTIP">
+      <Text>Binds volume control keys to page up/page down.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_NATIVE_VOLUME_KEYS">
+      <Text>Use dedicated volume keys</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_NATIVE_VOLUME_KEYS_TOOLTIP">
+      <Text>Binds volume control keys to the native volume control keys (only useful if your keyboard has them).</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT_TOOLTIP">
+      <Text>Amount the volume changes each time the increase volume or decrease volume keys are pressed.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_INCREASE_VOLUME">
+      <Text>Increase master volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_DECREASE_VOLUME">
+      <Text>Decrease master volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MUTE_VOLUME">
+      <Text>Mute/Unmute</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_INCREASE_MUSIC_VOLUME">
+      <Text>Increase music volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_DECREASE_MUSIC_VOLUME">
+      <Text>Decrease music volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_INCREASE_SOUND_EFFECTS_VOLUME">
+      <Text>Increase sound effects volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_DECREASE_SOUND_EFFECTS_VOLUME">
+      <Text>Decrease sound effects volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_INCREASE_AMBIENT_VOLUME">
+      <Text>Increase ambient sound volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_DECREASE_AMBIENT_VOLUME">
+      <Text>Decrease ambient sound volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_INCREASE_SPEECH_VOLUME">
+      <Text>Increase speech volume</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_DECREASE_SPEECH_VOLUME">
+      <Text>Decrease speech volume</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_MUSIC_LABEL">
+      <Text>Music:</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_EFFECTS_LABEL">
+      <Text>Effects:</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_AMBIENT_LABEL">
+      <Text>Ambient:</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_SPEECH_LABEL">
+      <Text>Spech:</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_GAMEPLAY_CONTROLS">
+      <Text>Gameplay</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_COMBAT">
+      <Text>Toggle quick combat</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_MOVEMENT">
+      <Text>Toggle quick movement</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_GRAPHICS_CONTROLS">
+      <Text>Graphics</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_CHANGE_AMOUNT">
+      <Text>Time of day change amount (minutes)</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_INCREASE_TIME_OF_DAY">
+      <Text>Increase in-game time of day</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_DECREASE_TIME_OF_DAY">
+      <Text>Decrease in-game time of day</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_ANIMATED_TIME_OF_DAY">
+      <Text>Toggle animated time of day</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_AMOUNT">
+      <Text>Time of day speed change amount</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_AMOUNT_TOOLTIP">
+      <Text>Percent the day speed changes each time the associated increase or decrease keys are pressed.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_INCREASE">
+      <Text>Increase in-game day speed</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_DECREASE">
+      <Text>Decrease in-game day speed</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_LENGTH_OF_DAY_FORMATTER_MINUTES">
+      <Text>{1_Value : number #.#} minutes</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_LENGTH_OF_DAY_FORMATTER_SECONDS">
+      <Text>{1_Value : number #.#} seconds</Text>
+    </Row>
+    <Row Language="en_US" TAG="LOC_GLOBAL_KEY_BINDINGS_DAY_LENGTH">
+      <Text>Length of Day:</Text>
+    </Row>
+  </LocalizedText>
+</GameData>

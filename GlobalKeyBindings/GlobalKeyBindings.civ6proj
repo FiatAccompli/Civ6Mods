@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>LOC_GLOBAL_KEY_BINDINGS_MOD_NAME</Name>
+    <Guid>f2ed0f33-85c2-407c-bda3-affa1889a92c</Guid>
+    <ProjectGuid>b31147d3-7a21-4a16-abed-095db94d5263</ProjectGuid>
+    <ModVersion>1</ModVersion>
+    <Teaser>LOC_GLOBAL_KEY_BINDINGS_TEASER</Teaser>
+    <Description>LOC_GLOBAL_KEY_BINDINGS_TEASER</Description>
+    <Authors>FiatAccompli</Authors>
+    <SpecialThanks>
+    </SpecialThanks>
+    <AffectsSavedGames>false</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <AssemblyName>GlobalKeyBindings</AssemblyName>
+    <RootNamespace>GlobalKeyBindings</RootNamespace>
+    <InGameActionData><![CDATA[<InGameActions><UpdateText id="GlobalKeyBindingsText"><File>Text/global_key_bindings_text.xml</File></UpdateText><ImportFiles id="ImportUI"><File>UI/global_key_bindings.lua</File></ImportFiles><AddUserInterfaces id="AddUI"><Properties><Context>InGame</Context></Properties><File>UI/global_key_bindings.xml</File></AddUserInterfaces><ImportFiles id="ImportTextures"><File>Textures/global_key_bindings_disabled.dds</File><File>Textures/global_key_bindings_time_of_day_sun.dds</File><File>Textures/global_key_bindings_volume.dds</File></ImportFiles></InGameActions>]]></InGameActionData>
+    <AssociationData><![CDATA[<Associations>
+  <Dependency type="Mod" title="Mod Settings Manager" id="1cb1beaf-0428-4aad-b11d-e3168429c071" />
+</Associations>]]></AssociationData>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="modinfo_fixer.xml">
+      <SubType>Content</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Textures\" />
+    <Folder Include="UI" />
+    <Folder Include="Text" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Textures\global_key_bindings_disabled.dds">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Textures\global_key_bindings_time_of_day_sun.dds">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Textures\global_key_bindings_volume.dds">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Text\global_key_bindings_text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\global_key_bindings.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\global_key_bindings.lua">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>

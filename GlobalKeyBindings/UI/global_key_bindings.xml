@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Context>
+  <AlphaAnim ID="FadeDelay" AlphaBegin="1" AlphaEnd="1" Speed="1" Cycle="Once"/>
+  <AlphaAnim ID="StatusWindowAlpha" Anchor="C,C" Size="auto,auto" AlphaBegin="1" AlphaEnd="0" Speed="1" Cycle="Once">
+    <Grid    ID="DebugStuff"       Anchor="C,C"  Size="auto,auto" Style="EventPopupFrame" AutoSizePadding="25,25">
+      <Stack ID="StatusStack" StackPadding="10" size="auto,auto" StackGrowth="Right" Anchor="C,C">
+        <AlphaAnim ID="VolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+          <Stack StackGrowth="Down" StackPadding="2">
+            <Container Size="auto,auto" Anchor="C,C">
+              <Image Texture="global_key_bindings_volume.dds" Size="60,60" Anchor="C,C"/>
+              <Image ID="VolumeSlash" Texture="global_key_bindings_disabled.dds" Size="60,60" Anchor="C,C"/>
+            </Container>
+            <Label String="LOC_OPTIONS_MASTER_VOLUME" Anchor="C,C" Style="FontNormal14"/>
+            <Bar ID="MasterVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="C,C" Direction="Right" Size="100,10"/>
+          </Stack>
+        </AlphaAnim>
+        <Stack StackGrowth="Down" StackPadding="2">
+          <AlphaAnim ID="MusicVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+            <Stack StackGrowth="Down" StackPadding="2">
+              <Label String="LOC_GLOBAL_KEY_BINDINGS_MUSIC_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Bar ID="MusicVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
+            </Stack>
+          </AlphaAnim>
+          <AlphaAnim ID="SoundEffectsVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+            <Stack StackGrowth="Down" StackPadding="2">
+              <Label String="LOC_GLOBAL_KEY_BINDINGS_EFFECTS_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Bar ID="SoundEffectsVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
+            </Stack>
+          </AlphaAnim>
+          <AlphaAnim ID="AmbientVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+            <Stack StackGrowth="Down" StackPadding="2">
+              <Label String="LOC_GLOBAL_KEY_BINDINGS_AMBIENT_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Bar ID="AmbientVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
+            </Stack>
+          </AlphaAnim>
+          <AlphaAnim ID="SpeechVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+            <Stack StackGrowth="Down" StackPadding="2">
+              <Label String="LOC_GLOBAL_KEY_BINDINGS_SPEECH_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Bar ID="SpeechVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
+            </Stack>
+          </AlphaAnim>
+        </Stack>
+        <AlphaAnim ID="QuickCombatContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+          <Stack StackGrowth="Down" StackPadding="2">
+            <Container Size="auto,auto" Anchor="C,C">
+              <Image Icon="ICON_NOTIFICATION_DECLARE_WAR" Size="60,60" Anchor="C,C"/>
+              <Image ID="QuickCombatSlash" Texture="global_key_bindings_disabled.dds" Size="60,60" Anchor="C,C"/>
+            </Container>
+            <Label String="LOC_OPTIONS_QUICK_COMBAT" Anchor="C,C" Style="FontNormal14"/>
+            <Label ID="QuickCombatStatus" String="LOC_OPTIONS_ENABLED" Anchor="C,C" Style="FontNormal14"/>
+          </Stack>
+        </AlphaAnim>
+        <AlphaAnim ID="QuickMovementContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+          <Stack StackGrowth="Down" StackPadding="2">
+            <Container Size="auto,auto" Anchor="C,C">
+              <Image Icon="ICON_UNIT_JET_FIGHTER" Size="60,60" Anchor="C,C"/>
+              <Image ID="QuickMovementSlash" Texture="global_key_bindings_disabled.dds" Size="60,60" Anchor="C,C"/>
+            </Container>
+            <Label String="LOC_OPTIONS_QUICK_MOVEMENT" Anchor="C,C" Style="FontNormal14"/>
+            <Label ID="QuickMovementStatus" String="LOC_OPTIONS_ENABLED" Anchor="C,C" Style="FontNormal14"/>
+          </Stack>
+        </AlphaAnim>
+        <AlphaAnim ID="TimeOfDayContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
+          <Stack StackGrowth="Down" StackPadding="2">
+            <Container Size="auto,auto" Anchor="C,C">
+              <Image Texture="global_key_bindings_time_of_day_sun.dds" Size="60,60" Anchor="C,C"/>
+              <Image ID="AnimatedTimeOfDaySlash" Texture="global_key_bindings_disabled.dds" Size="60,60" Anchor="C,C"/>
+            </Container>
+            <Stack ID="InGameTimeOfDayContainer" StackGrowth="Down" StackPadding="2">
+              <Label String="LOC_OPTIONS_TIME_OF_DAY" Anchor="C,C" Style="FontNormal14"/>
+              <Label ID="TimeOfDayLabel" String="12:00" Anchor="C,C" Style="FontNormal14"/>
+            </Stack>
+            <Stack ID="DayLengthContainer" StackGrowth="Down" StackPadding="2">
+              <Label String="LOC_GLOBAL_KEY_BINDINGS_DAY_LENGTH" Anchor="C,C" Style="FontNormal14"/>
+              <Label ID="DayLengthLabel" String="20 minutes" Anchor="C,C" Style="FontNormal14"/>
+            </Stack>
+          </Stack>
+        </AlphaAnim>
+      </Stack>
+    </Grid>
+  </AlphaAnim>
+</Context>
