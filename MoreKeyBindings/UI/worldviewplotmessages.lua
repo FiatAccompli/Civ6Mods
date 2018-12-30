@@ -280,6 +280,11 @@ local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
     [InterfaceModeTypes.REBASE] = "ICON_UNITOPERATION_REBASE",
     [InterfaceModeTypes.AIRLIFT] = "ICON_UNITCOMMAND_AIRLIFT",
     [InterfaceModeTypes.COASTAL_RAID] = "ICON_UNITOPERATION_COASTAL_RAID",
+    [InterfaceModeTypes.TELEPORT_TO_CITY] = "ICON_UNITOPERATION_TELEPORT_TO_CITY",
+    [InterfaceModeTypes.WMD_STRIKE] = "ICON_UNITOPERATION_WMD_STRIKE",
+    [InterfaceModeTypes.ICBM_STRIKE] = "ICON_UNITOPERATION_WMD_STRIKE",
+    -- Use no icon so the number in the path shows through.
+    [InterfaceModeTypes.MOVE_TO] = "ICON_MORE_KEY_BINDINGS_NONE",
 };
 
 function UpdateKeyboardTargetIcon(interfaceMode:number)
@@ -309,7 +314,7 @@ end
 
 
 function OnInputHandler(input:table)
-	if input:GetMessageType() == MouseEvents.MouseMove and input:GetMouseDX() ~= 0 and input:GetMouseDY() ~= 0 then
+	if input:GetMessageType() == MouseEvents.MouseMove and (input:GetMouseDX() ~= 0 or input:GetMouseDY() ~= 0) then
 		UpdateKeyboardTargetingVisibility(false);
 	end
 end
@@ -318,7 +323,7 @@ function Initialize()
   ContextPtr:SetInputHandler(OnInputHandler, true);
   keyboardTargetMouseMoveSetting:AddChangedHandler(function(value, oldValue) 
     UpdateKeyboardTargetingVisibility(true);
-    UpdateKeyboardTargetingVisibility(false);
+    UpdateKeyboardTargetingVisibility(value);
   end);
   Events.UnitSelectionChanged.Add(OnUnitSelectionChanged);
   Events.InterfaceModeChanged.Add(OnInterfaceModeChanged);

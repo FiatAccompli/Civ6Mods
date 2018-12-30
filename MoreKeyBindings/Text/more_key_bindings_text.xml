@@ -34,40 +34,6 @@
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MAP_ZOOM_SPEED">
       <Text>Zoom speed (percent of default)</Text>
     </Row>
-    
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT">
-      <Text>Minimap size change amount</Text>
-    </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT_TOOLTIP">
-      <Text>Amount the minimap changes each time the increase minimap size or decrease minimap size keys are pressed.</Text>
-    </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_INCREASE_SIZE">
-      <Text>Increase minimap size</Text>
-    </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MINIMAP_DECREASE_SIZE">
-      <Text>Decrease minimap size</Text>
-    </Row>
-    
-    <!-- Sound control -->
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SOUND_CONTROLS">
-      <Text>Sound</Text>
-    </Row>
-    
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT">
-      <Text>Volume change amount</Text>
-    </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT_TOOLTIP">
-      <Text>Amount the volume changes each time the increase volume or decrease volume keys are pressed.</Text>
-    </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_INCREASE_VOLUME">
-      <Text>Increase volume</Text>
-    </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_DECREASE_VOLUME">
-      <Text>Decrease volume</Text>
-    </Row>
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_MUTE_VOLUME">
-      <Text>Mute/Unmute</Text>
-    </Row>
 
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_CITY_COMMAND_CONTROLS">
       <Text>City commands</Text>
@@ -278,10 +244,10 @@
       <Text>Build recommended</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_USE_UNASSIGNED_IMPROVEMENT_KEY_BINDINGS">
-      <Text>Use unassigned improvement key bindings</Text>
+      <Text>Use unassigned improvement bindings</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_USE_UNASSIGNED_IMPROVEMENT_KEY_BINDINGS_TOOLTIP">
-      <Text>If true then improvements which do not have a specific key binding associated with them will instead be assigned a generic key binding rather than no key binding.</Text>
+      <Text>If true then improvements which do not have a specific key binding associated with them will be assigned a generic key binding rather than no key binding.</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UNASSIGNED_BUILD_1">
       <Text>Unassigned improvement 1</Text>
@@ -297,6 +263,18 @@
     </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UNASSIGNED_BUILD_5">
       <Text>Unassigned improvement 5</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UNASSIGNED_BUILD_6">
+      <Text>Unassigned improvement 6</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UNASSIGNED_BUILD_7">
+      <Text>Unassigned improvement 7</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UNASSIGNED_BUILD_8">
+      <Text>Unassigned improvement 8</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_UNASSIGNED_BUILD_9">
+      <Text>Unassigned improvement 9</Text>
     </Row>
   </LocalizedText>
 </GameData>

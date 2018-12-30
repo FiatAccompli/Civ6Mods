@@ -29,9 +29,9 @@
     <Content Include="Icons\more_key_binding_icons.xml">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="modinfo_fixer.xml">
+    <None Include="modinfo_fixer.xml">
       <SubType>Content</SubType>
-    </Content>
+    </None>
     <Content Include="Textures\keyboard_navigation_icons.dds">
       <SubType>Content</SubType>
     </Content>

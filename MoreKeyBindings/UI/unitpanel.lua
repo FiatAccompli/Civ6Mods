@@ -19,8 +19,6 @@ local ANIMATION_SPEED				:number = 2;
 local SECONDARY_ACTIONS_ART_PADDING	:number = -4;
 local MAX_BEFORE_TRUNC_STAT_NAME	:number = 170;
 
-
-
 -- ===========================================================================
 --	MEMBERS / VARIABLES
 -- ===========================================================================
