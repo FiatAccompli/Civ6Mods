@@ -9,8 +9,9 @@ include( "PopupDialog" );
 include( "Civ6Common" );
 include( "EspionageSupport" );
 
-include("mod_settings.lua");
-include("mod_settings_key_binding_helper.lua");
+include("mod_settings");
+include("mod_settings_key_binding_helper");
+include("more_key_bindings_melee_attack");
 
 -- ===========================================================================
 --	CONSTANTS
@@ -80,7 +81,6 @@ local m_resizeUnitPanelPadding	:number = 18;
 
 local pSpyInfo = GameInfo.Units["UNIT_SPY"];
 
-local m_AttackHotkeyId			= Input.GetActionId("Attack");
 local m_DeleteHotkeyId			= Input.GetActionId("DeleteUnit");
 
 -- ===========================================================================
@@ -124,7 +124,8 @@ end
 function CreateImprovementBinding(improvementName:string, keyBindingValue:table)
   local improvement = GameInfo.Improvements["IMPROVEMENT_" .. improvementName];
   
-  -- Skip if no data.  Happens if you don't have a 
+  -- Skip if no data.  Happens if the game doesn't have the improvement defined - such as for R+F uniques 
+  -- when playing without the expansion.
   if improvement then
     local setting = ModSettings.KeyBinding:new(keyBindingValue, "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
         "LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_BUILD_" .. improvementName);
@@ -142,7 +143,6 @@ local showUnitActionsKeyboardBindings = ModSettings.Boolean:new(
     "LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS_TOOLTIP");
 showUnitActionsKeyboardBindings:AddChangedHandler(RequestRefresh);
 
-CreateActionBinding({"UNITOPERATION_AIR_ATTACK"}, "AIR_ATTACK", ModSettings.KeyBinding.MakeValue(Keys.S));
 CreateActionBinding({"UNITCOMMAND_PRIORITY_TARGET"}, "PRIORITY_TARGET", ModSettings.KeyBinding.MakeValue(Keys.S, {Shift=true}));
 CreateActionBinding({"UNITOPERATION_DEPLOY"}, "DEPLOY", ModSettings.KeyBinding.MakeValue(Keys.D, {Ctrl=true}));
 CreateActionBinding({"UNITOPERATION_HEAL", "UNITOPERATION_RELIGIOUS_HEAL", "UNITOPERATION_REST_REPAIR"}, "HEAL", ModSettings.KeyBinding.MakeValue(Keys.F, {Shift=true}));
@@ -456,7 +456,6 @@ function AddActionToTable( actionsTable:table, action:table, disabled:boolean, t
   elseif actionKeyBindings[commandType] then
     keyBindingSetting = actionKeyBindings[commandType];
   elseif action.ImprovementType then
-    print("Improvement", callbackVoid1, callbackVoid2, keyBindingSetting, improvementKeyBindings[callbackVoid1]);
     keyBindingSetting = improvementKeyBindings[callbackVoid1];
     if not keyBindingSetting and useUnassignedImprovmentKeyBindings.Value then
       keyBindingSetting = unassignedImprovementKeyBindings[unassignedImprovmentKeyBindingsNextUseIndex];
@@ -564,7 +563,7 @@ function GetUnitActionsTable( pUnit )
 				end
 			elseif (actionHash == UnitCommandTypes.NAME_UNIT) then
 				local bCanStart = UnitManager.CanStartCommand( pUnit, UnitCommandTypes.NAME_UNIT, true) and GameCapabilities.HasCapability("CAPABILITY_RENAME");
-				if (bCanStart) then			
+				if (bCanStart) then
 					local toolTipString = Locale.Lookup(commandRow.Description);
 					AddActionToTable( actionsTable, commandRow, isDisabled, toolTipString, actionHash, OnNameUnit );
 				end
@@ -581,6 +580,15 @@ function GetUnitActionsTable( pUnit )
 					local bCanStartNow, tResults = UnitManager.CanStartCommand( pUnit, actionHash, false, true);
 					AddActionToTable( actionsTable, commandRow, isDisabled, Locale.Lookup("LOC_UNITPANEL_ESPIONAGE_CANCEL_MISSION"), actionHash, OnUnitActionClicked_CancelSpyMission, UnitCommandTypes.TYPE, actionHash  );
 				end	
+      elseif commandRow.CommandType == 'MORE_KEYBINDING_UNITCOMMAND_MELEE_ATTACK' then
+        actionHash = MeleeAttackHandling.ActionHash;
+        local bCanStart = MeleeAttackHandling.CanMeleeAttack(pUnit, true);
+
+        local toolTipString	= Locale.Lookup(commandRow.Description);
+        if bCanStart then
+          isDisabled = isDisabled or not MeleeAttackHandling.CanMeleeAttack(pUnit);
+          AddActionToTable(actionsTable, commandRow, isDisabled, toolTipString, actionHash, OnUnitActionClicked_MeleeAttack, UnitCommandTypes.TYPE, actionHash);
+        end
 			else
 				if (actionHash == UnitCommandTypes.AIRLIFT) then
 					local foo = true;
@@ -2491,6 +2499,20 @@ function OnUnitActionClicked( actionType:number, actionHash:number, currentMode:
 	end
 end
 
+function OnUnitActionClicked_MeleeAttack(actionType:number, actionHash:number, currentMode:number)
+  if m_isOkayToProcess then
+    local pSelectedUnit :table= UI.GetHeadSelectedUnit();
+		if (pSelectedUnit ~= nil) then
+			-- Must change to the interface mode or if we are already in that mode, the user wants to cancel.
+			if (currentMode == InterfaceModeTypes.ATTACK) then
+				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+			else
+				UI.SetInterfaceMode(InterfaceModeTypes.ATTACK);
+			end
+    end
+  end
+end
+
 -- ===========================================================================
 -- UnitAction<BuildImprovement> was clicked.
 -- ===========================================================================
@@ -2969,10 +2991,6 @@ function OnInputActionTriggered( actionId )
     if m_DeleteHotkeyId ~= nil and (actionId == m_DeleteHotkeyId) then
         OnPromptToDeleteUnit();
     end
-	-- "Attack" Hotkey is pressed; should only work if combat evaluation is displayed. There is no action for basic attacks, necissitating this special case.
-	if m_combatResults ~= nil and m_AttackHotkeyId ~= nil and (actionId == m_AttackHotkeyId) then
-		MoveUnitToPlot( UI.GetHeadSelectedUnit(), m_locX, m_locY );
-	end
 end
 
 -- ===========================================================================
@@ -3844,11 +3862,15 @@ function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
 	elseif (eOldMode == InterfaceModeTypes.AIRLIFT) then
 		SetStandardActionButtonSelectedByHash(UnitCommandTypes.AIRLIFT, false);
 	end
-
   if (eNewMode == InterfaceModeTypes.WMD_STRIKE) then
     SetStandardActionButtonSelectedByOperation("UNITOPERATION_WMD_STRIKE", true, UI.GetInterfaceModeParameter(UnitOperationTypes.PARAM_WMD_TYPE));
 	elseif (eOldMode == InterfaceModeTypes.WMD_STRIKE) then
 		SetStandardActionButtonSelectedByOperation("UNITOPERATION_WMD_STRIKE", false);
+	end
+  if (eNewMode == InterfaceModeTypes.ATTACK) then
+    SetStandardActionButtonSelectedByHash(MeleeAttackHandling.ActionHash, true);
+	elseif (eOldMode == InterfaceModeTypes.ATTACK) then
+		SetStandardActionButtonSelectedByHash(MeleeAttackHandling.ActionHash, false);
 	end
 
 	if (eOldMode == InterfaceModeTypes.CITY_RANGE_ATTACK or eOldMode == InterfaceModeTypes.DISTRICT_RANGE_ATTACK) then

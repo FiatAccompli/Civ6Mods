@@ -121,6 +121,10 @@
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_BUILD_ACTIONS_KEY_BINDINGS_TOOLTIP">
       <Text>Controls whether key bindings are shown below the buttons in the unit build actions panel.</Text>
     </Row>
+
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNITCOMMAND_MELEE_ATTACK_DESCRIPTION">
+      <Text>Melee Attack</Text>
+    </Row>
     
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_FOR_AIR_ATTACK">
       <Text>Air attack</Text>

@@ -283,6 +283,7 @@ local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
     [InterfaceModeTypes.TELEPORT_TO_CITY] = "ICON_UNITOPERATION_TELEPORT_TO_CITY",
     [InterfaceModeTypes.WMD_STRIKE] = "ICON_UNITOPERATION_WMD_STRIKE",
     [InterfaceModeTypes.ICBM_STRIKE] = "ICON_UNITOPERATION_WMD_STRIKE",
+    [InterfaceModeTypes.ATTACK] = "ICON_NOTIFICATION_DECLARE_WAR",
     -- Use no icon so the number in the path shows through.
     [InterfaceModeTypes.MOVE_TO] = "ICON_MORE_KEY_BINDINGS_NONE",
 };
