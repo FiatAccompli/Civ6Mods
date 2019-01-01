@@ -1,4 +1,4 @@
-﻿param([string] $dir="")
+﻿param([string] $from, [string] $to="")
 
 # So there's an annoying number of things that you can do in a valid .modinfo file 
 # that are not supported by modbuddy.  For example, you can have a LocalizedText element 
@@ -10,7 +10,7 @@
 # This can be configured as an external tool (Tools > External Tools) in Modbuddy with settings
 # Name: Fix ModInfo Files
 # Command: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-# Arguments: -file "$(SolutionDir)AlterModInfoFiles.ps1"
+# Arguments: -file "$(SolutionDir)AlterModInfoFiles.ps1" -From "$(SolutionDir)"
 
 function XSLT(
     [Parameter(Mandatory = $true)]
@@ -47,13 +47,14 @@ function XSLT(
 }
 
 
-if ($dir -eq "") {
-  $dir = Join-Path $env:USERPROFILE "Documents\My Games\Sid Meier's Civilization VI\Mods"
+if ($to -eq "") {
+  $to = Join-Path $env:USERPROFILE "Documents\My Games\Sid Meier's Civilization VI\Mods"
 }
 
-$matches = Get-ChildItem -Path $dir -Recurse -Include ("modinfo_fixer.xml")
+$matches = Get-ChildItem -Path $from -Recurse -Include ("modinfo_fixer.xml")
 foreach ($match in $matches) {
-  $modinfos = Get-ChildItem -Recurse -Path $match.Directory -Include ("*.modinfo")
+  $toPath = Join-Path $to $match.Directory.FullName.Substring($from.length)
+  $modinfos = Get-ChildItem -Recurse -Path $toPath -Include ("*.modinfo")
   foreach ($modinfo in $modinfos) {
     XSLT -InputFile $modinfo.FullName -OutputFile $modinfo.FullName -Transform $match.FullName
     Write-Host Applied $match.FullName to $modinfo.FullName
