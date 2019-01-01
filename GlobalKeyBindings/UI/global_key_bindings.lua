@@ -185,7 +185,6 @@ function IsAnimatedTimeOfDay()
   if animatedTimeOfDay == nil then 
     animatedTimeOfDay = Options.GetGraphicsOption("General", "AmbientTimeOfDay") == 1;
   end
-  print("IsAnimatedTimeOfDay", animatedTimeOfDay);
   return animatedTimeOfDay;
 end
 
@@ -228,7 +227,6 @@ function UpdateVolumeTo(identifier:string, volume:number, volumeBar:table, visua
 end
 
 function UpdateUI()
-  print("Update ui");
   local volume = UpdateVolume("Master Volume", 0, Controls.MasterVolumeBar, true);
   UpdateBinaryStatus(volume > 0, nil, Controls.VolumeSlash);
   UpdateVolume("Music Volume", 0, Controls.MusicVolumeBar, true);
