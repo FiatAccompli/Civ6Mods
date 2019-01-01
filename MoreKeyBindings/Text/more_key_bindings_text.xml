@@ -99,6 +99,9 @@
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_NUCLEAR_STRIKE">
       <Text>WMD strike</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_DEPLOY">
+      <Text>Deploy</Text>
+    </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_MOVE_TO">
       <Text>Move to</Text>
     </Row>
