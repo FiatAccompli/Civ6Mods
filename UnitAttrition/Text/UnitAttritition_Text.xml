@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <LocalizedText>
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MOD_SETTINGS_CATEGORY">
+      <Text>Unit Attrition</Text>
+    </Row>
+        
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MOD_SETTING_SHOW_ATTRITION_RATE_IN_LENSE">
+      <Text>Show exact attrition in lense</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MOD_SETTING_SHOW_ATTRITION_RATE_IN_LENSE_TOOLTIP">
+      <Text>When displaying the unit attrition lense show the exact amount of attrition applied in each hex in addition to coloring hexes with approximate rates.</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MAIN_LENS_KEYBIND_SETTING">
+      <Text>Show attrition lens</Text>
+    </Row>
+      
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MOD_SETTING_APPLY_ATTRITION_TO_STATIONARY_AI_UNITS">
+      <Text>Apply attrition to stationary AI units</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MOD_SETTING_APPLY_ATTRITION_TO_STATIONARY_AI_UNITS_TOOLTIP">
+      <Text>If false, attrition is not applied to AI units that remain stationary for a turn.  Since AI players are not aware of unit attrition and where it applies this allows the AI to set a unit to heal and not have it continue to lose health and eventually die to attrition.  Setting to true will make attrition apply to AI players the same as to human players.</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MOD_SETTING_ATTRITION_PERCENTAGE_FOR_AI">
+      <Text>Percent attrition for AI</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_UNIT_ATTRITION_MOD_SETTING_ATTRITION_PERCENTAGE_FOR_AI_TOOLTIP">
+      <Text>Percentage of unit attrition that applies to AI players.  Setting to 0 disables attrition for AI players.</Text>
+    </Row>
+  </LocalizedText>
+</GameData>
