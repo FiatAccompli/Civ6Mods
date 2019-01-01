@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
+  <xsl:strip-space elements="*"/>
+  
+  <xsl:template match="/Mod/Properties">
+  <xsl:copy>
+    <xsl:apply-templates select="@*|node()"/>
+  </xsl:copy>
+  <LocalizedText>
+    <Text id="LOC_DISTRICT_COST_REWORK_MOD_NAME">
+      <en_US>Distict Cost Rework</en_US>
+      <de_DE>Distict Cost Rework</de_DE>
+      <es_ES>Distict Cost Rework</es_ES>
+      <fr_FR>Distict Cost Rework</fr_FR>
+      <it_IT>Distict Cost Rework</it_IT>
+      <pl_PL>Distict Cost Rework</pl_PL>
+      <pt_BR>Distict Cost Rework</pt_BR>
+      <ru_RU>Distict Cost Rework</ru_RU>
+      <ja_JP>Distict Cost Rework</ja_JP>
+      <ko_KR>Distict Cost Rework</ko_KR>
+      <zh_Hans_CN>Distict Cost Rework</zh_Hans_CN>
+      <zh_Hant_HK>Distict Cost Rework</zh_Hant_HK>
+    </Text>
+    <Text id="LOC_DISTRICT_COST_REWORK_TEASER">
+      <en_US>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</en_US>
+      <de_DE>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</de_DE>
+      <es_ES>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</es_ES>
+      <fr_FR>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</fr_FR>
+      <it_IT>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</it_IT>
+      <pl_PL>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</pl_PL>
+      <pt_BR>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</pt_BR>
+      <ru_RU>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</ru_RU>
+      <ja_JP>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</ja_JP>
+      <ko_KR>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</ko_KR>
+      <zh_Hans_CN>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</zh_Hans_CN>
+      <zh_Hant_HK>Reworks district cost to be based on number of districts already built and city size rather than game (tech/civic) progression.</zh_Hant_HK>
+    </Text>
+  </LocalizedText>
+  </xsl:template>
+
+  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
+  <xsl:template match="LocalizedText"/>
+
+  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
+       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
+  <xsl:template match="@priority">
+    <xsl:attribute name="Priority">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
+  </xsl:template>
+
+  <!--Identity template, provides default behavior that copies all content into the output -->
+  <xsl:template match="@*|node()">
+  <xsl:copy>
+    <xsl:apply-templates select="@*|node()"/>
+  </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>

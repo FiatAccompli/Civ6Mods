@@ -2,12 +2,12 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
-    <Name>DistrictCostRework</Name>
+    <Name>LOC_DISTRICT_COST_REWORK_MOD_NAME</Name>
     <Guid>0b45e0c0-6570-4204-8354-e39e85b9755a</Guid>
     <ProjectGuid>d33bf38c-5679-4ea6-8894-e03406cdd4b7</ProjectGuid>
-    <ModVersion>1</ModVersion>
-    <Teaser>Reworks district cost to be based on number of districts already built rather than game (tech/civic) progression.</Teaser>
-    <Description>Reworks district cost to be based on the number of districts of that type previously built in your empire as well as the number of specialty districts  (of any type) already present in the city.</Description>
+    <ModVersion>100</ModVersion>
+    <Teaser>LOC_DISTRICT_COST_REWORK_TEASER</Teaser>
+    <Description>Reworks district cost to be based on the number of districts of that type previously built in your civilization as well as the number of specialty districts  (of any type) already present in the city.  The intent is that it should still be possible in the late game to found a new city and get districts up and running fairly quickly (particularly if your empire is small).  The current gaem[NEWLINE]Changes:[NEWLINE][ICON_BULLET]District cost no longer scales with game time or has catchup mechanisms relative to other civs.[ICON_BULLET]District cost nows scales based on the number of previous districts of that type constructed.  Each district constructed adds 1/3 of the base cost of that district to future constructions of that district.(Does not apply to Neighborhoods.)[ICON_BULLET]Building a district in a city with 1/2/3/... specialty districts already built increases district cost by  10/25/45/70/100/140/180/220/260/300%.</Description>
     <Authors>FiatAccompli</Authors>
     <SpecialThanks>
     </SpecialThanks>
@@ -32,6 +32,9 @@
     <Content Include="DistrictCosts.sql">
       <SubType>Content</SubType>
     </Content>
+    <None Include="modinfo_fixer.xml">
+      <SubType>Content</SubType>
+    </None>
     <Content Include="Reyna_Text.xml">
       <SubType>Content</SubType>
     </Content>
