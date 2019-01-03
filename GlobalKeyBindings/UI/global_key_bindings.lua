@@ -106,13 +106,22 @@ ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLO
 
 local gameplayControlsMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true};
 
-local toggleQuickCombatKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.Q, {Ctrl=true}),
+local toggleQuickCombatKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.Q, {Alt=true, Ctrl=true}),
     "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_COMBAT");
 local toggleQuickMovementKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.Q, {Alt=true}),
     "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_MOVEMENT");
 
 ------------------ Time of day --------------------------
 ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_GRAPHICS_CONTROLS");
+
+local graphicTogglesMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES};
+
+local toggleCityBannersKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.W, {Alt=true}),
+    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_CITY_BANNERS");
+local toggleMapTacksKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.E, {Alt=true}),
+    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_MAP_TACKS");
+local toggleUnitIconsKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.R, {Alt=true}),
+    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_UNIT_ICONS");
 
 local timeOfDayMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 local timeOfDayKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
@@ -152,6 +161,28 @@ function FadeUpdatedVisualContainer(container:table)
   Controls.FadeDelay:Play();
 end
 
+--------------------------------------------------------------------
+-- Taken wholesale from Options.lua
+local TIME_SCALE = 23.0 + (59.0 / 60.0); -- 11:59 PM
+function UpdateTimeLabel(value)
+	local iHours = math.floor(value);
+	local iMins  = math.floor((value - iHours) * 60);
+	local meridiem = "";
+
+	if (UserConfiguration.GetClockFormat() == 0) then
+		meridiem = " am";
+		if ( iHours >= 12 ) then
+			meridiem = " pm";
+			if( iHours > 12 ) then iHours = iHours - 12; end
+		end
+		if( iHours < 1 ) then iHours = 12; end
+	end
+
+	local strTime = string.format("%.d:%.2d%s", iHours, iMins, meridiem);
+	Controls.TimeOfDayLabel:SetText(strTime);
+end
+--------------------------------------------------------------------
+
 function UpdateLengthOfDayLabel(speed:number)
   -- Multiply by slightly more than one as a poor man's form of rounding.
   local length = 24 / speed * 1.000001;
@@ -160,7 +191,11 @@ function UpdateLengthOfDayLabel(speed:number)
   else
     Controls.DayLengthLabel:LocalizeAndSetText("LOC_GLOBAL_KEY_BINDINGS_LENGTH_OF_DAY_FORMATTER_SECONDS", length * 60);
   end
-  Controls.DayLengthContainer:SetHide(not IsAnimatedTimeOfDay());
+end
+
+function SetTimeOfDayLabelVisibility(showDayLength:boolean)
+  Controls.DayLengthContainer:SetHide(not showDayLength);
+  Controls.InGameTimeOfDayContainer:SetHide(showDayLength);
 end
 
 function UpdateBinaryStatus(enabled:boolean, label:table, slash:table)
@@ -188,29 +223,6 @@ function IsAnimatedTimeOfDay()
   return animatedTimeOfDay;
 end
 
---------------------------------------------------------------------
--- Taken wholesale from Options.lua
-local TIME_SCALE = 23.0 + (59.0 / 60.0); -- 11:59 PM
-function UpdateTimeLabel(value)
-	local iHours = math.floor(value);
-	local iMins  = math.floor((value - iHours) * 60);
-	local meridiem = "";
-
-	if (UserConfiguration.GetClockFormat() == 0) then
-		meridiem = " am";
-		if ( iHours >= 12 ) then
-			meridiem = " pm";
-			if( iHours > 12 ) then iHours = iHours - 12; end
-		end
-		if( iHours < 1 ) then iHours = 12; end
-	end
-
-	local strTime = string.format("%.d:%.2d%s", iHours, iMins, meridiem);
-	Controls.TimeOfDayLabel:SetText(strTime);
-  Controls.InGameTimeOfDayContainer:SetHide(IsAnimatedTimeOfDay());
-end
---------------------------------------------------------------------
-
 function UpdateVolume(identifier:string, changeMultiplier:number, volumeBar:table, visualOnly:boolean)
   local changeAmount = volumeChangeAmountSetting.Value;
   local currentValue = Options.GetAudioOption("Sound", identifier);
@@ -237,6 +249,11 @@ function UpdateUI()
   UpdateBinaryStatus(UserConfiguration.GetValue("QuickCombat") == 1, Controls.QuickCombatStatus, Controls.QuickCombatSlash);
   UpdateBinaryStatus(UserConfiguration.GetValue("QuickMovement") == 1, Controls.QuickMovementStatus, Controls.QuickMovementSlash);
   UpdateBinaryStatus(IsAnimatedTimeOfDay(), nil, Controls.AnimatedTimeOfDaySlash);
+  SetTimeOfDayLabelVisibility(IsAnimatedTimeOfDay());
+end
+
+function ToggleControlVisibility(control:table)
+  control:SetHide(not control:IsHidden());
 end
 
 function OnInputHandler(input)
@@ -322,24 +339,37 @@ function OnInputHandler(input)
     animatedTimeOfDay = not IsAnimatedTimeOfDay();
     UI.SetAmbientTimeOfDayAnimating(animatedTimeOfDay);
     UpdateBinaryStatus(animatedTimeOfDay, nil, Controls.AnimatedTimeOfDaySlash);
+    SetTimeOfDayLabelVisibility(animatedTimeOfDay);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
   elseif KeyBindingHelper.InputMatches(timeOfDayIncreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
     UI.SetAmbientTimeOfDay(math.fmod(UI.GetAmbientTimeOfDay() + timeOfDayChangeAmountSetting.Value / 60, 24))
+    SetTimeOfDayLabelVisibility(false);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
   elseif KeyBindingHelper.InputMatches(timeOfDayDecreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
     UI.SetAmbientTimeOfDay(math.fmod(UI.GetAmbientTimeOfDay() - timeOfDayChangeAmountSetting.Value / 60 + 24, 24))
+    SetTimeOfDayLabelVisibility(false);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
   elseif KeyBindingHelper.InputMatches(timeOfDaySpeedIncreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
     SetAmbientTimeOfDaySpeed(1 + timeOfDayLengthChangePercentSetting.Value / 100);
+    SetTimeOfDayLabelVisibility(true);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
   elseif KeyBindingHelper.InputMatches(timeOfDaySpeedDecreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
     SetAmbientTimeOfDaySpeed(1 / (1 + timeOfDayLengthChangePercentSetting.Value / 100));
+    SetTimeOfDayLabelVisibility(true);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
+  end
+
+  if KeyBindingHelper.InputMatches(toggleCityBannersKeyBinding.Value, input, graphicTogglesMatchOptions) then
+    ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/CityBannerManager"));
+  elseif KeyBindingHelper.InputMatches(toggleMapTacksKeyBinding.Value, input, graphicTogglesMatchOptions) then
+    ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/MapPinManager"));
+  elseif KeyBindingHelper.InputMatches(toggleUnitIconsKeyBinding.Value, input, graphicTogglesMatchOptions) then
+    ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/UnitFlagManager"));
   end
 
   if KeyBindingHelper.InputMatches(minimapSizeIncreaseKeyBinding.Value, input, minimapSizeKeyDownMatchOptions) then

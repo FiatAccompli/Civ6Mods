@@ -106,6 +106,15 @@
     <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_GRAPHICS_CONTROLS">
       <Text>Graphics</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_CITY_BANNERS">
+      <Text>Toggle city banners</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_UNIT_ICONS">
+      <Text>Toggle unit icons</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_MAP_TACKS">
+      <Text>Toggle map tacks</Text>
+    </Row>
     <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_CHANGE_AMOUNT">
       <Text>Time of day change amount (minutes)</Text>
     </Row>

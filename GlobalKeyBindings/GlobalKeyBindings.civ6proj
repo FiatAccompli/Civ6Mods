@@ -5,9 +5,9 @@
     <Name>LOC_GLOBAL_KEY_BINDINGS_MOD_NAME</Name>
     <Guid>f2ed0f33-85c2-407c-bda3-affa1889a92c</Guid>
     <ProjectGuid>b31147d3-7a21-4a16-abed-095db94d5263</ProjectGuid>
-    <ModVersion>1</ModVersion>
+    <ModVersion>16</ModVersion>
     <Teaser>LOC_GLOBAL_KEY_BINDINGS_TEASER</Teaser>
-    <Description>LOC_GLOBAL_KEY_BINDINGS_TEASER</Description>
+    <Description>LOC_GLOBAL_KEY_BINDINGS_DESCRIPTION</Description>
     <Authors>FiatAccompli</Authors>
     <SpecialThanks>
     </SpecialThanks>
@@ -36,6 +36,9 @@
     <Folder Include="Text" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md">
+      <SubType>Content</SubType>
+    </None>
     <Content Include="Textures\global_key_bindings_disabled.dds">
       <SubType>Content</SubType>
     </Content>
