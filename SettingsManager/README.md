@@ -1,4 +1,4 @@
-# Mod Settings Manager v1.0.0
+# Settings Manager v1.0.0
 
 ## Overview
 
@@ -8,7 +8,7 @@ that applies across all saves.
 
 ## For Users
 
-Mod Settings Manager adds a fairly standard looking "options" pinwheel to the "toolbar" above the minimap.  
+Settings Manager adds a fairly standard looking "options" pinwheel to the "toolbar" above the minimap.  
 
 ![Access Button](Documentation/SettingsManagerAccessButton.jpg)
 
@@ -26,18 +26,18 @@ left of the settings popup.  Follow the in-game instructions.
 
 ## For Modders
 
-To use Mod Settings Manager in other mods:
+To use Settings Manager in other mods:
 
-1. Add a dependency to your mod on Mod Settings Manager.
+1. Add a dependency to your mod on Settings Manager.
    In Modbuddy go to Project Settings > Associations > Dependencies > Add Mod.
-   Use Title = "Mod Settings Manager" and Id = "1cb1beaf-0428-4aad-b11d-e3168429c071".
+   Use Title = "Settings Manager" and Id = "1cb1beaf-0428-4aad-b11d-e3168429c071".
    If you're authoring the .modinfo by hand, then add the following within the root `Mod` element
    ```
    <Dependencies>
-     <Mod id="1cb1beaf-0428-4aad-b11d-e3168429c071" title="Mod Settings Manager" />
+     <Mod id="1cb1beaf-0428-4aad-b11d-e3168429c071" title="Settings Manager" />
    </Dependencies>
    ```
-   This makes it so users can't enable your mod without also enabling Mod Settings Manager. 
+   This makes it so users can't enable your mod without also enabling Settings Manager. 
 
 2. In whichever lua files you want to use settings include the settings api
    ```
