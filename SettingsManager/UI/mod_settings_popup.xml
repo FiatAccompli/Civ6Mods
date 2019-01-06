@@ -143,8 +143,7 @@
       <Container Size="300,24">
         <GridButton ID="Binding" Style="ButtonControl" String="BINDING!" Size="200,24" TruncateWidth="295"  Anchor="C,C"/>
         <Container ID="Conflicts" Size="24,24" Anchor="R,C">
-          <Image Texture="Circle44_Base" StretchMode="Fill" Size="18,18" Color="255,0,0,150" Anchor="C,C"/>
-          <Image Texture="Notifications40" Size="24,24" Icon="ICON_NOTIFICATION_GENERIC" Color="255,64,64,255" Anchor="C,C"/>
+          <Image Texture="Alert32" StretchMode="Fill" Size="24,24" Anchor="C,C"/>
         </Container>
       </Container>
       <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>     

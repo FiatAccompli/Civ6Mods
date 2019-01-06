@@ -11,7 +11,7 @@
       <Text>Shows settings configuration and instructions that can be saved to make the current settings the default for all games.</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_INSTRUCTIONS">
-      <Text>To save the current settings as the default for all games copy the following contents[NEWLINE]and save the copied text in[NEWLINE]STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/mod_settings_default_values.sql[NEWLINE](or CIV_USER_DIR/Mods/ModSettingsManager/Database/mod_settings_default_values.sql if installed manually)</Text>
+      <Text>To save the current settings as the default for all games copy the following contents[NEWLINE]and save the copied text in[NEWLINE]STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/mod_settings_default_values.sql[NEWLINE](or CIV_USER_DIR/Mods/SettingsManager/Database/mod_settings_default_values.sql if installed manually)</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_DEFAULTS_SQL_PREAMBLE">
       <Text>-- Save this text in STEAM_WORKSHOP_DIR/content/289070/1564628360/Database/mod_settings_default_values.sql (or CIV_USER_DIR/Mods/ModSettingsManager/Database/mod_settings_default_values.sql if installed manually)</Text>

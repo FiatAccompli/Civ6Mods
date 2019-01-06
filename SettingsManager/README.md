@@ -9,14 +9,17 @@ that applies across all saves.
 ## For Users
 
 Mod Settings Manager adds a fairly standard looking "options" pinwheel to the "toolbar" above the minimap.  
-When clicked this will bring up the settings popup that allows you to change all settings declared by other mods.  
-When you have changed the settings use the "Confirm" button at the bottom to lock in the changes 
-(if you press ESC or the back button at the upper right) the changes will be reverted.
 
 ![Access Button](Documentation/SettingsManagerAccessButton.jpg)
+
+When clicked this will bring up the settings popup that allows you to change all settings declared by mods that use this framework.
+
 ![Example Settings](Documentation/SettingsManagerExamplePage.jpg)
 
-### Saving settings as the default for all games.
+When you have changed the settings use the "Confirm" button at the bottom to lock in the changes 
+(pressing ESC or the back button at the upper right will be revert changes).
+
+### Saving settings as the default for all games
 
 To make the current settings the default for all games, click the "Show Saveable Config" button at the bottom
 left of the settings popup.  Follow the in-game instructions.
@@ -40,7 +43,7 @@ To use Mod Settings Manager in other mods:
    ```
    include ("mod_settings")
    ```
-   and contruct the settings you need to control.  All settings constructed will be automatically registered with the ui 
+   and construct the settings you need.  All settings constructed will be automatically registered with the ui 
    and available for users to configure.
 
    *Note that mod settings can only control behavior of lua code - either UI behavior or custom behavior 
@@ -70,7 +73,8 @@ ModSettings.<Type>:new(...)
 
 #### Setting Members
 
-* `Value` - This is how the current value of the setting is accessed by your mod code.
+* `Value` - This is how the current value of the setting is accessed by your mod code.  The current value can 
+  also be retrieved with lua call syntax: (e.g. `value = mySetting()`).
 * `Type` - The type of the setting as a member of ModSettings.Types.
 
 #### Setting Methods
@@ -85,15 +89,15 @@ ModSettings.<Type>:new(...)
 
 * `LuaEvents.ModSettingsManager_SettingValueChange(categoryName, settingName, value)` -
   Called when the setting value has been changed by the ui or programmatically.  Allows setting objects to update their 
-  publicly exposed `Value` to the new value. Modders should not need to interact with this.
+  publicly exposed `Value` to the new value.  You probably don't need to interact with this.
 * `LuaEvents.ModSettingsManager_SettingValueChanged(categoryName, settingName, value, oldValue)` - 
   Called *after* settings have had values updated via the ModSettingsManager_SettingValueChange event.
   This is generally the only event modders need to care about.  The convenience helper `AddChangeHandler` 
   on settings objects is the preferred way to interact with this event.
 * `LuaEvents.ModSettingsManager_UIReadyForRegistration()` - Called by the popup ui to trigger registration of settings.
-  Modders should not need to interact with this.
+  You probably don't need to interact with this.
 * `LuaEvents.ModSettingsManager_RegisterSetting(setting)` - Called by settings to register themselves with the ui.
-  Modders should not need to interact with this.
+  You probably don't need to interact with this.
 
 ### Setting Types
 
@@ -101,7 +105,7 @@ ModSettings.<Type>:new(...)
 
 #### Boolean 
 
-A simple true/false value
+A simple true/false value.
 
 ```
 setting = ModSettings.Boolean:new(defaultValue, categoryName, settingName, tooltip)
@@ -227,7 +231,11 @@ setting = ModSettings.Header:new(categoryName, settingName, tooltip)
 
 The `Value` of the setting is meaningless.
 
-
+### Setting ordering
+All settings with the same `categoryName` are grouped into a single 'tab' in the configuration UI.  For settings 
+declared within a single file the order in the configuration UI will be the same as the order the settings are declared 
+in the file.  For multiple files that use the same `categoryName` the ordering of settings from these files 
+is random (all the settings from each file will appear together and in the order stated previously).
     
 ### Examples
 See [SettingsManagerExample](../SettingsManagerExample) for a very simple mod that declares settings 

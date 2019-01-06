@@ -35,6 +35,9 @@
     <None Include="modinfo_fixer.xml">
       <SubType>Content</SubType>
     </None>
+    <None Include="README.md">
+      <SubType>Content</SubType>
+    </None>
     <Content Include="Scripts\mod_settings.lua">
       <SubType>Content</SubType>
     </Content>

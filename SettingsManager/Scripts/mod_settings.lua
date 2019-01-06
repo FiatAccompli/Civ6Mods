@@ -94,6 +94,10 @@ function BaseSetting:LoadSavedValue()
   LuaEvents.ModSettingsManager_SettingValueChanged(self.categoryName, self.settingName, self.Value, oldValue);
 end
 
+function BaseSetting:__call()
+  return self.Value;
+end
+
 ----------------------------------------------------------------------------------------------------
 -- A simple boolean setting.  defaultValue should be either true or false.
 ----------------------------------------------------------------------------------------------------
@@ -101,6 +105,7 @@ local BooleanSetting = {
   Type = Types.BOOLEAN 
 };
 BooleanSetting.__index = BooleanSetting;
+BooleanSetting.__call = BaseSetting.__call;
 setmetatable(BooleanSetting, BaseSetting);
 
 function BooleanSetting:new(defaultValue:boolean, categoryName:string, settingName:string, tooltip:string)
@@ -123,7 +128,8 @@ end
 -- option and the default value is values[defaultIndex].
 ------------------------------------------------------------------------------------------------------
 local SelectSetting = {
-  Type = Types.SELECT
+  Type = Types.SELECT,
+  __call = BaseSetting.__call,
 };
 SelectSetting.__index = SelectSetting;
 setmetatable(SelectSetting, BaseSetting);
@@ -150,6 +156,7 @@ end
 ----------------------------------------------------------------------------------------------------
 local RangeSetting = {
   Type = Types.RANGE,
+  __call = BaseSetting.__call,
   DEFAULT_VALUE_FORMATTER = "LOC_MOD_SETTINGS_MANAGER_DEFAULT_RANGE_SETTING_VALUE_FORMATTER",
   PERCENT_FORMATTER = "LOC_MOD_SETTINGS_MANAGER_PERCENT_RANGE_SETTING_VALUE_FORMATTER"
 };
@@ -182,6 +189,7 @@ end
 ----------------------------------------------------------------------------------------------------
 local TextSetting = {
   Type = Types.TEXT;
+  __call = BaseSetting.__call,
 };
 
 TextSetting.__index = TextSetting;
@@ -197,13 +205,12 @@ function TextSetting:ParseValue(value:string)
   return value;
 end
 
-
 --------------------------------------------------------------------------------------------------
 -- A key setting allows the player to configure a keybinding for an action.
 --------------------------------------------------------------------------------------------------
-
 local KeyBindingSetting = {
   Type = Types.KEY_BINDING,
+  __call = BaseSetting.__call,
   -- Maps from key code to localization for displaying.
   -- Conveniently the game provides localization for keys even though the translations are not referenced 
   -- in the lua game code.  (They are likely the translations used by the c++ code though.  
@@ -414,7 +421,7 @@ function KeyBindingSetting:ParseValue(value:string)
     return nil;
   end
 
-  return KeyBindingSetting.MakeValue(tonumber(value:sub(5,-1)), 
+  return KeyBindingSetting.MakeValue(tonumber(value:sub(5,-1)) or Keys[value:sub(5,-1)], 
         {Shift=(value:sub(1,1) == "S"), Ctrl=(value:sub(2,2) == "C"), Alt=(value:sub(3,3) == "A")});
 end
 
@@ -423,7 +430,8 @@ end
 -- attach logic when its value changes.
 ---------------------------------------------------------------------------------------------
 local ActionSetting = {
-  Type = Types.ACTION
+  Type = Types.ACTION,
+  __call = BaseSetting.__call,
 };
 ActionSetting.__index = ActionSetting;
 setmetatable(ActionSetting, BaseSetting);
@@ -443,7 +451,8 @@ end
 -- up as a chunk of text in the config UI.
 ----------------------------------------------------------------------------------------------
 local HeaderSetting = {
-  Type = Types.HEADER
+  Type = Types.HEADER,
+  __call = BaseSetting.__call,
 };
 HeaderSetting.__index = HeaderSetting;
 setmetatable(HeaderSetting, BaseSetting);
