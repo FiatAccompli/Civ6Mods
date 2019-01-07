@@ -9,46 +9,46 @@
     </xsl:copy>
     <LocalizedText>
       <Text id="LOC_GLOBAL_KEY_BINDINGS_MOD_NAME">
-        <en_US>Global Key Bindings</en_US>
-        <de_DE>Global Key Bindings</de_DE>
-        <es_ES>Global Key Bindings</es_ES>
-        <fr_FR>Global Key Bindings</fr_FR>
-        <it_IT>Global Key Bindings</it_IT>
-        <pl_PL>Global Key Bindings</pl_PL>
-        <pt_BR>Global Key Bindings</pt_BR>
-        <ru_RU>Global Key Bindings</ru_RU>
-        <ja_JP>Global Key Bindings</ja_JP>
-        <ko_KR>Global Key Bindings</ko_KR>
-        <zh_Hans_CN>Global Key Bindings</zh_Hans_CN>
-        <zh_Hant_HK>Global Key Bindings</zh_Hant_HK>
+        <en_US>Global Hotkeys</en_US>
+        <de_DE>Global Hotkeys</de_DE>
+        <es_ES>Global Hotkeys</es_ES>
+        <fr_FR>Global Hotkeys</fr_FR>
+        <it_IT>Global Hotkeys</it_IT>
+        <pl_PL>Global Hotkeys</pl_PL>
+        <pt_BR>Global Hotkeys</pt_BR>
+        <ru_RU>Global Hotkeys</ru_RU>
+        <ja_JP>Global Hotkeys</ja_JP>
+        <ko_KR>Global Hotkeys</ko_KR>
+        <zh_Hans_CN>Global Hotkeys</zh_Hans_CN>
+        <zh_Hant_HK>Global Hotkeys</zh_Hant_HK>
       </Text>
       <Text id="LOC_GLOBAL_KEY_BINDINGS_TEASER">
-        <en_US>Adds keybindings to control .</en_US>
-        <de_DE>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</de_DE>
-        <es_ES>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</es_ES>
-        <fr_FR>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</fr_FR>
-        <it_IT>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</it_IT>
-        <pl_PL>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</pl_PL>
-        <pt_BR>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</pt_BR>
-        <ru_RU>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</ru_RU>
-        <ja_JP>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</ja_JP>
-        <ko_KR>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</ko_KR>
-        <zh_Hans_CN>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</zh_Hans_CN>
-        <zh_Hant_HK>Adds keybindings to control minimap size, volume levels, ambient time of day, and toggle quick combat and movement.</zh_Hant_HK>
+        <en_US>Adds keybindings to quickly control global settings.</en_US>
+        <de_DE>Adds keybindings to quickly control global settings.</de_DE>
+        <es_ES>Adds keybindings to quickly control global settings.</es_ES>
+        <fr_FR>Adds keybindings to quickly control global settings.</fr_FR>
+        <it_IT>Adds keybindings to quickly control global settings.</it_IT>
+        <pl_PL>Adds keybindings to quickly control global settings.</pl_PL>
+        <pt_BR>Adds keybindings to quickly control global settings.</pt_BR>
+        <ru_RU>Adds keybindings to quickly control global settings.</ru_RU>
+        <ja_JP>Adds keybindings to quickly control global settings.</ja_JP>
+        <ko_KR>Adds keybindings to quickly control global settings.</ko_KR>
+        <zh_Hans_CN>Adds keybindings to quickly control global settings.</zh_Hans_CN>
+        <zh_Hant_HK>Adds keybindings to quickly control global settings.</zh_Hant_HK>
       </Text>
       <Text id="LOC_GLOBAL_KEY_BINDINGS_DESCRIPTION">
-        <en_US>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</en_US>
-        <de_DE>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</de_DE>
-        <es_ES>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</es_ES>
-        <fr_FR>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</fr_FR>
-        <it_IT>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</it_IT>
-        <pl_PL>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</pl_PL>
-        <pt_BR>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</pt_BR>
-        <ru_RU>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</ru_RU>
-        <ja_JP>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</ja_JP>
-        <ko_KR>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</ko_KR>
-        <zh_Hans_CN>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</zh_Hans_CN>
-        <zh_Hant_HK>Adds keybindings[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</zh_Hant_HK>
+        <en_US>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</en_US>
+        <de_DE>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</de_DE>
+        <es_ES>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</es_ES>
+        <fr_FR>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</fr_FR>
+        <it_IT>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</it_IT>
+        <pl_PL>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</pl_PL>
+        <pt_BR>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</pt_BR>
+        <ru_RU>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</ru_RU>
+        <ja_JP>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</ja_JP>
+        <ko_KR>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</ko_KR>
+        <zh_Hans_CN>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</zh_Hans_CN>
+        <zh_Hant_HK>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat and movement[NEWLINE][ICON_BULLET]Increase/decrease/mute volume[NEWLINE][ICON_BULLET]Control ambient in-game time of day[NEWLINE][ICON_BULLET]Increase/decrease minimap size[NEWLINE][ICON_BULLET]Toggle city banners[NEWLINE][ICON_BULLET]Toggle map tacks[NEWLINE][ICON_BULLET]Toggle unit icons</zh_Hant_HK>
       </Text>
     </LocalizedText>
   </xsl:template>

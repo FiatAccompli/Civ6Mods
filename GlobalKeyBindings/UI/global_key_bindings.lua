@@ -257,19 +257,19 @@ function ToggleControlVisibility(control:table)
 end
 
 function OnInputHandler(input)
-  if KeyBindingHelper.InputMatches(volumeIncreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  if KeyBindingHelper.InputMatches(volumeIncreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     volumeToDeMute = -1;
     local volume = UpdateVolume("Master Volume", 1, Controls.MasterVolumeBar);
     UpdateBinaryStatus(volume > 0, nil, Controls.VolumeSlash);
     FadeUpdatedVisualContainer(Controls.VolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(volumeDecreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(volumeDecreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     volumeToDeMute = -1;
     local volume = UpdateVolume("Master Volume", -1, Controls.MasterVolumeBar);
     UpdateBinaryStatus(volume > 0, nil, Controls.VolumeSlash);
     FadeUpdatedVisualContainer(Controls.VolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(volumeMuteKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(volumeMuteKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     local currentValue = Options.GetAudioOption("Sound", "Master Volume");
     if currentValue == 0 then
       if volumeToDeMute > 0 then
@@ -284,49 +284,49 @@ function OnInputHandler(input)
       FadeUpdatedVisualContainer(Controls.VolumeContainer);
     end
     return true;
-  elseif KeyBindingHelper.InputMatches(musicVolumeDecreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(musicVolumeDecreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("Music Volume", -1, Controls.MusicVolumeBar);
     FadeUpdatedVisualContainer(Controls.MusicVolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(musicVolumeIncreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(musicVolumeIncreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("Music Volume", 1, Controls.MusicVolumeBar);
     FadeUpdatedVisualContainer(Controls.MusicVolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(soundEffectsVolumeDecreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(soundEffectsVolumeDecreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("SFX Volume", -1, Controls.SoundEffectsVolumeBar);
     FadeUpdatedVisualContainer(Controls.SoundEffectsVolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(soundEffectsVolumeIncreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(soundEffectsVolumeIncreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("SFX Volume", 1, Controls.SoundEffectsVolumeBar);
     FadeUpdatedVisualContainer(Controls.SoundEffectsVolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(ambientVolumeDecreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(ambientVolumeDecreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("Ambience Volume", -1, Controls.AmbientVolumeBar);
     FadeUpdatedVisualContainer(Controls.AmbientVolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(ambientVolumeIncreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(ambientVolumeIncreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("Ambience Volume", 1, Controls.AmbientVolumeBar);
     FadeUpdatedVisualContainer(Controls.AmbientVolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(speechVolumeDecreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(speechVolumeDecreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("Speech Volume", -1, Controls.SpeechVolumeBar);
     FadeUpdatedVisualContainer(Controls.SpeechVolumeContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(speechVolumeIncreaseKeyBinding.Value, input, volumeChangeKeyDownMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(speechVolumeIncreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     UpdateVolume("Speech Volume", 1, Controls.SpeechVolumeBar);
     FadeUpdatedVisualContainer(Controls.SpeechVolumeContainer);
     return true;
   end
   
 
-  if KeyBindingHelper.InputMatches(toggleQuickCombatKeyBinding.Value, input, gameplayControlsMatchOptions) then
+  if KeyBindingHelper.InputMatches(toggleQuickCombatKeyBinding(), input, gameplayControlsMatchOptions) then
     local value = UserConfiguration.GetValue("QuickCombat");
     value = value == 0 and 1 or 0;
     UserConfiguration.SetValue("QuickCombat", value);
     UpdateBinaryStatus(value == 1, Controls.QuickCombatStatus, Controls.QuickCombatSlash);
     FadeUpdatedVisualContainer(Controls.QuickCombatContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(toggleQuickMovementKeyBinding.Value, input, gameplayControlsMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(toggleQuickMovementKeyBinding(), input, gameplayControlsMatchOptions) then
     local value = UserConfiguration.GetValue("QuickMovement");
     value = value == 0 and 1 or 0;
     UserConfiguration.SetValue("QuickMovement", value);
@@ -335,49 +335,49 @@ function OnInputHandler(input)
     return true;
   end
 
-  if KeyBindingHelper.InputMatches(toggleAnimatedTimeOfDayKeyBinding.Value, input, timeOfDayMatchOptions) then
+  if KeyBindingHelper.InputMatches(toggleAnimatedTimeOfDayKeyBinding(), input, timeOfDayMatchOptions) then
     animatedTimeOfDay = not IsAnimatedTimeOfDay();
     UI.SetAmbientTimeOfDayAnimating(animatedTimeOfDay);
     UpdateBinaryStatus(animatedTimeOfDay, nil, Controls.AnimatedTimeOfDaySlash);
     SetTimeOfDayLabelVisibility(animatedTimeOfDay);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(timeOfDayIncreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
-    UI.SetAmbientTimeOfDay(math.fmod(UI.GetAmbientTimeOfDay() + timeOfDayChangeAmountSetting.Value / 60, 24))
+  elseif KeyBindingHelper.InputMatches(timeOfDayIncreaseKeyBinding(), input, timeOfDayKeyDownMatchOptions) then
+    UI.SetAmbientTimeOfDay(math.fmod(UI.GetAmbientTimeOfDay() + timeOfDayChangeAmountSetting() / 60, 24))
     SetTimeOfDayLabelVisibility(false);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(timeOfDayDecreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
-    UI.SetAmbientTimeOfDay(math.fmod(UI.GetAmbientTimeOfDay() - timeOfDayChangeAmountSetting.Value / 60 + 24, 24))
+  elseif KeyBindingHelper.InputMatches(timeOfDayDecreaseKeyBinding(), input, timeOfDayKeyDownMatchOptions) then
+    UI.SetAmbientTimeOfDay(math.fmod(UI.GetAmbientTimeOfDay() - timeOfDayChangeAmountSetting() / 60 + 24, 24))
     SetTimeOfDayLabelVisibility(false);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(timeOfDaySpeedIncreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
-    SetAmbientTimeOfDaySpeed(1 + timeOfDayLengthChangePercentSetting.Value / 100);
+  elseif KeyBindingHelper.InputMatches(timeOfDaySpeedIncreaseKeyBinding(), input, timeOfDayKeyDownMatchOptions) then
+    SetAmbientTimeOfDaySpeed(1 + timeOfDayLengthChangePercentSetting() / 100);
     SetTimeOfDayLabelVisibility(true);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
-  elseif KeyBindingHelper.InputMatches(timeOfDaySpeedDecreaseKeyBinding.Value, input, timeOfDayKeyDownMatchOptions) then
-    SetAmbientTimeOfDaySpeed(1 / (1 + timeOfDayLengthChangePercentSetting.Value / 100));
+  elseif KeyBindingHelper.InputMatches(timeOfDaySpeedDecreaseKeyBinding(), input, timeOfDayKeyDownMatchOptions) then
+    SetAmbientTimeOfDaySpeed(1 / (1 + timeOfDayLengthChangePercentSetting() / 100));
     SetTimeOfDayLabelVisibility(true);
     FadeUpdatedVisualContainer(Controls.TimeOfDayContainer);
     return true;
   end
 
-  if KeyBindingHelper.InputMatches(toggleCityBannersKeyBinding.Value, input, graphicTogglesMatchOptions) then
+  if KeyBindingHelper.InputMatches(toggleCityBannersKeyBinding(), input, graphicTogglesMatchOptions) then
     ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/CityBannerManager"));
-  elseif KeyBindingHelper.InputMatches(toggleMapTacksKeyBinding.Value, input, graphicTogglesMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(toggleMapTacksKeyBinding(), input, graphicTogglesMatchOptions) then
     ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/MapPinManager"));
-  elseif KeyBindingHelper.InputMatches(toggleUnitIconsKeyBinding.Value, input, graphicTogglesMatchOptions) then
+  elseif KeyBindingHelper.InputMatches(toggleUnitIconsKeyBinding(), input, graphicTogglesMatchOptions) then
     ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/UnitFlagManager"));
   end
 
-  if KeyBindingHelper.InputMatches(minimapSizeIncreaseKeyBinding.Value, input, minimapSizeKeyDownMatchOptions) then
-    minimapSize = math.max(0, math.min(1, minimapSize + minimapChangeAmountSetting.Value / 100));
+  if KeyBindingHelper.InputMatches(minimapSizeIncreaseKeyBinding(), input, minimapSizeKeyDownMatchOptions) then
+    minimapSize = math.max(0, math.min(1, minimapSize + minimapChangeAmountSetting() / 100));
     UI.SetMinimapSize(minimapSize);
     return true;
-  elseif KeyBindingHelper.InputMatches(minimapSizeDecreaseKeyBinding.Value, input, minimapSizeKeyDownMatchOptions) then
-    minimapSize = math.max(0, math.min(1, minimapSize - minimapChangeAmountSetting.Value / 100));
+  elseif KeyBindingHelper.InputMatches(minimapSizeDecreaseKeyBinding(), input, minimapSizeKeyDownMatchOptions) then
+    minimapSize = math.max(0, math.min(1, minimapSize - minimapChangeAmountSetting() / 100));
     UI.SetMinimapSize(minimapSize);
     return true;
   end
