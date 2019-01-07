@@ -27,6 +27,9 @@
     <Content Include="FasterRoutes.sql">
       <SubType>Content</SubType>
     </Content>
+    <None Include="README.md">
+      <SubType>Content</SubType>
+    </None>
     <None Include="modinfo_fixer.xml">
       <SubType>Content</SubType>
     </None>
