@@ -17,7 +17,7 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>ConstantHarvestYields</AssemblyName>
     <RootNamespace>ConstantHarvestYields</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="ConstantHarvestYields"><Properties><LoadOrder>10200</LoadOrder></Properties><File>Magnus.sql</File><File>ConstantHarvestYields.sql</File></UpdateDatabase><UpdateText id="ConstantHarvestYieldsText"><File>ConstantHarvestYields_Text.sql</File></UpdateText></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="ConstantHarvestYields"><Properties><LoadOrder>10200</LoadOrder></Properties><File>constant_harvest_yields.sql</File><File>magnus.sql</File></UpdateDatabase><UpdateText id="ConstantHarvestYieldsText"><File>constant_harvest_yields_text.sql</File></UpdateText></InGameActions>]]></InGameActionData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>
@@ -26,13 +26,13 @@
     <OutputPath>bin\Copy Scripts\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="ConstantHarvestYields.sql">
+    <Content Include="constant_harvest_yields.sql">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Magnus.sql">
+    <Content Include="constant_harvest_yields_text.sql">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="ConstantHarvestYields_Text.sql">
+    <Content Include="magnus.sql">
       <SubType>Content</SubType>
     </Content>
     <None Include="README.md">
