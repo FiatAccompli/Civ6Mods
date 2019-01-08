@@ -1,4 +1,4 @@
-﻿param([string] $from, [string] $to="")
+﻿param([string] $to="")
 
 # So there's an annoying number of things that you can do in a valid .modinfo file 
 # that are not supported by modbuddy.  For example, you can have a LocalizedText element 
@@ -10,7 +10,8 @@
 # This can be configured as an external tool (Tools > External Tools) in Modbuddy with settings
 # Name: Fix ModInfo Files
 # Command: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-# Arguments: -file "$(SolutionDir)AlterModInfoFiles.ps1" -From "$(SolutionDir)"
+# Arguments: -file "$(SolutionDir)AlterModInfoFiles.ps1"
+# Initial Directory: "$(SolutionDir)"
 
 function XSLT(
     [Parameter(Mandatory = $true)]
@@ -51,14 +52,23 @@ if ($to -eq "") {
   $to = Join-Path $env:USERPROFILE "Documents\My Games\Sid Meier's Civilization VI\Mods"
 }
 
-$matches = Get-ChildItem -Path $from -Recurse -Include ("modinfo_fixer.xml")
+$matches = Get-ChildItem -Recurse -Include ("modinfo_fixer.xml")
 foreach ($match in $matches) {
-  $toPath = Join-Path $to $match.Directory.FullName.Substring($from.length)
+  $toPath = Join-Path $to $match.Directory.Name
   $modinfos = Get-ChildItem -Recurse -Path $toPath -Include ("*.modinfo")
   foreach ($modinfo in $modinfos) {
     XSLT -InputFile $modinfo.FullName -OutputFile $modinfo.FullName -Transform $match.FullName
     Write-Host Applied $match.FullName to $modinfo.FullName
   }
 }
-
 Write-Host "Updated" $matches.count "modinfo files" 
+Write-Host
+
+$moddirs = Get-ChildItem -Directory
+foreach ($match in $moddirs) {
+  $toPath = Join-Path $to $match.Name
+  Copy-Item "LICENSE" -Destination $toPath
+  Write-Host Copied license to $toPath
+}
+
+Write-Host Copied $moddirs.count LICENSE files

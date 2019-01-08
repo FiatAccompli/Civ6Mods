@@ -9,8 +9,6 @@ Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "ConstantHarvestYields", "Co
 EndProject
 Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "UnitAttrition", "UnitAttrition\UnitAttrition.civ6proj", "{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}"
 EndProject
-Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "CityOverviewInterface", "CityOverviewInterface\CityOverviewInterface.civ6proj", "{61DBFC8D-7CDD-4771-8C8B-6B2266D3BA1B}"
-EndProject
 Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "SettingsManager", "SettingsManager\SettingsManager.civ6proj", "{2B269C1B-074E-49ED-87E3-FC27027D5F6D}"
 EndProject
 Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "DistrictCostRework", "DistrictCostRework\DistrictCostRework.civ6proj", "{D33BF38C-5679-4EA6-8894-E03406CDD4B7}"
@@ -35,8 +33,6 @@ Global
 		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Default|Civ6.ActiveCfg = Default|Civ6
 		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Default|Civ6.Build.0 = Default|Civ6
 		{8B28BFDB-9D30-451D-B53B-B4FC682F1AC7}.Default|Civ6.Deploy.0 = Default|Civ6
-		{61DBFC8D-7CDD-4771-8C8B-6B2266D3BA1B}.Default|Civ6.ActiveCfg = Default|Civ6
-		{61DBFC8D-7CDD-4771-8C8B-6B2266D3BA1B}.Default|Civ6.Build.0 = Default|Civ6
 		{2B269C1B-074E-49ED-87E3-FC27027D5F6D}.Default|Civ6.ActiveCfg = Default|Civ6
 		{2B269C1B-074E-49ED-87E3-FC27027D5F6D}.Default|Civ6.Build.0 = Default|Civ6
 		{D33BF38C-5679-4EA6-8894-E03406CDD4B7}.Default|Civ6.ActiveCfg = Default|Civ6

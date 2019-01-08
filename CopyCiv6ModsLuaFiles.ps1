@@ -1,4 +1,4 @@
-param([string] $from, [string] $to="")
+param([string] $to="")
 
 # Copies all lua files in mods in modbuddy projects into the mods in the Civ6 mods folder.
 # Do this because you can't do a build of the Modbuddy solution as Civ6 locks the folders 
@@ -24,10 +24,10 @@ if ($to -eq "") {
   $to = Join-Path $env:USERPROFILE "Documents\My Games\Sid Meier's Civilization VI\Mods"
 }
 
-$matches = Get-ChildItem -Path $from -Recurse -Include ("*.lua", "*.xml", "*.sql", "*.dds")
+$matches = Get-ChildItem -Recurse -Include ("*.lua", "*.xml", "*.sql", "*.dds") -Exclude ("modinfo_fixer.xml")
 
 $matches | Copy-Item -Destination {
-            $destination = Join-Path $to $_.FullName.Substring($from.length)
+            $destination = Join-Path $to $_.FullName.Substring($pwd.Path.Length)
             Write-Host $_.FullName "to" $destination
             $destination
            }
