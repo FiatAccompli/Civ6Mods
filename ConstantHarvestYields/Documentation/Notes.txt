@@ -1,0 +1,14 @@
+ConstantHarvestYieldsPreview image:
+  Sickle by Chmee2 
+  https://en.wikipedia.org/wiki/File:Sickle33.jpg
+  Licensed under GNU Free Documentation License (https://commons.wikimedia.org/wiki/Commons:GNU_Free_Documentation_License,_version_1.2) and Creative Commons Attribution-Share Alike 3.0 Unported (https://creativecommons.org/licenses/by-sa/3.0/legalcode)
+  
+  Wheat bundle by Ceyhun Özden 
+  https://www.pexels.com/photo/bundle-of-wheat-on-brown-wooden-surface-near-scissors-1437582/
+  Licensed under Pexels license https://www.pexels.com/photo-license/
+  
+HarvestYields image:
+  Composed from in-game civilopedia images.
+
+Magnus image:
+  In-game screenshot.

@@ -15,6 +15,8 @@ following changes are made to Magnus' promotion tree:
 * Surplus Logistics promotion is now Magnus's default promotion. 
   * Modified to only provide +1 food (down from +2) to trade routes ending in the city.
 
+![Magnus rework](Documentation/Magnus.jpg)
+
 ### Recommendation
 As making harvest yields constant requires changing a global parameter that 
 also effects district cost scaling it is recommended to also use a mod that changes how 
