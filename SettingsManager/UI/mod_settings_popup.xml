@@ -160,12 +160,8 @@
     <Stack ID="Setting" Anchor="R,T" Size="parent,auto" StackGrowth="Down" StackPadding="5">
       <Container Size="parent,15"/>
       <Grid Size="parent,21" Texture="Shell_SectionHeader" SliceCorner="154,10" SliceTextureSize="308,21" Color="20,144,140,100">
-        <!--<Image Texture="Controls_Gradient_HalfRadial" Color="20,144,140,100" FlipY="1" Anchor="C,T" Size="225,94"/>-->
         <Label ID="Header" Anchor="C,C" Style="ShellOptionText" WrapWidth="320"/>
       </Grid>
-      <!--<Container Size="parent,40" Anchor="C,C">-->
-        <!--<Label ID="Label" Size="auto,auto" Anchor="C,B" FontSize="20" Style="ShellOptionText" />-->
-
     </Stack>
   </Instance>
 </Context>

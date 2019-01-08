@@ -27,12 +27,6 @@ BaseSettingUIHandler.__index = BaseSettingUIHandler;
 
 function BaseSettingUIHandler:new(setting:table, ui:table)
   local result = setmetatable({setting = setting, ui = ui, cachedValue = setting.Value}, self);
-  --[[LuaEvents.ModSettingsManager_SettingValueChanged.Add(
-    function(cName:string, sName:string, value, oldValue)
-      if (cName == setting.categoryName) and (sName == setting.settingName) then
-        result:UpdateUIToValue(value, oldValue);
-      end
-    end);]]
   return result;
 end
 
@@ -86,6 +80,9 @@ function BaseSettingUIHandler:ValuesEqual(v1, v2)
   return v1 == v2;
 end
 
+--------------------------------------------------------------
+-- Boolean setting ui handler
+--------------------------------------------------------------
 local BooleanSettingUIHandler = {};
 BooleanSettingUIHandler.__index = BooleanSettingUIHandler;
 setmetatable(BooleanSettingUIHandler, BaseSettingUIHandler);
@@ -109,6 +106,9 @@ function BooleanSettingUIHandler:UpdateUIToValue(value)
   self.ui.SettingCheckbox:SetSelected(value);
 end
 
+--------------------------------------------------------------
+-- Select setting ui handler
+--------------------------------------------------------------
 local SelectSettingUIHandler = {};
 SelectSettingUIHandler.__index = SelectSettingUIHandler;
 setmetatable(SelectSettingUIHandler, BaseSettingUIHandler);
@@ -129,7 +129,7 @@ function SelectSettingUIHandler:new(setting:table, ui:table)
   
   pulldown:CalculateInternals();
   pulldown:RegisterSelectionCallback(
-			function(index, _, control)
+			function(index)
         local selectedValue = setting.values[index];
         result:RaiseChange(selectedValue);
 			end
@@ -142,6 +142,9 @@ function SelectSettingUIHandler:UpdateUIToValue(value)
   self.ui.SettingPulldown:GetButton():LocalizeAndSetText(value or "");
 end
 
+--------------------------------------------------------------
+-- Text setting ui handler
+--------------------------------------------------------------
 local TextSettingUIHandler = {};
 TextSettingUIHandler.__index = TextSettingUIHandler;
 setmetatable(TextSettingUIHandler, BaseSettingUIHandler);
@@ -164,6 +167,10 @@ end
 function TextSettingUIHandler:UpdateUIToValue(value)
   self.ui.SettingText:SetText(value);
 end
+
+-----------------------------------------------------------
+-- Global stuff for all keybinding ui handlers as the "set binding" popup is shared among them all.
+-----------------------------------------------------------
 
 -- UI handler which is in the process of having its binding changed.  This is non-nil while 
 -- we are showing the popup to prompt the user to enter the key.
@@ -192,6 +199,7 @@ function HandlePossibleBinding(input)
     if ModSettings.KeyBinding.KeyLocalizations[keyCode] then
       activeKeyBindingUIHandler:SetBinding(
           ModSettings.KeyBinding.MakeValue(keyCode, {Shift=input:IsShiftDown(), Ctrl=input:IsControlDown(), Alt=input:IsAltDown()}));
+      StopActiveKeyBinding();
       return true;
     end
   end
@@ -206,6 +214,7 @@ function ClearActiveKeyBinding()
 end
 
 -- Maps from localized key string to info about what is using that binding.
+-- Lazily initialized.
 local duplicateBindings = {};
 setmetatable(duplicateBindings, 
   {
@@ -216,16 +225,17 @@ setmetatable(duplicateBindings,
   });
 
 function InitializeKeyBindingsForDuplication() 
+  -- Clear out all existing binding info
   for k, _ in pairs(duplicateBindings) do 
     duplicateBindings[k] = nil;
   end
 
+  -- Get all the base game bindings
   local count = Input.GetActionCount();
   for i = 0, count-1 do
     local actionId = Input.GetActionId(i);
     if Input.GetActionEnabled(actionId) then
       local name = Locale.Lookup(Input.GetActionName(actionId));
-      --Locale.Lookup(Input.GetActionCategory(action)),
 		  local binding1 = Input.GetGestureDisplayString(actionId, 0);
 		  local binding2 = Input.GetGestureDisplayString(actionId, 1);
       if binding1 then
@@ -255,7 +265,7 @@ end
 function MakeDuplicateMessage(duplicateData)
   local actionsString = MakeDuplicatesActionsMessage(duplicateData);
   if actionsString then
-    return Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_DUPLICATE_WARNING_PREAMBLE") .."[NEWLINE]" .. actionsString;
+    return Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_DUPLICATE_WARNING_PREAMBLE") .. "[NEWLINE]" .. actionsString;
   end
 end
 
@@ -271,6 +281,9 @@ function MakeAllDuplicatesMessage()
   return table.concat(duplicateStrings, "[NEWLINE][NEWLINE]");
 end
 
+--------------------------------------------------------------
+-- Keybinding ui handler
+--------------------------------------------------------------
 local KeyBindingUIHandler = {};
 KeyBindingUIHandler.__index = KeyBindingUIHandler;
 setmetatable(KeyBindingUIHandler, BaseSettingUIHandler);
@@ -306,11 +319,6 @@ function KeyBindingUIHandler:RemoveFromDuplicateDetection(value)
   end
 end
 
-function KeyBindingUIHandler:UpdateDuplicateUI(message:string)
-  self.ui.Conflicts:SetHide(not message);
-  self.ui.Conflicts:SetToolTipString(message);
-end
-
 function KeyBindingUIHandler:AddToDuplicateDetection(value)
   if value ~= nil then
     local keyBindingString = self:ValueToString(value);
@@ -322,6 +330,11 @@ function KeyBindingUIHandler:AddToDuplicateDetection(value)
       handler:UpdateDuplicateUI(duplicateMessage);
     end
   end
+end
+
+function KeyBindingUIHandler:UpdateDuplicateUI(message:string)
+  self.ui.Conflicts:SetHide(not message);
+  self.ui.Conflicts:SetToolTipString(message);
 end
 
 function KeyBindingUIHandler:SetBinding(value) 
@@ -349,6 +362,9 @@ function KeyBindingUIHandler:UpdateUIToValue(value, oldValue)
   end
 end
 
+--------------------------------------------------------------
+-- Range setting ui handler
+--------------------------------------------------------------
 local RangeSettingUIHandler = {};
 RangeSettingUIHandler.__index = RangeSettingUIHandler;
 setmetatable(RangeSettingUIHandler, BaseSettingUIHandler);
@@ -400,6 +416,9 @@ function RangeSettingUIHandler:UpdateDisplayValue(value)
   self.ui.DisplayValue:LocalizeAndSetText(self.setting.valueFormatter, value or 0);
 end
 
+--------------------------------------------------------------
+-- Action ui handler
+--------------------------------------------------------------
 local ActionSettingUIHandler = {};
 ActionSettingUIHandler.__index = ActionSettingUIHandler;
 setmetatable(ActionSettingUIHandler, BaseSettingUIHandler);
@@ -424,6 +443,9 @@ function ActionSettingUIHandler:UpdateUIToValue(value)
   -- Nothing to do here.
 end
 
+--------------------------------------------------------------
+-- Header ui handler
+--------------------------------------------------------------
 local HeaderSettingUIHandler = {};
 HeaderSettingUIHandler.__index = HeaderSettingUIHandler;
 setmetatable(HeaderSettingUIHandler, BaseSettingUIHandler);
@@ -493,9 +515,9 @@ end
 
 function CategoryUI:AddSetting(setting:table)
   if self.settings[setting.settingName] then
-    -- Already have a setting of this name registered.  We assume that users are well behaved and such a setting
-    -- will be identical to what is already registered.  This way mods can refer to the same setting across
-    -- multiple files.
+    -- Already have a setting of this name registered.  We assume that mod writers are well behaved 
+    -- and such a setting will be identical to what is already registered.  This way mods can refer 
+    -- to the same setting across multiple files if they need to.
     return
   end
 
@@ -526,7 +548,8 @@ function CategoryUI:AddSetting(setting:table)
 
   self.settings[setting.settingName] = {
     setting = setting,
-    uiHandler = uiHandler};
+    uiHandler = uiHandler
+  };
 end
 
 function CategoryUI:CacheAndUpdateValues()
@@ -689,7 +712,6 @@ function OnInput(input)
         return true;
       else
         if HandlePossibleBinding(input) then
-          StopActiveKeyBinding();
           return true;
         end
       end

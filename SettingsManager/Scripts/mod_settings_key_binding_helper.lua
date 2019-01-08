@@ -1,4 +1,4 @@
--- Contains the ModSettings.KeyBinding:MatchesInput method.  This can't be defined in the main 
+-- Contains the KeyBindingHelper.MatchesInput method.  This can't be defined in the main 
 -- mod_settings file because it references some api values in setup that are only available in a 
 -- ui context, and it's perfectly valid to have settings in gameplay scripts (could move the 
 -- whole keybinding setting here, but that feels logically inconsistent).
@@ -20,9 +20,12 @@ LuaEvents.TechTree_OpenTechTree.Add(function() techTreeOpen=true; end);
 local ONLY_WORLD_INPUT_CONTEXT = { [InputContext.World] = true };
 local ONLY_SELECTION_INTERFACE_MODE = { [InterfaceModeTypes.SELECTION] = true };
 local ALL_INTERFACE_MODES = {};
-for _, mode in pairs(InterfaceModeTypes) do 
-  ALL_INTERFACE_MODES[mode] = true;
-end
+
+setmetatable(ALL_INTERFACE_MODES, {
+  __index = function() 
+    return true;
+  end
+});
 
 KeyBindingHelper = {};
 
