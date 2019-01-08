@@ -255,7 +255,6 @@ function UpdateKeyboardTargetingVisibility(visible:boolean)
   keyboardTargetingVisibility = visible;
 end
 
-
 function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:boolean)
   -- Apparently you can't just send it as a tuple to SetWorldPositionVal because there's a 4th element
   -- that is ... who the fuck knows.  The game doesn't seem to use it anywhere.
@@ -269,38 +268,61 @@ function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:bool
   UpdateKeyboardTargetingVisibility(visibility);
 end
 
-local KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE = {
-    [InterfaceModeTypes.FORM_CORPS] = "ICON_UNITCOMMAND_FORM_CORPS",
-    [InterfaceModeTypes.FORM_ARMY] = "ICON_UNITCOMMAND_FORM_ARMY",
-    [InterfaceModeTypes.RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
-    [InterfaceModeTypes.CITY_RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
-    [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = "ICON_UNITOPERATION_RANGE_ATTACK",
-    [InterfaceModeTypes.AIR_ATTACK] = "ICON_UNITOPERATION_AIR_ATTACK",
-    [InterfaceModeTypes.PRIORITY_TARGET] = "ICON_UNITCOMMAND_PRIORITY_TARGET",
-    [InterfaceModeTypes.REBASE] = "ICON_UNITOPERATION_REBASE",
-    [InterfaceModeTypes.DEPLOY] = "ICON_UNITOPERATION_DEPLOY",
-    [InterfaceModeTypes.AIRLIFT] = "ICON_UNITCOMMAND_AIRLIFT",
-    [InterfaceModeTypes.COASTAL_RAID] = "ICON_UNITOPERATION_COASTAL_RAID",
-    [InterfaceModeTypes.TELEPORT_TO_CITY] = "ICON_UNITOPERATION_TELEPORT_TO_CITY",
-    [InterfaceModeTypes.WMD_STRIKE] = "ICON_UNITOPERATION_WMD_STRIKE",
-    [InterfaceModeTypes.ICBM_STRIKE] = "ICON_UNITOPERATION_WMD_STRIKE",
-    [InterfaceModeTypes.ATTACK] = "ICON_NOTIFICATION_DECLARE_WAR",
-    -- Use no icon so the number in the path shows through.
-    [InterfaceModeTypes.MOVE_TO] = "ICON_MORE_KEY_BINDINGS_NONE",
-};
+local keyboardTargetDisabledByInterfaceMode = {};
+local keyboardTargetIconByInterfaceMode = {};
 
-function UpdateKeyboardTargetIcon(interfaceMode:number)
-  local modeIcon = KEYBOARD_TARGET_ICONS_FOR_INTERFACE_MODE[interfaceMode];
+function RegisterKeyboardTargetDisplaySettings(interfaceMode:number, icon:string, disabled:boolean)
+  print("Registering", interfaceMode, icon, disabled);
+  keyboardTargetDisabledByInterfaceMode[interfaceMode] = disabled;
+  keyboardTargetIconByInterfaceMode[interfaceMode] = icon;
+end
+
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.FORM_CORPS, "ICON_UNITCOMMAND_FORM_CORPS");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.FORM_ARMY, "ICON_UNITCOMMAND_FORM_ARMY");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.CITY_RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.DISTRICT_RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.AIR_ATTACK, "ICON_UNITOPERATION_AIR_ATTACK");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.PRIORITY_TARGET, "ICON_UNITCOMMAND_PRIORITY_TARGET");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.REBASE, "ICON_UNITOPERATION_REBASE");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.DEPLOY, "ICON_UNITOPERATION_DEPLOY");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.AIRLIFT, "ICON_UNITCOMMAND_AIRLIFT");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.COASTAL_RAID, "ICON_UNITOPERATION_COASTAL_RAID");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.TELEPORT_TO_CITY, "ICON_UNITOPERATION_TELEPORT_TO_CITY");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.WMD_STRIKE, "ICON_UNITOPERATION_WMD_STRIKE");
+RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.ICBM_STRIKE, "ICON_UNITOPERATION_WMD_STRIKE");
+
+-- By default hide the keyboard targeting outline in MOVE_TO mode since it doesn't play well 
+-- with the move-to path (and in particular the turn numbering).  Allow users to turn it on if they want.
+local hideKeyboardTargetOutlineInMoveToMode = ModSettings.Boolean:new(
+    true,
+    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
+    "LOC_MORE_KEY_BINDINGS_HIDE_KEYBOARD_TARGETING_OUTLINE_IN_MOVE_TO_MODE",
+    "LOC_MORE_KEY_BINDINGS_HIDE_KEYBOARD_TARGETING_OUTLINE_IN_MOVE_TO_MODE_TOOLTIP");
+hideKeyboardTargetOutlineInMoveToMode:AddChangedHandler(
+    function(value:boolean, oldValue:boolean)
+      -- Use no icon so the number in the path shows through.
+      RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.MOVE_TO, "ICON_MORE_KEY_BINDINGS_NONE", value);
+    end, true);
+
+function UpdateKeyboardTarget(interfaceMode:number)
+  interfaceMode = interfaceMode or UI.GetInterfaceMode();
+
+  local disabled = keyboardTargetDisabledByInterfaceMode[interfaceMode] or false;
+  Controls.KeyboardPlotTargetOutline:SetHide(disabled);
+  Controls.KeyboardTargetAction:SetHide(disabled);
+
+  local modeIcon = keyboardTargetIconByInterfaceMode[interfaceMode];
   modeIcon = modeIcon or "ICON_MORE_KEY_BINDINGS_KEYBOARD";
   Controls.KeyboardTargetAction:SetIcon(modeIcon);
 end
 
 function OnUnitSelectionChanged(playerID:number, unitID:number, hexI:number, hexJ:number, hexK:number, isSelected:boolean, isEditable:boolean)
-  UpdateKeyboardTargetIcon(UI.GetInterfaceMode());
+  UpdateKeyboardTarget();
 end
 
 function OnInterfaceModeChanged(oldMode:number, newMode:number)
-  UpdateKeyboardTargetIcon(newMode);
+  UpdateKeyboardTarget(newMode);
 end
 
 -- Hide keyboard targeting display during battle so it doesn't interfere with the grand 
@@ -332,6 +354,7 @@ function Initialize()
   Events.CombatVisBegin.Add(OnCombatVisBegin);
   Events.CombatVisEnd.Add(OnCombatVisEnd);
   LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
+  LuaEvents.KeyboardNavigation_RegisterKeyboardTargetDisplaySettings.Add(RegisterKeyboardTargetDisplaySettings);
 end
 
 Initialize();
