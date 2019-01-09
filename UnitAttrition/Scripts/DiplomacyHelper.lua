@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Caches information about diplomacy that is only available in UI context.  Open borders and alliance type 
 -- information are not exposed in gameplay script context (that I can find).  And while diplomatic state
 -- is available in both contexts, it's exposed in different places.  So cache that too just so it can 

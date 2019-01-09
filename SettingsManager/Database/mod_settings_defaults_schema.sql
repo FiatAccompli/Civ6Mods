@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Contains default player-defined values for mod settings that apply to all games (unless overriden with 
 -- a value in the individual game save).
 CREATE TABLE 'ModSettingsUserDefaults' (

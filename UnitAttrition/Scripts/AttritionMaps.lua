@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 include("DistanceCalculator")
 
 local UNREACHABLE_DISTANCE = DistanceCalculator.UNREACHABLE_DISTANCE;

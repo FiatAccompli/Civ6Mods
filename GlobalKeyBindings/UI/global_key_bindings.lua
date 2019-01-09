@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 include("mod_settings.lua");
 include("mod_settings_key_binding_helper.lua");
 include("inputsupport");

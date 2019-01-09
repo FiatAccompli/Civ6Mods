@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- The relatively few lines of code that do the actual effect of this mod in removing health from units.
 
 include("AttritionMaps")

@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- File must be named ModLens_XYZ in order for MoreLenses to find it.
 -- Adds a lens that shows the computed distance for attrition calculations.  Not very helpful, so disabled by default.
 

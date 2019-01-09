@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Helper functions for iterating over certain types of plots.
 
 -- Not calling this file PlotIterators because other mods already have a file named that with 

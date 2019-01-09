@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 FiatAccompli -->
 <Context>
   <AlphaAnim ID="FadeDelay" AlphaBegin="1" AlphaEnd="1" Speed="1" Cycle="Once"/>
   <AlphaAnim ID="StatusWindowAlpha" Anchor="C,C" Size="auto,auto" AlphaBegin="1" AlphaEnd="0" Speed="1" Cycle="Once">

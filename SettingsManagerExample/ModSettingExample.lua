@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- A very simple example of using mod setting provided by the Mod Settings Manager mod.
 -- All this does is print out the values of the declared settings when they are changed.
 

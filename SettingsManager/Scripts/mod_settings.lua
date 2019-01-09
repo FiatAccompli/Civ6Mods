@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Provides the public api (in the ModSettings table) that other mods use to declare and use settings.
 
 if not ModSettings then

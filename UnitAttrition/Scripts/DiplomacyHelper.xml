@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 FiatAccompli -->
 <!-- Placeholder UI file to cause DiplomacyHelper to be loaded and initialize in ui script context.  -->
 <Context Name="ContextFunctions">
 </Context>

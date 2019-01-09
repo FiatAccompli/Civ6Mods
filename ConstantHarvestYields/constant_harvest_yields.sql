@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Update the scaling parameter for time based harvest multiplier.  This also affects 
 -- district cost scaling so another mod is necessary to deal with that.
 UPDATE GlobalParameters SET Value = '100' WHERE Name = 'GAME_COST_ESCALATION';

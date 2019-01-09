@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 FiatAccompli -->
 <Context Name="ModSettingsManager">
   <!-- The button that brings up the mod settings screen when clicked.
        This is reparented to show up in the minimap "toolbar" on startup so that we don't need to alter minimap.lua/minimap.xml in this mod. -->

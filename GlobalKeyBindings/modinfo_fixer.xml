@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- Copyright 2018 FiatAccompli -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml" encoding="utf-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
@@ -9,18 +10,18 @@
     </xsl:copy>
     <LocalizedText>
       <Text id="LOC_GLOBAL_KEY_BINDINGS_MOD_NAME">
-        <en_US>Global Hotkeys</en_US>
-        <de_DE>Global Hotkeys</de_DE>
-        <es_ES>Global Hotkeys</es_ES>
-        <fr_FR>Global Hotkeys</fr_FR>
-        <it_IT>Global Hotkeys</it_IT>
-        <pl_PL>Global Hotkeys</pl_PL>
-        <pt_BR>Global Hotkeys</pt_BR>
-        <ru_RU>Global Hotkeys</ru_RU>
-        <ja_JP>Global Hotkeys</ja_JP>
-        <ko_KR>Global Hotkeys</ko_KR>
-        <zh_Hans_CN>Global Hotkeys</zh_Hans_CN>
-        <zh_Hant_HK>Global Hotkeys</zh_Hant_HK>
+        <en_US>Play the Keyboard: Global Hotkeys</en_US>
+        <de_DE>Play the Keyboard: Global Hotkeys</de_DE>
+        <es_ES>Play the Keyboard: Global Hotkeys</es_ES>
+        <fr_FR>Play the Keyboard: Global Hotkeys</fr_FR>
+        <it_IT>Play the Keyboard: Global Hotkeys</it_IT>
+        <pl_PL>Play the Keyboard: Global Hotkeys</pl_PL>
+        <pt_BR>Play the Keyboard: Global Hotkeys</pt_BR>
+        <ru_RU>Play the Keyboard: Global Hotkeys</ru_RU>
+        <ja_JP>Play the Keyboard: Global Hotkeys</ja_JP>
+        <ko_KR>Play the Keyboard: Global Hotkeys</ko_KR>
+        <zh_Hans_CN>Play the Keyboard: Global Hotkeys</zh_Hans_CN>
+        <zh_Hant_HK>Play the Keyboard: Global Hotkeys</zh_Hant_HK>
       </Text>
       <Text id="LOC_GLOBAL_KEY_BINDINGS_TEASER">
         <en_US>Adds keybindings to quickly control global settings.</en_US>

@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- File must be named ModLens_XYZ in order for MoreLenses to find it.
 -- Lense that shows attrition per turn for the local player, both by shading and by writing the 
 -- exact amount of attrition in each hex.

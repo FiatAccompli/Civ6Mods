@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 include("InstanceManager")
 include("InputSupport")
 include("mod_settings")
@@ -608,6 +612,7 @@ function OnShow()
   Controls.DuplicateBindingsPopup:SetHide(true);
   InitializeKeyBindingsForDuplication();
   LuaEvents.ModSettingsManager_UIReadyForRegistration();
+
   Controls.CategoriesStack:SortChildren(CompareCategories);
 
   local firstCategory = nil;

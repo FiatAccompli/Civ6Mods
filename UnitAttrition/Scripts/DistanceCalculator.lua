@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Search utility for finding shortest path distances on civ 6 maps using uniform cost search.
 
 include("BinaryHeap")

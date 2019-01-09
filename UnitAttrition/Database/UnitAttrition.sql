@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 CREATE TABLE UA_UnitAttritionSetting (
    Name TEXT NOT NULL,
    UnitAttritionSet TEXT NOT NULL,

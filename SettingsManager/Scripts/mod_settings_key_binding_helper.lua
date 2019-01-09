@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Contains the KeyBindingHelper.MatchesInput method.  This can't be defined in the main 
 -- mod_settings file because it references some api values in setup that are only available in a 
 -- ui context, and it's perfectly valid to have settings in gameplay scripts (could move the 

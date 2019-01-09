@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Decrease production for districts the more specialty districts a city has already built.  It would 
 -- be preferable to increase the cost of a district the more districts a city has but there are no
 -- modifiers that affect cost directly.  Everything in the game that affects how much something costs 

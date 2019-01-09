@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Replaces Magnus' initial Groundbreaker promotion (+50% harvest yields) with the supply chain management promotion
 -- (+1 production to industrial zone regional buildings and +3 regional range for industrial zone).  This is the same as 
 -- great engineer Nikola Tesla's ability but nerfed to +1 production.

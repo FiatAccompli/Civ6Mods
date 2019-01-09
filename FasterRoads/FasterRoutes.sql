@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- It's the default, but be explicit about it.
 UPDATE Routes SET MovementCost = 1 WHERE RouteType = 'ROUTE_ANCIENT_ROAD';
 

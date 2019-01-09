@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 INSERT INTO LocalizedText (Language, Tag, Text)
 VALUES ('en_US', 'LOC_CHY_GOVERNOR_PROMOTION_RESOURCE_MANAGER_SUPPLY_CHAIN_MANAGEMENT_NAME', 'Supply Chain Manager'),
        ('en_US', 'LOC_CHY_GOVERNOR_PROMOTION_RESOURCE_MANAGER_SUPPLY_CHAIN_MANAGEMENT_DESCRIPTION', 

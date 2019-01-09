@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2018 FiatAccompli  --
+-- ============================= --
+
 -- Replace Reyna's Contractor promotion (can purchase districts with gold) 
 -- with the Free Trade Zone promotion that gives +2 gold to both parties for 
 -- incoming trade routes from other civs and gives +2 gold for outgoing international 
