@@ -116,6 +116,12 @@
     <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_MAP_TACKS">
       <Text>Toggle map tacks</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_HUD">
+      <Text>Toggle UI</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TOGGLE_HUD_TOOLTIP">
+      <Text>Hides/shows all of the UI that is on top of the worldview (makes for nice screenshots)</Text>
+    </Row>
     <Row Language="en_US" Tag="LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_CHANGE_AMOUNT">
       <Text>Time of day change amount (minutes)</Text>
     </Row>

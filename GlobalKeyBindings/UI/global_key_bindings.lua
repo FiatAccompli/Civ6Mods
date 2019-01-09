@@ -1,5 +1,5 @@
 -- ============================= --
---	Copyright 2018 FiatAccompli  --
+--  Copyright 2018 FiatAccompli  --
 -- ============================= --
 
 include("mod_settings.lua");
@@ -108,17 +108,17 @@ volumeChangeUsePageUpPageDownKeys:AddChangedHandler(
 ------------------- Gameplay controls --------------------
 ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_GAMEPLAY_CONTROLS");
 
-local gameplayControlsMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true};
+local gameplayControlsMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 
 local toggleQuickCombatKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.Q, {Alt=true, Ctrl=true}),
     "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_COMBAT");
 local toggleQuickMovementKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.Q, {Alt=true}),
     "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_MOVEMENT");
 
------------------- Time of day --------------------------
+------------------ Toggleable UI elements --------------------------
 ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_GRAPHICS_CONTROLS");
 
-local graphicTogglesMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES};
+local graphicTogglesMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 
 local toggleCityBannersKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.W, {Alt=true}),
     "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_CITY_BANNERS");
@@ -126,7 +126,10 @@ local toggleMapTacksKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBindi
     "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_MAP_TACKS");
 local toggleUnitIconsKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.R, {Alt=true}),
     "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_UNIT_ICONS");
+local toggleHUDKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.T, {Alt=true}),
+    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_HUD", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_HUD_TOOLTIP");
 
+------------------ Time of day --------------------------
 local timeOfDayMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 local timeOfDayKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
 
@@ -169,21 +172,21 @@ end
 -- Taken wholesale from Options.lua
 local TIME_SCALE = 23.0 + (59.0 / 60.0); -- 11:59 PM
 function UpdateTimeLabel(value)
-	local iHours = math.floor(value);
-	local iMins  = math.floor((value - iHours) * 60);
-	local meridiem = "";
+  local iHours = math.floor(value);
+  local iMins  = math.floor((value - iHours) * 60);
+  local meridiem = "";
 
-	if (UserConfiguration.GetClockFormat() == 0) then
-		meridiem = " am";
-		if ( iHours >= 12 ) then
-			meridiem = " pm";
-			if( iHours > 12 ) then iHours = iHours - 12; end
-		end
-		if( iHours < 1 ) then iHours = 12; end
-	end
+  if (UserConfiguration.GetClockFormat() == 0) then
+    meridiem = " am";
+    if ( iHours >= 12 ) then
+      meridiem = " pm";
+      if( iHours > 12 ) then iHours = iHours - 12; end
+    end
+    if( iHours < 1 ) then iHours = 12; end
+  end
 
-	local strTime = string.format("%.d:%.2d%s", iHours, iMins, meridiem);
-	Controls.TimeOfDayLabel:SetText(strTime);
+  local strTime = string.format("%.d:%.2d%s", iHours, iMins, meridiem);
+  Controls.TimeOfDayLabel:SetText(strTime);
 end
 --------------------------------------------------------------------
 
@@ -256,8 +259,15 @@ function UpdateUI()
   SetTimeOfDayLabelVisibility(IsAnimatedTimeOfDay());
 end
 
-function ToggleControlVisibility(control:table)
-  control:SetHide(not control:IsHidden());
+function ToggleControlVisibility(control:table, additionalControls:table)
+  local hidden = not control:IsHidden();
+  control:SetHide(hidden);
+
+  if additionalControls then
+    for _, name in ipairs(additionalControls) do
+      ContextPtr:LookUpControl(name):SetHide(hidden);
+    end
+  end
 end
 
 function OnInputHandler(input)
@@ -374,6 +384,25 @@ function OnInputHandler(input)
     ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/MapPinManager"));
   elseif KeyBindingHelper.InputMatches(toggleUnitIconsKeyBinding(), input, graphicTogglesMatchOptions) then
     ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/UnitFlagManager"));
+  elseif KeyBindingHelper.InputMatches(toggleHUDKeyBinding(), input, graphicTogglesMatchOptions) then
+    ToggleControlVisibility(ContextPtr:LookUpControl("/InGame/HUD"),
+        { 
+          "/InGame/WorldViewIconsManager",
+          "/InGame/DistrictPlotIconManager",
+          "/InGame/PlotInfo",
+          "/InGame/UnitFlagManager",
+          "/InGame/CityBannerManager",
+          "/InGame/TourismBannerManager",
+          "/InGame/MapPinManager",
+          "/InGame/SelectedUnit",
+          "/InGame/SelectedMapPinContainer",
+          "/InGame/SelectedUnitContainer",
+          "/InGame/WorldViewPlotMessages",
+          "/InGame/PartialScreens",
+          "/InGame/Screens",
+          "/InGame/TopLevelHUD",
+          "/InGame/WorldPopups",
+        });
   end
 
   if KeyBindingHelper.InputMatches(minimapSizeIncreaseKeyBinding(), input, minimapSizeKeyDownMatchOptions) then
@@ -400,7 +429,7 @@ function Initialize()
   -- invoked for some subset of options.  Which includes quick combat/movement, but not animating 
   -- day length.  Firaxis must have been involved at some point.
   Events.UserOptionChanged.Add(UpdateUI);
-	ContextPtr:SetInputHandler(OnInputHandler, true);
+  ContextPtr:SetInputHandler(OnInputHandler, true);
   UpdateUI();
 end
 

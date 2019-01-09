@@ -19,7 +19,7 @@ Adds keybindings for the following:
 * Toggle city banner visibility (Alt+W)
 * Toggle map tacks visibility (Alt+E)
 * Toggle unit icons (Alt+R)
-
+* Toggle heads up display/screenshot mode (Alt+T)
 
 Using the keybindings to change volume or one of the other settings that does not immediately change the world view will briefly show a 
 window with the current settings in the center of the screen.
