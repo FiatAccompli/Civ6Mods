@@ -108,10 +108,7 @@
 
     
     <!--****************************** Unit Panel ************************************-->
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNIT_ACTION_CONTROLS">
-      <Text>Unit Actions</Text>
-    </Row>
-    
+   
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_SHOW_UNIT_ACTIONS_KEY_BINDINGS">
       <Text>Show unit actions key bindings</Text>
     </Row>
@@ -244,9 +241,6 @@
       <Text>Wonder/District/Project production</Text>
     </Row>
 
-    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_IMPROVEMENTS_CONTROLS">
-      <Text>Improvements</Text>
-    </Row>
     <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_ACTION_BINDING_RECOMMENDED_BUILD">
       <Text>Build recommended</Text>
     </Row>

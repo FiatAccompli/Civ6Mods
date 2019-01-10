@@ -19,7 +19,7 @@ Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "MapTacksPlus", "MapTacksPlu
 EndProject
 Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "MoreKeyBindings", "MoreKeyBindings\MoreKeyBindings.civ6proj", "{70562607-5F95-481F-9A73-A71197A839FB}"
 EndProject
-Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "GlobalKeyBindings", "GlobalKeyBindings\GlobalKeyBindings.civ6proj", "{B31147D3-7A21-4A16-ABED-095DB94D5263}"
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "PlayTheKeyboard_GlobalHotkeys", "PlayTheKeyboard_GlobalHotkeys\PlayTheKeyboard_GlobalHotkeys.civ6proj", "{B31147D3-7A21-4A16-ABED-095DB94D5263}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

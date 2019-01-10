@@ -24,16 +24,21 @@ function MeleeAttackHandling.GetMeleeAttackPlotIds(unit:table)
   return plots
 end
 
-function MeleeAttackHandling.CanMeleeAttack(unit:table, simple:boolean)
+function MeleeAttackHandling.IsMeleeAttackUnit(unit:table)
   if not unit then 
     return false;
   end
+
+  local unitData = GameInfo.Units[unit:GetUnitType()];
+  -- Must have movement remaining and be an appropriate type of unit to melee attack.
+  return unit:GetMovesRemaining() > 0 and unitData.Combat > 0 and 
+    (unitData.FormationClass == 'FORMATION_CLASS_LAND_COMBAT' or
+      unitData.FormationClass == 'FORMATION_CLASS_NAVAL');
+end
+
+function MeleeAttackHandling.CanMeleeAttack(unit:table, simple:boolean)
   if simple then
-    local unitData = GameInfo.Units[unit:GetUnitType()];
-    -- Must have movement remaining and be an appropriate type of unit to melee attack.
-    return unit:GetMovesRemaining() > 0 and unitData.Combat > 0 and 
-      (unitData.FormationClass == 'FORMATION_CLASS_LAND_COMBAT' or
-       unitData.FormationClass == 'FORMATION_CLASS_NAVAL');
+    return MeleeAttackHandling.IsMeleeAttackUnit(unit);
   else 
     return unit and #MeleeAttackHandling.GetMeleeAttackPlotIds(unit) > 0 or false;
   end
