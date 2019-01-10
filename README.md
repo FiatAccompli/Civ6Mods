@@ -12,6 +12,6 @@ A collection of civ 6 mods.
 * [Keyboard Navigation and Unit Action Hotkeys](MoreKeyBindings) - Allows you to navigate the world map with the keyboard and adds keyboard bindings for all unit actions.
 * [Map Tacks +](MapTacksPlus) - It's map tacks, but with even more icon options.  What a plus!
 
-### Modder mods
-* [Mod Settings Manager](SettingsManager) - Provides an easy way for other mods to declare user configurable settings.
+### Modding mods
+* [Settings Manager](SettingsManager) - Provides an easy way for other mods to declare user configurable settings.  Provides users an easy in-game UI to change settings.
 * [Settings Manager Example](SettingsManagerExample) - Provides a very simple example usage of Mod Settings Manager. 

@@ -10,7 +10,7 @@
 # This can be configured as an external tool (Tools > External Tools) in Modbuddy with settings
 # Name: Fix ModInfo Files
 # Command: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-# Arguments: -file "$(SolutionDir)AlterModInfoFiles.ps1"
+# Arguments: -file "AlterModInfoFiles.ps1"
 # Initial Directory: "$(SolutionDir)"
 
 function XSLT(
@@ -58,7 +58,7 @@ foreach ($match in $matches) {
   $modinfos = Get-ChildItem -Recurse -Path $toPath -Include ("*.modinfo")
   foreach ($modinfo in $modinfos) {
     XSLT -InputFile $modinfo.FullName -OutputFile $modinfo.FullName -Transform $match.FullName
-    Write-Host Applied $match.FullName to $modinfo.FullName
+    Write-Host ("[" + $match.Directory.Name + "] Applied") $match.FullName to $modinfo.FullName
   }
 }
 Write-Host "Updated" $matches.count "modinfo files" 
@@ -68,7 +68,8 @@ $moddirs = Get-ChildItem -Directory
 foreach ($match in $moddirs) {
   $toPath = Join-Path $to $match.Name
   Copy-Item "LICENSE" -Destination $toPath
-  Write-Host Copied license to $toPath
+  Write-Host "[$match] Copied license to" $toPath
 }
 
 Write-Host Copied $moddirs.count LICENSE files
+Write-Host

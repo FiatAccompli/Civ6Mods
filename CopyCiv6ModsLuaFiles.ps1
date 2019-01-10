@@ -15,7 +15,8 @@ param([string] $to="")
 # This can be configured as an external tool (Tools > External Tools) in Modbuddy with settings
 # Name: Quick Build Lua, XML, and SQL
 # Command: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-# Arguments: -file "$(SolutionDir)CopyCiv6ModsLuaFiles.ps1" -From "$(SolutionDir)"
+# Arguments: -file "CopyCiv6ModsLuaFiles.ps1"
+# Initial Directory: "$(SolutionDir)"
 
 # Unfortunately there doesn't seem to be a generic way to get the Civ6 local mods path within Modbuddy.
 # So if you've got it somewhere besides the default (is that even possible?) you'll need to specify it 
