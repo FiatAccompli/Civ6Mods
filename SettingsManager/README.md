@@ -6,6 +6,10 @@ Provides an easy way for other mods to declare user configurable settings and pr
 Setting values are persisted within game saves and if the user desires it is (relatively) easy to save a global default setting 
 that applies across all saves.
 
+## Installation
+* [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)
+* [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
+
 ## For Users
 
 Settings Manager adds a fairly standard looking "options" pinwheel to the "toolbar" above the minimap.  
@@ -17,12 +21,12 @@ When clicked this will bring up the settings popup that allows you to change all
 ![Example Settings](Documentation/SettingsManagerExamplePage.jpg)
 
 When you have changed the settings use the "Confirm" button at the bottom to lock in the changes 
-(pressing ESC or the back button at the upper right will be revert changes).
+(pressing ESC or the back button at the upper right will revert changes).
 
 ### Saving settings as the default for all games
 
 To make the current settings the default for all games, click the "Show Saveable Config" button at the bottom
-left of the settings popup.  Follow the in-game instructions.
+left of the settings popup and follow the in-game instructions.
 
 ## For Modders
 
@@ -41,13 +45,16 @@ To use Settings Manager in other mods:
 
 2. In whichever lua files you want to use settings include the settings api
    ```
-   include ("mod_settings")
+   include("mod_settings")
    ```
    and construct the settings you need.  All settings constructed will be automatically registered with the ui 
    and available for users to configure.
 
+   Keybinding settings will also need to include the input matching code in `mod_settings_key_binding_helper.lua`.
+
    *Note that mod settings can only control behavior of lua code - either UI behavior or custom behavior 
-   implemented with lua gameplay scripts.  You can't use this mod to control changes made to the gameplay database.*
+   implemented with lua gameplay scripts.  You can't use the features of this mod to control changes made 
+   to the gameplay database.*
 
 ## Settings Api
 
@@ -63,9 +70,9 @@ ModSettings.<Type>:new(...)
 * `categoryName` - A localizable string that provides the name of the settings tab within the ui.
    It is recommended that this be similar to the mod name and that all settings in a mod use the same category.
    (If there are a lot of settings in a mod that logically group into separate categories then multiple 
-   categories in a mod are reasonable.)
+   categories can be used.)
 * `settingName` - A localizable string that provides the name of the individual setting within the ui.
-  All setting names must be unique.  If two settings use the same categoryName/settingName pair then the ui 
+  Setting names must be unique within a category.  If two settings use the same categoryName/settingName pair then the ui 
   assumes they are the same and will only show one of them in the ui. *If they don't have the same 
   definition (type, defaultValue, etc.) then bad things will probably happen.*
 * `tooltip` - A localizable string that is used as a tooltip for the setting.  For example, to provide more 
@@ -184,7 +191,7 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
 * `ModSettings.KeyBinding.ValueToString(value)` - 
   A static method to turn a value from `MakeValue` into a nicely localized string suitable for 
   displaying to the user.
-* `KeyBindingHelper.InputMatches(value, input, options)` - From mod_settings_key_binding_helper.lua. 
+* `KeyBindingHelper.InputMatches(value, input, options)` - From `mod_settings_key_binding_helper.lua`. 
   Returns true if `input` is a key event that matches the `value` of a key binding.
   * `value` is the `.Value` of a keybind setting.
   * `input` is the parameter passed to the function registered with `ContextPtr.SetInputHandler(handler, true)`.
