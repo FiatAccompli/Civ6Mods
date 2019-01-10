@@ -74,6 +74,7 @@ local speechVolumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.Ke
 local speechVolumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Shift=true, Ctrl=true}),
     "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_DECREASE_SPEECH_VOLUME");
 
+-- Volume at the time the it was muted and to which it will be restored when the mute key is pressed again.
 local volumeToDeMute = -1;
 
 volumeChangeUseDedicatedKeys:AddChangedHandler(
@@ -130,6 +131,8 @@ local toggleHUDKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.Ma
     "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_HUD", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_HUD_TOOLTIP");
 
 ------------------ Time of day --------------------------
+ModSettings.Header:new("LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_IN_GAME_TIME_OF_DAY_CONTROLS");
+
 local timeOfDayMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 local timeOfDayKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
 
@@ -191,12 +194,12 @@ end
 --------------------------------------------------------------------
 
 function UpdateLengthOfDayLabel(speed:number)
-  -- Multiply by slightly more than one as a poor man's form of rounding.
-  local length = 24 / speed * 1.000001;
+  local length = 24 / speed;
   if length >= 1 then
-    Controls.DayLengthLabel:LocalizeAndSetText("LOC_PTK_GLOBAL_HOTKEYS_LENGTH_OF_DAY_FORMATTER_MINUTES", length);
+    -- Add .05 to implement rounding since it's displayed to the tenth and the formatting code does not round.
+    Controls.DayLengthLabel:LocalizeAndSetText("LOC_PTK_GLOBAL_HOTKEYS_LENGTH_OF_DAY_FORMATTER_MINUTES", length + .05);
   else
-    Controls.DayLengthLabel:LocalizeAndSetText("LOC_PTK_GLOBAL_HOTKEYS_LENGTH_OF_DAY_FORMATTER_SECONDS", length * 60);
+    Controls.DayLengthLabel:LocalizeAndSetText("LOC_PTK_GLOBAL_HOTKEYS_LENGTH_OF_DAY_FORMATTER_SECONDS", length * 60 + .05);
   end
 end
 
@@ -331,7 +334,6 @@ function OnInputHandler(input)
     FadeUpdatedVisualContainer(Controls.SpeechVolumeContainer);
     return true;
   end
-  
 
   if KeyBindingHelper.InputMatches(toggleQuickCombatKeyBinding(), input, gameplayControlsMatchOptions) then
     local value = UserConfiguration.GetValue("QuickCombat");
@@ -417,6 +419,7 @@ function OnInputHandler(input)
 end
 
 function Initialize()
+  -- When fade delay elapses start the fade and when that finishes hide the status window.
   Controls.FadeDelay:RegisterEndCallback(
       function()
         Controls.StatusWindowAlpha:Play();

@@ -120,7 +120,11 @@
       <Text>Toggle HUD (all ui)</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_HUD_TOOLTIP">
-      <Text>Hides/shows all of the UI that is on top of the worldview (makes for nice screenshots)</Text>
+      <Text>Hides/shows all of the UI that is on top of the world view (makes for clean screenshots)</Text>
+    </Row>
+
+    <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_IN_GAME_TIME_OF_DAY_CONTROLS">
+      <Text>In-Game Time of Day</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_TIME_OF_DAY_CHANGE_AMOUNT">
       <Text>Time of day change amount (minutes)</Text>
