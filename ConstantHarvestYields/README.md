@@ -23,4 +23,9 @@ also effects district cost scaling it is recommended to also use a mod that chan
 district costs are handled.  For example: [District Cost Rework](../DistrictCostRework)
 
 ### Installation
-[Steam version]()
+* [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1618194442) 
+* [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
+
+### Compatibility
+Should be compatible with all other mods.  However, as with any mods, unforeseen conflicts may occur.
+

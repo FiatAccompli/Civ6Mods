@@ -176,7 +176,7 @@ FROM DCR_DistrictProductionAdjustments;
 -- Update the cost progression increase for the district to be 40% of the updated cost so every 2.5 copies built of the 
 -- district adds 1 increment of the base cost.
 UPDATE Districts SET 
-    Cost = Cost * 1.5,
+    Cost = Cost * 3 /2,
 	CostProgressionModel = 'COST_PROGRESSION_PREVIOUS_COPIES',
 	CostProgressionParam1 = Cost * 3/5
 WHERE CostProgressionModel = 'COST_PROGRESSION_NUM_UNDER_AVG_PLUS_TECH';

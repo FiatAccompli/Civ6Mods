@@ -3,7 +3,7 @@
 <GameData>
 	<LocalizedText>
 		<Row Language="en_US" Tag="LOC_DCR_GOVERNOR_PROMOTION_THE_MERCHANT_FREE_TRADE_ZONE_NAME">
-			<Text>Free Trade Zone</Text>
+			<Text>Free Trader</Text>
 		</Row>
 		<Row Language="en_US" Tag="LOC_DCR_GOVERNOR_PROMOTION_THE_MERCHANT_FREE_TRADE_ZONE_DESCRIPTION">
 			<Text>+2 [ICON_Gold] Gold per turn for international trade routes [ICON_TradeRoute] originating in the city. +2 [ICON_Gold] Gold per turn for both parties for internation trade routes [ICON_TradeRoute] terminating in the city.</Text>

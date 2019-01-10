@@ -17,7 +17,7 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>DistrictPriceRework</AssemblyName>
     <RootNamespace>DistrictPriceRework</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="DistrictCosts"><File priority="10100">DistrictCosts.sql</File><File>Reyna.sql</File></UpdateDatabase><UpdateText id="DistrictCosts_Text"><File>Reyna_Text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="DistrictCosts"><Properties><LoadOrder>10200</LoadOrder></Properties><File priority="10100">DistrictCosts.sql</File><File>Reyna.sql</File></UpdateDatabase><UpdateText id="DistrictCosts_Text"><File>Reyna_Text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>
@@ -33,6 +33,9 @@
       <SubType>Content</SubType>
     </Content>
     <None Include="modinfo_fixer.xml">
+      <SubType>Content</SubType>
+    </None>
+    <None Include="README.md">
       <SubType>Content</SubType>
     </None>
     <Content Include="Reyna_Text.xml">
