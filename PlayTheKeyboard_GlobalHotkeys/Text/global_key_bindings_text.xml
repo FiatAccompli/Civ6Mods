@@ -105,7 +105,7 @@
     </Row>
 
     <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_GRAPHICS_CONTROLS">
-      <Text>Graphics</Text>
+      <Text>UI</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_CITY_BANNERS">
       <Text>Toggle city banners</Text>
