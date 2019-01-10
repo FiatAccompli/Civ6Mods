@@ -18,25 +18,25 @@
         <Stack StackGrowth="Down" StackPadding="2">
           <AlphaAnim ID="MusicVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
             <Stack StackGrowth="Down" StackPadding="2">
-              <Label String="LOC_GLOBAL_KEY_BINDINGS_MUSIC_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Label String="LOC_PTK_GLOBAL_HOTKEYS_MUSIC_LABEL" Anchor="L,C" Style="FontNormal14"/>
               <Bar ID="MusicVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
             </Stack>
           </AlphaAnim>
           <AlphaAnim ID="SoundEffectsVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
             <Stack StackGrowth="Down" StackPadding="2">
-              <Label String="LOC_GLOBAL_KEY_BINDINGS_EFFECTS_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Label String="LOC_PTK_GLOBAL_HOTKEYS_EFFECTS_LABEL" Anchor="L,C" Style="FontNormal14"/>
               <Bar ID="SoundEffectsVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
             </Stack>
           </AlphaAnim>
           <AlphaAnim ID="AmbientVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
             <Stack StackGrowth="Down" StackPadding="2">
-              <Label String="LOC_GLOBAL_KEY_BINDINGS_AMBIENT_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Label String="LOC_PTK_GLOBAL_HOTKEYS_AMBIENT_LABEL" Anchor="L,C" Style="FontNormal14"/>
               <Bar ID="AmbientVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
             </Stack>
           </AlphaAnim>
           <AlphaAnim ID="SpeechVolumeContainer" Size="auto,auto" AlphaBegin="1" AlphaEnd="0.33" Speed="1" Cycle="Once" Anchor="L,C">
             <Stack StackGrowth="Down" StackPadding="2">
-              <Label String="LOC_GLOBAL_KEY_BINDINGS_SPEECH_LABEL" Anchor="L,C" Style="FontNormal14"/>
+              <Label String="LOC_PTK_GLOBAL_HOTKEYS_SPEECH_LABEL" Anchor="L,C" Style="FontNormal14"/>
               <Bar ID="SpeechVolumeBar" FGColor="255,255,255,255" BGColor="128,128,128,128" Anchor="L,C" Direction="Right" Size="100,5"/>
             </Stack>
           </AlphaAnim>
@@ -72,7 +72,7 @@
               <Label ID="TimeOfDayLabel" String="12:00" Anchor="C,C" Style="FontNormal14"/>
             </Stack>
             <Stack ID="DayLengthContainer" StackGrowth="Down" StackPadding="2">
-              <Label String="LOC_GLOBAL_KEY_BINDINGS_DAY_LENGTH" Anchor="C,C" Style="FontNormal14"/>
+              <Label String="LOC_PTK_GLOBAL_HOTKEYS_DAY_LENGTH" Anchor="C,C" Style="FontNormal14"/>
               <Label ID="DayLengthLabel" String="20 minutes" Anchor="C,C" Style="FontNormal14"/>
             </Stack>
           </Stack>

@@ -1,6 +1,6 @@
-# Global Hotkeys v1.0.0
+# Play the Keyboard: Global Hotkeys v1.0.0
 
-A mod that adds key bindings for quickly changing global settings rather than going through the game's option menu.
+Adds key bindings for quickly changing global settings rather than going through the game's option menu.
 Plus some things not supported by the in-game options.
 
 Adds keybindings for the following:
@@ -12,9 +12,9 @@ Adds keybindings for the following:
 
   Additionally, Shift, Alt, Shift+Ctrl, Shift+Alt with Page Up/Page Down control the levels of the sound components: music, effects, ambient sounds, and voice.
 
+* Toggle animated time of day (Alt+A)
 * Increase/decrease in-game ambient time of day (Ctrl+Home/Ctrl+End)
 * Increase/decrease in-game length of ambient time of day (Alt+Home/Alt+End)
-* Toggle animated time of day (Alt+A)
 * Increase/decrease minimap size (Shift+Home/Shift+End)
 * Toggle city banner visibility (Alt+W)
 * Toggle map tacks visibility (Alt+E)
@@ -26,4 +26,7 @@ window with the current settings in the center of the screen.
 ![Status Window](Documentation/StatusWindow.jpg)
 
 ### Installation
-To use this mod you also need to have [Settings Manager](../SettingsManager) ([Steam workshop version](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)).
+Get it from the [Steam workshop]()
+
+
+To use this mod you also need to have [Settings Manager](../SettingsManager) ([Steam workshop link](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)).

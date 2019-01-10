@@ -7,16 +7,16 @@ include("mod_settings_key_binding_helper.lua");
 include("inputsupport");
 
 ---------------- Minimap size controls -----------------------
-ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_MINIMAP_CONTROLS");
+ModSettings.Header:new("LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_MINIMAP_CONTROLS");
 
 local minimapSizeKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
 
 local minimapSizeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_HOME, {Shift=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_MINIMAP_INCREASE_SIZE");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_MINIMAP_INCREASE_SIZE");
 local minimapSizeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_END, {Shift=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_MINIMAP_DECREASE_SIZE");
-local minimapChangeAmountSetting = ModSettings.Range:new(5, 1, 100, "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_GLOBAL_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT", "LOC_GLOBAL_KEY_BINDINGS_MINIMAP_SIZE_CHANGE_AMOUNT_TOOLTIP",
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_MINIMAP_DECREASE_SIZE");
+local minimapChangeAmountSetting = ModSettings.Range:new(5, 1, 100, "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", 
+    "LOC_PTK_GLOBAL_HOTKEYS_MINIMAP_SIZE_CHANGE_AMOUNT", "LOC_PTK_GLOBAL_HOTKEYS_MINIMAP_SIZE_CHANGE_AMOUNT_TOOLTIP",
     { Steps = 99, ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
 
 -- Rather annoyingly, there is no way to get the current minimap size.  So we just have to keep track of it in parallel 
@@ -26,7 +26,7 @@ local minimapChangeAmountSetting = ModSettings.Range:new(5, 1, 100, "LOC_GLOBAL_
 local minimapSize = Options.GetGraphicsOption("General", "MinimapSize") or 0.0;
 
 -------------- Sound controls -----------------------------
-ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_SOUND_CONTROLS");
+ModSettings.Header:new("LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_SOUND_CONTROLS");
 -- Key down is used to pick up auto-repeats from the operating system.
 local volumeChangeKeyDownMatchOptions = { 
     Event=KeyEvents.KeyDown, 
@@ -42,37 +42,37 @@ local volumeChangeKeyDownMatchOptions = {
 };
 
 local volumeChangeUsePageUpPageDownKeys = ModSettings.Action:new(
-  "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_PAGE_UP_PAGE_DOWN", "LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_PAGE_UP_PAGE_DOWN_TOOLTIP");
+  "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_VOLUME_USE_PAGE_UP_PAGE_DOWN", "LOC_PTK_GLOBAL_HOTKEYS_VOLUME_USE_PAGE_UP_PAGE_DOWN_TOOLTIP");
 
 local volumeChangeUseDedicatedKeys = ModSettings.Action:new(
-  "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_NATIVE_VOLUME_KEYS", "LOC_GLOBAL_KEY_BINDINGS_VOLUME_USE_NATIVE_VOLUME_KEYS_TOOLTIP");
+  "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_VOLUME_USE_NATIVE_VOLUME_KEYS", "LOC_PTK_GLOBAL_HOTKEYS_VOLUME_USE_NATIVE_VOLUME_KEYS_TOOLTIP");
 
-local volumeChangeAmountSetting = ModSettings.Range:new(5, 1, 100, "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_GLOBAL_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT", "LOC_GLOBAL_KEY_BINDINGS_VOLUME_CHANGE_AMOUNT_TOOLTIP",
+local volumeChangeAmountSetting = ModSettings.Range:new(5, 1, 100, "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", 
+    "LOC_PTK_GLOBAL_HOTKEYS_VOLUME_CHANGE_AMOUNT", "LOC_PTK_GLOBAL_HOTKEYS_VOLUME_CHANGE_AMOUNT_TOOLTIP",
     { Steps = 99, ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
 
 local volumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_INCREASE_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_INCREASE_VOLUME");
 local volumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_DECREASE_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_DECREASE_VOLUME");
 local volumeMuteKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Ctrl=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_MUTE_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_MUTE_VOLUME");
 local musicVolumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR, {Shift=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_INCREASE_MUSIC_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_INCREASE_MUSIC_VOLUME");
 local musicVolumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Shift=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_DECREASE_MUSIC_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_DECREASE_MUSIC_VOLUME");
 local soundEffectsVolumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_INCREASE_SOUND_EFFECTS_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_INCREASE_SOUND_EFFECTS_VOLUME");
 local soundEffectsVolumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_DECREASE_SOUND_EFFECTS_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_DECREASE_SOUND_EFFECTS_VOLUME");
 local ambientVolumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR, {Shift=true, Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_INCREASE_AMBIENT_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_INCREASE_AMBIENT_VOLUME");
 local ambientVolumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Shift=true, Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_DECREASE_AMBIENT_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_DECREASE_AMBIENT_VOLUME");
 local speechVolumeIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_PRIOR, {Shift=true, Ctrl=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_INCREASE_SPEECH_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_INCREASE_SPEECH_VOLUME");
 local speechVolumeDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NEXT, {Shift=true, Ctrl=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_DECREASE_SPEECH_VOLUME");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_DECREASE_SPEECH_VOLUME");
 
 local volumeToDeMute = -1;
 
@@ -106,50 +106,50 @@ volumeChangeUsePageUpPageDownKeys:AddChangedHandler(
     end);
 
 ------------------- Gameplay controls --------------------
-ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_GAMEPLAY_CONTROLS");
+ModSettings.Header:new("LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_GAMEPLAY_CONTROLS");
 
 local gameplayControlsMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 
 local toggleQuickCombatKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.Q, {Alt=true, Ctrl=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_COMBAT");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_QUICK_COMBAT");
 local toggleQuickMovementKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.Q, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_QUICK_MOVEMENT");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_QUICK_MOVEMENT");
 
 ------------------ Toggleable UI elements --------------------------
-ModSettings.Header:new("LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_GRAPHICS_CONTROLS");
+ModSettings.Header:new("LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_GRAPHICS_CONTROLS");
 
 local graphicTogglesMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 
 local toggleCityBannersKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.W, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_CITY_BANNERS");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_CITY_BANNERS");
 local toggleMapTacksKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.E, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_MAP_TACKS");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_MAP_TACKS");
 local toggleUnitIconsKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.R, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_UNIT_ICONS");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_UNIT_ICONS");
 local toggleHUDKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.T, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_HUD", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_HUD_TOOLTIP");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_HUD", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_HUD_TOOLTIP");
 
 ------------------ Time of day --------------------------
 local timeOfDayMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, AllowInPopups=true };
 local timeOfDayKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
 
 local toggleAnimatedTimeOfDayKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.A, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TOGGLE_ANIMATED_TIME_OF_DAY");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TOGGLE_ANIMATED_TIME_OF_DAY");
 
-local timeOfDayChangeAmountSetting = ModSettings.Range:new(10, 1, 60, "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_CHANGE_AMOUNT", nil, { Steps = 59 });
+local timeOfDayChangeAmountSetting = ModSettings.Range:new(10, 1, 60, "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", 
+    "LOC_PTK_GLOBAL_HOTKEYS_TIME_OF_DAY_CHANGE_AMOUNT", nil, { Steps = 59 });
 local timeOfDayIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_HOME, {Ctrl=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_INCREASE_TIME_OF_DAY");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_INCREASE_TIME_OF_DAY");
 local timeOfDayDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_END, {Ctrl=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_DECREASE_TIME_OF_DAY");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_DECREASE_TIME_OF_DAY");
 
-local timeOfDayLengthChangePercentSetting = ModSettings.Range:new(10, 1, 50, "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_AMOUNT", "LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_AMOUNT_TOOLTIP", 
+local timeOfDayLengthChangePercentSetting = ModSettings.Range:new(10, 1, 50, "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", 
+    "LOC_PTK_GLOBAL_HOTKEYS_TIME_OF_DAY_SPEED_CHANGE_AMOUNT", "LOC_PTK_GLOBAL_HOTKEYS_TIME_OF_DAY_SPEED_CHANGE_AMOUNT_TOOLTIP", 
     { Steps = 49, ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
 local timeOfDaySpeedIncreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_HOME, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_INCREASE");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TIME_OF_DAY_SPEED_CHANGE_INCREASE");
 local timeOfDaySpeedDecreaseKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_END, {Alt=true}),
-    "LOC_GLOBAL_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_GLOBAL_KEY_BINDINGS_TIME_OF_DAY_SPEED_CHANGE_DECREASE");
+    "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_TIME_OF_DAY_SPEED_CHANGE_DECREASE");
 
 local animatedTimeOfDay:boolean = nil;
 
@@ -194,9 +194,9 @@ function UpdateLengthOfDayLabel(speed:number)
   -- Multiply by slightly more than one as a poor man's form of rounding.
   local length = 24 / speed * 1.000001;
   if length >= 1 then
-    Controls.DayLengthLabel:LocalizeAndSetText("LOC_GLOBAL_KEY_BINDINGS_LENGTH_OF_DAY_FORMATTER_MINUTES", length);
+    Controls.DayLengthLabel:LocalizeAndSetText("LOC_PTK_GLOBAL_HOTKEYS_LENGTH_OF_DAY_FORMATTER_MINUTES", length);
   else
-    Controls.DayLengthLabel:LocalizeAndSetText("LOC_GLOBAL_KEY_BINDINGS_LENGTH_OF_DAY_FORMATTER_SECONDS", length * 60);
+    Controls.DayLengthLabel:LocalizeAndSetText("LOC_PTK_GLOBAL_HOTKEYS_LENGTH_OF_DAY_FORMATTER_SECONDS", length * 60);
   end
 end
 
