@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <LocalizedText>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNIT_ACTIONS_CATEGORY">
+      <Text>Unit Hotkeys</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNIT_ACTION_CONTROLS">
+      <Text>Actions</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNIT_ACTION_ALTERNATE_ATTACK">
+      <Text>Alternate attack (priority target/coastal raid)</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_UNIT_ACTION_HEAL">
+      <Text>Heal</Text>
+    </Row>
+    <Row Language="en_US" Tag="LOC_MORE_KEY_BINDINGS_IMPROVEMENT_CONTROLS">
+      <Text>Improvements</Text>
+    </Row>
+  </LocalizedText>
+</GameData>

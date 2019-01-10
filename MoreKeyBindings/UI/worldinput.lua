@@ -14,7 +14,7 @@
 
 include("mod_settings");
 include("mod_settings_key_binding_helper");
-include("more_key_bindings_melee_attack");
+include("auto_move_keyboard_target");
 include("PopupDialog.lua");
 -- More interface-specific includes before the initialization 
 
@@ -47,7 +47,6 @@ InterfaceModeMessageHandler =
 	[InterfaceModeTypes.SELECTION]			= {},
 	[InterfaceModeTypes.MOVE_TO]			= {},
 	[InterfaceModeTypes.ROUTE_TO]			= {},
-	[InterfaceModeTypes.ATTACK]				= {},
 	[InterfaceModeTypes.RANGE_ATTACK]		= {},
 	[InterfaceModeTypes.CITY_RANGE_ATTACK]	= {},
 	[InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = {},
@@ -227,98 +226,47 @@ local selectPreviousKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBindi
 
 local selectPlotMatchOptions = { 
     InterfaceModes = {
-      [InterfaceModeTypes.FORM_ARMY] = true, 
-      [InterfaceModeTypes.FORM_CORPS] = true, 
-      [InterfaceModeTypes.RANGE_ATTACK] = true, 
-      [InterfaceModeTypes.CITY_RANGE_ATTACK] = true, 
-      [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true, 
-      [InterfaceModeTypes.AIR_ATTACK] = true, 
-      [InterfaceModeTypes.PRIORITY_TARGET] = true, 
-      [InterfaceModeTypes.REBASE] = true, 
-      [InterfaceModeTypes.DEPLOY] = true, 
-      [InterfaceModeTypes.AIRLIFT] = true, 
-      [InterfaceModeTypes.COASTAL_RAID] = true, 
+      [InterfaceModeTypes.FORM_ARMY] = true,
+      [InterfaceModeTypes.FORM_CORPS] = true,
+      [InterfaceModeTypes.RANGE_ATTACK] = true,
+      [InterfaceModeTypes.CITY_RANGE_ATTACK] = true,
+      [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true,
+      [InterfaceModeTypes.AIR_ATTACK] = true,
+      [InterfaceModeTypes.PRIORITY_TARGET] = true,
+      [InterfaceModeTypes.REBASE] = true,
+      [InterfaceModeTypes.DEPLOY] = true,
+      [InterfaceModeTypes.AIRLIFT] = true,
+      [InterfaceModeTypes.COASTAL_RAID] = true,
       [InterfaceModeTypes.TELEPORT_TO_CITY] = true,
       [InterfaceModeTypes.WMD_STRIKE] = true,
       [InterfaceModeTypes.ICBM_STRIKE] = true,
       [InterfaceModeTypes.MOVE_TO] = true,
-      [InterfaceModeTypes.ATTACK] = true,
     } };
+local restrictedPlotSelectionModes = {
+  [InterfaceModeTypes.FORM_ARMY] = true,
+  [InterfaceModeTypes.FORM_CORPS] = true,
+  [InterfaceModeTypes.RANGE_ATTACK] = true,
+  [InterfaceModeTypes.CITY_RANGE_ATTACK] = true,
+  [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true,
+  [InterfaceModeTypes.AIR_ATTACK] = true,
+  [InterfaceModeTypes.PRIORITY_TARGET] = true,
+  [InterfaceModeTypes.REBASE] = true,
+  [InterfaceModeTypes.DEPLOY] = true,
+  [InterfaceModeTypes.AIRLIFT] = true,
+  [InterfaceModeTypes.COASTAL_RAID] = true,
+  [InterfaceModeTypes.TELEPORT_TO_CITY] = true,
+  [InterfaceModeTypes.WMD_STRIKE] = true,
+  [InterfaceModeTypes.ICBM_STRIKE] = true,
+  [InterfaceModeTypes.MOVE_TO] = false,
+};
+
 local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PLOT",
     "LOC_MORE_KEY_BINDINGS_SELECT_PLOT_TOOLTIP");
 
-
 ---------------------------------- Auto select modes ------------------------------------------
 local autoSelectModesHeaderSetting = ModSettings.Header:new(
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODES_HEADER");
-local autoMoveKeyboardTargetModeValues = {
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_DISABLED",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_PREVIOUS",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST_TO_PREVIOUS",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_FIRST",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST" };
-
-AutoMoveKeyboardTargetHandler = {};
-AutoMoveKeyboardTargetHandler.__index = AutoMoveKeyboardTargetHandler;
-
-function AutoMoveKeyboardTargetHandler:new(mode:string, defaultIndex:number, modeValues:table)
-  local setting = ModSettings.Select:new(
-      modeValues or autoMoveKeyboardTargetModeValues, defaultIndex or 1, 
-      "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY",
-      "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_FOR_" .. mode,
-      "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODE_TOOLTIP");
-
-  local handler = setmetatable({setting = setting, previousPlotIndex = -1}, self);
-  return handler;
-end
-
-function AutoMoveKeyboardTargetHandler:RecordLastTargetPlot(plot:table)
-  print("Recording", plot, plot and plot:GetIndex());
-  self.lastTargetPlot = plot;
-end
-
-function AutoMoveKeyboardTargetHandler:FindClosest(plot:table, targetPlots:table)
-  local closest = nil;
-  local closestDistance = 1000000;
-  for _, plotIndex in ipairs(targetPlots) do 
-    if Map.IsPlot(plotIndex) then
-      local p = Map.GetPlotByIndex(plotIndex);
-      local distance = Map.GetPlotDistance(plot:GetX(), plot:GetY(), p:GetX(), p:GetY());
-      if distance < closestDistance then
-        closestDistance = distance;
-        closest = p;
-      end
-    end
-  end
-  return closest;
-end
-
-function AutoMoveKeyboardTargetHandler:MaybeMoveKeyboardTarget(sourcePlot:table, targetPlots:table)
-  local targetPlots = targetPlots or g_targetPlots;
-  local targetPlot = keyboardTargetingPlot;
-  local mode = self.setting.Value; 
-
-  if mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_PREVIOUS" then
-    if self.lastTargetPlot and IsInList(targetPlots, self.lastTargetPlot:GetIndex()) then
-      targetPlot = self.lastTargetPlot;
-    end
-  elseif mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST_TO_PREVIOUS" then
-    targetPlot = self:FindClosest(self.lastTargetPlot or sourcePlot, targetPlots);
-  elseif mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_FIRST" then
-    targetPlot = targetPlots and targetPlots[1] and Map.GetPlotByIndex(targetPlots[1]);
-  elseif mode == "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_CLOSEST" then
-    targetPlot = self:FindClosest(sourcePlot, targetPlots);
-  end
-  if targetPlot then
-    MoveKeyboardTargetingTo(targetPlot, true);
-    return;
-  end
-  if GetKeyboardTargetingPlot() then
-    MoveKeyboardTargetingTo(GetKeyboardTargetingPlot(), true);
-    return;
-  end
-end
 
 local autoMoveKeyboardTargetForAttack = AutoMoveKeyboardTargetHandler:new("ATTACK", 3);
 local autoMoveKeyboardTargetForFormCorps = AutoMoveKeyboardTargetHandler:new("FORM_CORPS", 5);
@@ -391,7 +339,7 @@ end
 function MoveKeyboardTargetingTo(plot:table, implicit:boolean)
   if plot then
     keyboardTargetingPlot = plot;
-    LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY(), implicit or false);
+    LuaEvents.WorldNavigation_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY(), implicit or false);
     MaybeMoveScreenForKeyboardTarget();
   end
 end
@@ -1347,8 +1295,10 @@ function OnPlacementKeyUp(onSelect:ifunction)
   return function(pInputStruct:table)
 	  if m_isPauseMenuOpen then return; end
 	  local uiKey			:number = pInputStruct:GetKey();
+    local interfaceMode = UI.GetInterfaceMode();
 	  if uiKey == Keys.VK_ESCAPE then
 		  UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+      g_targetPlots = nil;
 		  return true;
 	  end
     local keyboardTargetingPlot = GetKeyboardTargetingPlot();
@@ -1357,17 +1307,21 @@ function OnPlacementKeyUp(onSelect:ifunction)
         onSelect(keyboardTargetingPlot:GetIndex());
       end
       return true;
-    elseif KeyBindingHelper.InputMatches(selectNextKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
-      local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-      local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true);
-      if nextPlotID then
-        MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
+    elseif KeyBindingHelper.InputMatches(selectNextKeyBinding(), pInputStruct, selectPlotMatchOptions) then
+      if restrictedPlotSelectionModes[interfaceMode] then
+        local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
+        local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true);
+        if nextPlotID then
+          MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
+        end
       end
     elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
-      local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-      local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true, true);
-      if nextPlotID then
-        MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
+      if restrictedPlotSelectionModes[interfaceMode] then
+        local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
+        local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true, true);
+        if nextPlotID then
+          MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
+        end
       end
     end
 	  return DefaultKeyUpHandler( uiKey );
@@ -2256,60 +2210,6 @@ end
 ---------------------------------------------------------------------------------
 function OnInterfaceModeLeave_Air_Attack( eNewMode:number )
 	UIManager:SetUICursor(CursorTypes.NORMAL);
-	UILens.ToggleLayerOff( LensLayers.HEX_COLORING_ATTACK );
-	UILens.ClearLayerHexes( LensLayers.HEX_COLORING_ATTACK );
-end
-
--- ===========================================================================
---	Code related to Melee Attack interface mode
---  Rather conveniently, Firaxis apparently left in an InterfaceModeTypes.ATTACK
---  that they (presumably) intended or tried using at one point and then
---  abandoned.
--- ===========================================================================
-
-function UnitMeleeAttack(plotID:number)
-	if Map.IsPlot(plotID) and IsInList(g_targetPlots, plotID) then
-		local plot = Map.GetPlotByIndex(plotID);
-
-		local pSelectedUnit = UI.GetHeadSelectedUnit();
-		local eAttackingPlayer = pSelectedUnit:GetOwner();
-		local eUnitComponentID:table = pSelectedUnit:GetComponentID();
-
-		local bWillStartWar = false;
-		local results:table = CombatManager.IsAttackChangeWarState(eUnitComponentID, plotX, plotY);
-		if (results ~= nil and #results > 0) then
-			bWillStartWar = true;
-		end
-
-		if (bWillStartWar) then
-			local eDefendingPlayer = results[1];
-			LuaEvents.Civ6Common_ConfirmWarDialog(eAttackingPlayer, eDefendingPlayer, WarTypes.SURPRISE_WAR);
-		else
-			MoveUnitToPlot(pSelectedUnit, plot:GetX(), plot:GetY());
-      UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      autoMoveKeyboardTargetForAttack:RecordLastTargetPlot(plot);
-		end
-	end						
-	return true;
-end
-
--------------------------------------------------------------------------------
-function OnInterfaceModeChange_Melee_Attack(eNewMode)
-	local pSelectedUnit = UI.GetHeadSelectedUnit();
-	if (pSelectedUnit ~= nil) then
-		g_targetPlots = MeleeAttackHandling.GetMeleeAttackPlotIds(pSelectedUnit);
-		-- Highlight the plots available to attack
-		if (table.count(g_targetPlots) ~= 0) then
-			local eLocalPlayer:number = Game.GetLocalPlayer();
-			UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
-			UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots);
-      autoMoveKeyboardTargetForAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
-		end
-	end
-end
-
----------------------------------------------------------------------------------
-function OnInterfaceModeLeave_Melee_Attack( eNewMode:number )
 	UILens.ToggleLayerOff( LensLayers.HEX_COLORING_ATTACK );
 	UILens.ClearLayerHexes( LensLayers.HEX_COLORING_ATTACK );
 end
@@ -3242,7 +3142,6 @@ end
 --	eNewMode, new mode the engine has just changed to
 -- ===========================================================================
 function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
-
 	-- Optional: function run before a mode is exited.
 	local pOldModeHandler :table = InterfaceModeMessageHandler[eOldMode];
 	if pOldModeHandler then
@@ -3747,10 +3646,16 @@ function OnInputActionTriggered( actionId )
 		UI.PlaySound("Play_UI_Click");
 
 	elseif actionId == m_actionHotkeyPrevUnit then
+    -- Switch back to selection mode before switching units so we don't get left in an 
+    -- interface mode with no relevance to the unit.
+    UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
 		UI.SelectPrevReadyUnit();
 		UI.PlaySound("Play_UI_Click");
 
 	elseif actionId == m_actionHotkeyNextUnit then
+    -- Switch back to selection mode before switching units so we don't get left in an 
+    -- interface mode with no relevance to the unit.
+    UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
 		UI.SelectNextReadyUnit();
 		UI.PlaySound("Play_UI_Click");
 
@@ -3797,6 +3702,45 @@ end
 include ("StrategicView_MapPlacement");	-- handlers for: BUILDING_PLACEMENT, DISTRICT_PLACEMENT
 include ("StrategicView_DebugSupport");	-- the Debug interface mode
 
+function CustomInterfaceModePlotSelect(plotID:number)
+  if Map.IsPlot(plotID) then
+    local interfaceMode = UI.GetInterfaceMode();
+    local eligible = true;
+    if restrictedPlotSelectionModes[interfaceMode] then
+      eligible = IsInList(g_targetPlots, plotID);
+    end
+    if eligible then
+      LuaEvents.WorldNavigation_PlotSelected(interfaceMode, plotID);
+    end
+  end
+  return true;
+end
+
+function OnRegisterInterfaceModeHandling(interfaceMode:number, useKeyboardTargeting:boolean, restrictedPlotSelection:boolean)
+  if useKeyboardTargeting then
+    InterfaceModeMessageHandler[interfaceMode] = {};
+    -- Plugin should handle interface mode change by attaching to 
+    -- Events.InterfaceModeChanged directly.  We don't need to care here.
+    InterfaceModeMessageHandler[interfaceMode][KeyEvents.KeyUp]	= OnPlacementKeyUp(CustomInterfaceModePlotSelect);
+    InterfaceModeMessageHandler[interfaceMode][MouseEvents.LButtonUp]	= OnPlotPointerSelect(CustomInterfaceModePlotSelect);
+    if g_isTouchEnabled then
+      InterfaceModeMessageHandler[interfaceMode][MouseEvents.PointerUp]	= OnPlotPointerSelect(CustomInterfaceModePlotSelect);
+    end
+
+    selectPlotMatchOptions.InterfaceModes[interfaceMode] = true;
+    restrictedPlotSelectionModes[interfaceMode] = restrictedPlotSelection or false;
+  else
+    InterfaceModeMessageHandler[interfaceMode] = {};
+    selectPlotMatchOptions.InterfaceModes[interfaceMode] = true;
+  end
+end
+
+function OnRegisterSelectablePlots(plots:table)
+  g_targetPlots = {};
+  for _, v in ipairs(plots) do 
+    table.insert(g_targetPlots, v);
+  end
+end
 
 -- ===========================================================================
 --	Assign callbacks
@@ -3820,7 +3764,6 @@ function Initialize()
 
 	-- Interface Mode ENTERING :
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_Air_Attack;
-  InterfaceModeMessageHandler[InterfaceModeTypes.ATTACK]			[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_Melee_Attack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.DEBUG]				[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_Debug;
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]		[INTERFACEMODE_ENTER]		= OnInterfaceModeEnter_CityManagement; 
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_WMD_Strike;
@@ -3856,7 +3799,6 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]		[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_CityRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_DistrictRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_Air_Attack;
-  InterfaceModeMessageHandler[InterfaceModeTypes.ATTACK]				[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_Melee_Attack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_WMD_Strike;
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_ICBM_Strike;
 	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_CoastalRaid;
@@ -3879,7 +3821,6 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(DoWMDStrike);
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(DoICBMStrike);
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitAirAttack);
-  InterfaceModeMessageHandler[InterfaceModeTypes.ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitMeleeAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(CoastalRaid);
 	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(AirUnitDeploy);
 	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(AirUnitReBase);
@@ -3923,7 +3864,6 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormArmy);
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitAirlift);
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitAirAttack);
-  InterfaceModeMessageHandler[InterfaceModeTypes.ATTACK]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitMeleeAttack);
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.LButtonUp]		= OnWMDStrikeEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.LButtonUp]		= OnICBMStrikeEnd;
@@ -3966,7 +3906,6 @@ function Initialize()
 		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitAirlift);
 		InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.PointerUp]		= OnTouchUnitRangeAttack;
 		InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitAirAttack);
-    InterfaceModeMessageHandler[InterfaceModeTypes.ATTACK]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitMeleeAttack);
 		InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.PointerUp]		= OnWMDStrikeEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.PointerUp]		= OnICBMStrikeEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.PointerUp]		= OnPlotPointerSelect(AirUnitDeploy);
@@ -4005,7 +3944,9 @@ function Initialize()
 	LuaEvents.InGameTopOptionsMenu_Show.Add(function() m_isPauseMenuOpen = true; end);
 	LuaEvents.InGameTopOptionsMenu_Close.Add(function() m_isPauseMenuOpen = false; ClearAllCachedInputState(); end);
 
-  LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
+  LuaEvents.WorldNavigation_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
+  LuaEvents.WorldNavigation_RegisterInterfaceModeHandling.Add(OnRegisterInterfaceModeHandling);
+  LuaEvents.WorldNavigation_RegisterSelectablePlots.Add(OnRegisterSelectablePlots);
 
 	-- UI Events
 	ContextPtr:SetInputHandler( OnInputHandler, true );

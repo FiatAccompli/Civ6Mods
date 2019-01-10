@@ -256,7 +256,7 @@ function UpdateKeyboardTargetingVisibility(visible:boolean)
 end
 
 function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:boolean)
-  -- Apparently you can't just send it as a tuple to SetWorldPositionVal because there's a 4th element
+  -- Apparently you can't just send it directly to SetWorldPositionVal because there's a 4th element
   -- that is ... who the fuck knows.  The game doesn't seem to use it anywhere.
   local worldX, worldY, worldZ = UI.GridToWorld(plotX, plotY);
   Controls.KeyboardPlotTargetingAnchor:SetWorldPositionVal(worldX, worldY, worldZ);
@@ -272,25 +272,11 @@ local keyboardTargetDisabledByInterfaceMode = {};
 local keyboardTargetIconByInterfaceMode = {};
 
 function RegisterKeyboardTargetDisplaySettings(interfaceMode:number, icon:string, disabled:boolean)
-  print("Registering", interfaceMode, icon, disabled);
   keyboardTargetDisabledByInterfaceMode[interfaceMode] = disabled;
   keyboardTargetIconByInterfaceMode[interfaceMode] = icon;
-end
 
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.FORM_CORPS, "ICON_UNITCOMMAND_FORM_CORPS");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.FORM_ARMY, "ICON_UNITCOMMAND_FORM_ARMY");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.CITY_RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.DISTRICT_RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.AIR_ATTACK, "ICON_UNITOPERATION_AIR_ATTACK");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.PRIORITY_TARGET, "ICON_UNITCOMMAND_PRIORITY_TARGET");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.REBASE, "ICON_UNITOPERATION_REBASE");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.DEPLOY, "ICON_UNITOPERATION_DEPLOY");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.AIRLIFT, "ICON_UNITCOMMAND_AIRLIFT");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.COASTAL_RAID, "ICON_UNITOPERATION_COASTAL_RAID");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.TELEPORT_TO_CITY, "ICON_UNITOPERATION_TELEPORT_TO_CITY");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.WMD_STRIKE, "ICON_UNITOPERATION_WMD_STRIKE");
-RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.ICBM_STRIKE, "ICON_UNITOPERATION_WMD_STRIKE");
+  UpdateKeyboardTarget();
+end
 
 -- By default hide the keyboard targeting outline in MOVE_TO mode since it doesn't play well 
 -- with the move-to path (and in particular the turn numbering).  Allow users to turn it on if they want.
@@ -299,11 +285,6 @@ local hideKeyboardTargetOutlineInMoveToMode = ModSettings.Boolean:new(
     "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
     "LOC_MORE_KEY_BINDINGS_HIDE_KEYBOARD_TARGETING_OUTLINE_IN_MOVE_TO_MODE",
     "LOC_MORE_KEY_BINDINGS_HIDE_KEYBOARD_TARGETING_OUTLINE_IN_MOVE_TO_MODE_TOOLTIP");
-hideKeyboardTargetOutlineInMoveToMode:AddChangedHandler(
-    function(value:boolean, oldValue:boolean)
-      -- Use no icon so the number in the path shows through.
-      RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.MOVE_TO, "ICON_MORE_KEY_BINDINGS_NONE", value);
-    end, true);
 
 function UpdateKeyboardTarget(interfaceMode:number)
   interfaceMode = interfaceMode or UI.GetInterfaceMode();
@@ -344,6 +325,27 @@ function OnInputHandler(input:table)
 end
 
 function Initialize()
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.FORM_CORPS, "ICON_UNITCOMMAND_FORM_CORPS");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.FORM_ARMY, "ICON_UNITCOMMAND_FORM_ARMY");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.CITY_RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.DISTRICT_RANGE_ATTACK, "ICON_UNITOPERATION_RANGE_ATTACK");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.AIR_ATTACK, "ICON_UNITOPERATION_AIR_ATTACK");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.PRIORITY_TARGET, "ICON_UNITCOMMAND_PRIORITY_TARGET");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.REBASE, "ICON_UNITOPERATION_REBASE");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.DEPLOY, "ICON_UNITOPERATION_DEPLOY");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.AIRLIFT, "ICON_UNITCOMMAND_AIRLIFT");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.COASTAL_RAID, "ICON_UNITOPERATION_COASTAL_RAID");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.TELEPORT_TO_CITY, "ICON_UNITOPERATION_TELEPORT_TO_CITY");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.WMD_STRIKE, "ICON_UNITOPERATION_WMD_STRIKE");
+  RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.ICBM_STRIKE, "ICON_UNITOPERATION_WMD_STRIKE");
+
+  hideKeyboardTargetOutlineInMoveToMode:AddChangedHandler(
+    function(value:boolean, oldValue:boolean)
+      -- Use no icon so the number in the path shows through.
+      RegisterKeyboardTargetDisplaySettings(InterfaceModeTypes.MOVE_TO, "ICON_MORE_KEY_BINDINGS_NONE", value);
+    end, true);
+
   ContextPtr:SetInputHandler(OnInputHandler, true);
   keyboardTargetMouseMoveSetting:AddChangedHandler(function(value, oldValue) 
     UpdateKeyboardTargetingVisibility(true);
@@ -353,8 +355,8 @@ function Initialize()
   Events.InterfaceModeChanged.Add(OnInterfaceModeChanged);
   Events.CombatVisBegin.Add(OnCombatVisBegin);
   Events.CombatVisEnd.Add(OnCombatVisEnd);
-  LuaEvents.MoreKeyBindings_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
-  LuaEvents.KeyboardNavigation_RegisterKeyboardTargetDisplaySettings.Add(RegisterKeyboardTargetDisplaySettings);
+  LuaEvents.WorldNavigation_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
+  LuaEvents.WorldNavigation_RegisterKeyboardTargetDisplaySettings.Add(RegisterKeyboardTargetDisplaySettings);
 end
 
 Initialize();
