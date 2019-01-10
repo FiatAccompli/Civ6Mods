@@ -96,7 +96,7 @@
     <Container ID="Tab" Size="parent,parent">
       <ScrollPanel Offset="20,3" Size="parent-20,parent-30" AutoScrollBar="1" Vertical="1" Anchor="R,T">
         <ScrollBar Style="Slider_Blue" Anchor="R,C" AnchorSide="O,I"/>
-        <Stack ID="SettingsStack" Anchor="R,T" Size="parent,auto" StackGrowth="Down" Padding="5" Offset="0,50">
+        <Stack ID="SettingsStack" Anchor="R,T" Size="parent,auto" StackGrowth="Down" Padding="5" Offset="0,10">
         </Stack>
       </ScrollPanel>
       <GridButton ID="RestoreDefaults" Size="150,22" Style="ShellButton" Anchor="R,B" Offset="8,2"
@@ -119,14 +119,14 @@
   </Instance>
 
   <Instance Name="RangeSetting">
-    <Stack ID="Setting" Anchor="R,T" StackGrowth="Down" StackPadding="0" Offset="150,0">
-      <Stack StackGrowth="Left" StackPadding="5">
+    <Stack ID="Setting" Anchor="R,T" StackGrowth="Left" StackPadding="5" Offset="150,0">
+      <Stack StackGrowth="Down" StackPadding="0">
         <Slider ID="SettingSlider" Style="SliderControl" Anchor="C,B" Size="300,13" SpaceForScroll="0"/>
-        <Label ID="SettingName" Style="ShellOptionText" />
+        <Container Size="300,13" Anchor="R,T">
+          <Label ID="DisplayValue" Style="ShellOptionText" Anchor="C,T"/>
+        </Container>
       </Stack>
-      <Container Size="300,13" Anchor="R,T">
-        <Label ID="DisplayValue" Style="ShellOptionText" Anchor="C,T"/>
-      </Container>
+      <Label ID="SettingName" Style="ShellOptionText" Anchor="R,C"/>
     </Stack>
   </Instance>
 
