@@ -15,6 +15,8 @@ hstructure InstancedMessageEntry
 
 end
 
+-- Testing a stock update
+
 local g_PlotTextInstanceMap					= {};
 
 -- Instance number so we can identify the instance in the animation callback
