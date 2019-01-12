@@ -67,10 +67,27 @@ function OnInterfaceModeLeave_UnitParadrop(eNewMode:number)
 end
 
 
+
+
+
+
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'PriorityTarget' mode
 ------------------------------------------------------------------------------------------------
-function PriorityTarget(plotID:number)
+function OnMousePriorityTargetEnd(pInputStruct)
+	-- If a drag was occurring, end it; otherwise raise event.
+	if g_isMouseDragging then
+		g_isMouseDragging = false;
+	elseif IsSelectionAllowedAt( UI.GetCursorPlotID() ) then		
+		PriorityTarget(pInputStruct);
+	end
+	EndDragMap();
+	g_isMouseDownInWorld = false;
+	return true;
+end
+------------------------------------------------------------------------------------------------
+function PriorityTarget(pInputStruct)
+	local plotID = UI.GetCursorPlotID();
 	if Map.IsPlot(plotID) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -82,7 +99,6 @@ function PriorityTarget(plotID:number)
 		if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.PRIORITY_TARGET, tParameters)) then
 			UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.PRIORITY_TARGET, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      autoMoveKeyboardTargetForPriorityTarget:RecordLastTargetPlot(plot);
 		end
 	end
 	return true;
@@ -103,17 +119,16 @@ function OnInterfaceModeChange_PriorityTarget(eNewMode)
 
 		-- Highlight the plots available to attack a priority target
 		if (table.count(g_targetPlots) ~= 0) then
-			UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
-			UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, Game.GetLocalPlayer(), g_targetPlots);
-      autoMoveKeyboardTargetForPriorityTarget:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
+			UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
+			UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, Game.GetLocalPlayer(), g_targetPlots);
 		end
 	end
 end
 --------------------------------------------------------------------------------------------------
 function OnInterfaceModeLeave_PriorityTarget(eNewMode:number)
 	UIManager:SetUICursor(CursorTypes.NORMAL);
-	UILens.ToggleLayerOff(LensLayers.HEX_COLORING_ATTACK);
-	UILens.ClearLayerHexes(LensLayers.HEX_COLORING_ATTACK);
+	UILens.ToggleLayerOff(LensLayers.HEX_COLORING_MOVEMENT);
+	UILens.ClearLayerHexes(LensLayers.HEX_COLORING_MOVEMENT);
 end
 
 -- ===========================================================================
@@ -127,12 +142,12 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET] = {};
 	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][INTERFACEMODE_ENTER]= OnInterfaceModeChange_PriorityTarget;
 	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][INTERFACEMODE_LEAVE] = OnInterfaceModeLeave_PriorityTarget;
-	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.LButtonUp] = OnPlotPointerSelect(PriorityTarget);
-	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][KeyEvents.KeyUp]		= OnPlacementKeyUp(PriorityTarget);
+	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.LButtonUp] = OnMousePriorityTargetEnd;
+	InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][KeyEvents.KeyUp]		= OnPlacementKeyUp;
 	
 	if g_isTouchEnabled then
 		InterfaceModeMessageHandler[InterfaceModeTypes.PARADROP][MouseEvents.PointerUp] = OnMouseParadropEnd;
-		InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.PointerUp] = OnPlotPointerSelect(PriorityTarget);
+		InterfaceModeMessageHandler[InterfaceModeTypes.PRIORITY_TARGET][MouseEvents.PointerUp] = OnMousePriorityTargetEnd;
 	end
 end
 Initialize();

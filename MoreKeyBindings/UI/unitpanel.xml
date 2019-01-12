@@ -10,7 +10,6 @@
         <Button					ID="RecommendedActionButton"	Anchor="C,T" Offset="1,-23" Size="44,53" Texture="UnitPanel_ActionButton"		>
           <Image				ID="RecommendedActionIcon"		Anchor="C,C" Offset="-1,-1" Size="38,38"		/>
           <Image				ID="RecommendedActionFrame"		Anchor="C,T" Offset="0,-1"	Texture="UnitPanel_RecommendedActionFrame" />
-          <Label ID="RecommendedActionKeyBinding" String="CTRL+SHIFT+B" Anchor="C,B" Offset="0,-4" Style="FontNormal10" Color="255,255,255,180"/>
         </Button>
         <Stack					ID="BuildActionsStack"				Anchor="R,T" Offset="11,26" StackGrowth="Left" Padding="6" />
       </Grid>
@@ -29,7 +28,7 @@
            <Label				ID="CombatAssessmentText"	Anchor="C,C" Offset="-6,-76"	Align="Center" WrapWidth="110" Style="UnitPanelHeader" />
         </Container>
 
-		    <Stack	ID="PrimaryArtStack"	Anchor="R,T"	Offset="2,-2"	AnchorSide="I,O"	StackGrowth="Right" Padding="1" />
+		    <Stack	ID="PrimaryArtStack"	Anchor="R,T"	Offset="6,-2"	AnchorSide="I,O"	StackGrowth="Right" Padding="2" />
         <!-- ACTIONS PANEL -->
         <Stack ID="ActionsStack" Anchor="R,T" Offset="2,-4" AnchorSide="I,O" StackGrowth="Left" StackPadding="2">
           <Stack ID="StandardActionsStack" Anchor="C,B" StackGrowth="Right" Padding="2" ConsumeMouse="1" />
@@ -188,7 +187,7 @@
         <!---->
         <!--ENEMY UNIT PANEL / COMBAT PREVIEW-->
         <!---->
-        <Container ID="EnemyUnitPanel" Anchor="L,B"	Offset="0,0" AnchorSide="O,I" Size="306,155" Hidden="1" ConsumeMouse="1">
+        <Container ID="EnemyUnitPanel" Anchor="L,B"	Offset="0,0" AnchorSide="O,I" Size="306,155" Hidden="1" >
           <Grid Anchor="R,B" Size="Parent,Parent" Texture="CombatPreview_FrameBG.dds" SliceCorner="80,0" SliceTextureSize="301,155">
             <Grid  ID="EnemyUnitPanelExtension" Anchor="L,B"	Offset="0,89"	  Size ="Parent-64,67"  Texture="CombatPreview_FrameExtend.dds" SliceCorner="45,53" SliceTextureSize="238,63" >
               <Container									Anchor="R,T"	Offset="15,10"	Size="Parent-40,32" >
@@ -478,7 +477,7 @@
   <!-- Target unit stat instance -->
   <Instance Name="TargetStatInstance">
     <Grid	ID="StatGrid"	Anchor="L,T" Offset="0,0"	Size="parent,26" Style="CityPanelSlotGrid">
-      <CheckBox	ID="StatCheckBox" Anchor="R,T" Offset="-5,-1"	ButtonTexture="SelectionPanel_Stat"	ButtonSize="28,32" CheckTexture="Stats22"	CheckTextureOffset="0,0" CheckSize="22,22" CheckOffset="3,3"	UnCheckTexture="Stats22"	UnCheckTextureOffset="0,0"	UnCheckSize="22,22" UnCheckOffset="3,3" UseSelectedTextures="1" CheckColor="0,0,0,255"  Disabled="True"/>
+      <CheckBox	ID="StatCheckBox" Anchor="R,T" Offset="-5,-1"	ButtonTexture="SelectionPanel_Stat"	ButtonSize="28,32" CheckTexture="Stats22"	CheckTextureOffset="0,0" CheckSize="22,22" CheckOffset="3,3"	UnCheckTexture="Stats22"	UnCheckTextureOffset="0,0"	UnCheckSize="22,22" UnCheckOffset="3,3" UseSelectedTextures="1" CheckColor="0,0,0,255"/>
 
       <Label ID="StatValueLabel" Anchor="R,C" Offset="26,0"	Style="UnitPanelSmallValue"	String="99"/>
     </Grid>
@@ -496,7 +495,6 @@
 	<Instance Name="UnitActionInstance" >
 		<Button		ID="UnitActionButton" Anchor="L,T" Size="44,53" Texture="UnitPanel_ActionButton">
 			<Image	ID="UnitActionIcon"		Anchor="C,C" Offset="0,-2" Size="38,38"  Texture="UnitActions"/>
-      <Label ID="UnitActionKeyBinding" Anchor="C,B" Offset="0,2" Style="FontNormal10" Color="255,255,255,180"/>
 		</Button>
 	</Instance>
 	
@@ -504,7 +502,6 @@
 	<Instance Name="BuildActionInstance" >
 		<Button		ID="UnitActionButton" Anchor="L,T" Offset="-4,-4" Size="44,53" Texture="Controls_IconButton.dds">
 			<Image	ID="UnitActionIcon"		Anchor="C,C" Offset="-1,-1" Size="38,38" Texture="UnitActions"/>
-      <Label ID="UnitActionKeyBinding" Anchor="C,B" Offset="0,4" Style="FontNormal10" Color="255,255,255,180"/>
 		</Button>
 	</Instance>
 

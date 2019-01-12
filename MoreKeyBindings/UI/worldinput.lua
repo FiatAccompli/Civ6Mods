@@ -1,4 +1,4 @@
--- ===========================================================================
+﻿-- ===========================================================================
 --	World Input
 --	Copyright 2015-2016, Firaxis Games
 --
@@ -12,11 +12,8 @@
 --
 -- ===========================================================================
 
-include("mod_settings");
-include("mod_settings_key_binding_helper");
-include("auto_move_keyboard_target");
 include("PopupDialog.lua");
--- More interface-specific includes before the initialization 
+-- More interface-specific includes before the initialization
 
 -- ===========================================================================
 --	Debug
@@ -47,6 +44,7 @@ InterfaceModeMessageHandler =
 	[InterfaceModeTypes.SELECTION]			= {},
 	[InterfaceModeTypes.MOVE_TO]			= {},
 	[InterfaceModeTypes.ROUTE_TO]			= {},
+	[InterfaceModeTypes.ATTACK]				= {},
 	[InterfaceModeTypes.RANGE_ATTACK]		= {},
 	[InterfaceModeTypes.CITY_RANGE_ATTACK]	= {},
 	[InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = {},
@@ -139,160 +137,6 @@ local m_isPlotFlaggedRestricted			:boolean = false;	-- In a previous operation t
 local m_kTutorialUnitMoveRestrictions	:table = nil;		-- Restrictions for moving (anywhere) of a selected unit type.
 local m_isPauseMenuOpen					:boolean = false;
 
-
--------------- Map pan/zoom ----------------------
-local mapPanHeaderSetting = ModSettings.Header:new(
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_CONTROLS");
-local mapPanKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
-local mapPanKeyUpMatchOptions = { InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES, IgnoreModifiers=true };
-
-local mapPanNorthKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_UP),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_NORTH");
-local mapPanSouthKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_DOWN),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_SOUTH");
-local mapPanEastKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_RIGHT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_EAST");
-local mapPanWestKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_LEFT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_WEST");
-local mapPanSpeed = ModSettings.Range:new(100, 1, 500, 
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_PAN_SPEED", nil,
-    { ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
-
--- Key down is used so that we pick up auto-repeats from the operating system.
-local mapZoomKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
-local mapZoomInKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_ADD),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_IN");
-local mapZoomOutKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_SUBTRACT),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_OUT");
-
-local mapZoomSpeed = ModSettings.Range:new(100, 1, 500, 
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_MAP_ZOOM_SPEED", nil,
-    { ValueFormatter = ModSettings.Range.PERCENT_FORMATTER });
-
-------------------- Unit movement/plot selection navigation ------------------
-local keyboardNavigationHeaderSetting = ModSettings.Header:new(
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_NAVIGATION_CONTROLS");
-
-local enableKeyboardPlotTargeting = ModSettings.Boolean:new(
-    true,
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_PLOT_TARGETING",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_PLOT_TARGETING_TOOLTIP");
-
-local enableKeyboardUnitMovement = ModSettings.Boolean:new(
-    true,
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_UNIT_MOVEMENT");
-
-local keyboardTargetingKeyDownMatchOptions = { Event=KeyEvents.KeyDown, InterfaceModes=KeyBindingHelper.ALL_INTERFACE_MODES };
-local keepKeyboardTargetOnScreen = ModSettings.Boolean:new(
-    true,
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", 
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_KEEP_TARGET_ONSCREEN",
-    "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_KEEP_TARGET_ONSCREEN_TOOLTIP");
-
-local directionNEKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD9),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_NE");
-local directionEKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD6),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_E");
-local directionSEKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD3),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_SE");
-local directionSWKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD1),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_SW");
-local directionWKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD4),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_W");
-local directionNWKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD7),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_DIRECTION_NW");
-
-local moveKeyboardTargetToScreenCenterKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD2),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_TO_CENTER_OF_SCREEN");
-local moveScreenToKeyboardTargetKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD8),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_CENTER_SCREEN_ON_SELECTION");
-
--- Valid modes match the behavior of unit flag clicks from UnitFlagManager.lua.
-local selectNextPreviousInPlotMatchOptions = { 
-    InterfaceModes = {
-      [InterfaceModeTypes.SELECTION] = true, 
-      [InterfaceModeTypes.MAKE_TRADE_ROUTE] = true,
-      [InterfaceModeTypes.SPY_CHOOSE_MISSION] = true,
-      [InterfaceModeTypes.SPY_TRAVEL_TO_CITY] = true, 
-      [InterfaceModeTypes.VIEW_MODAL_LENS] = true } };
-local selectNextKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_DECIMAL),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_NEXT", 
-    "LOC_MORE_KEY_BINDINGS_SELECT_NEXT_TOOLTIP");
-local selectPreviousKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD0),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS",
-    "LOC_MORE_KEY_BINDINGS_SELECT_PREVIOUS_TOOLTIP");
-
-local selectPlotMatchOptions = { 
-    InterfaceModes = {
-      [InterfaceModeTypes.FORM_ARMY] = true,
-      [InterfaceModeTypes.FORM_CORPS] = true,
-      [InterfaceModeTypes.RANGE_ATTACK] = true,
-      [InterfaceModeTypes.CITY_RANGE_ATTACK] = true,
-      [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true,
-      [InterfaceModeTypes.AIR_ATTACK] = true,
-      [InterfaceModeTypes.PRIORITY_TARGET] = true,
-      [InterfaceModeTypes.REBASE] = true,
-      [InterfaceModeTypes.DEPLOY] = true,
-      [InterfaceModeTypes.AIRLIFT] = true,
-      [InterfaceModeTypes.COASTAL_RAID] = true,
-      [InterfaceModeTypes.TELEPORT_TO_CITY] = true,
-      [InterfaceModeTypes.WMD_STRIKE] = true,
-      [InterfaceModeTypes.ICBM_STRIKE] = true,
-      [InterfaceModeTypes.MOVE_TO] = true,
-    } };
-local restrictedPlotSelectionModes = {
-  [InterfaceModeTypes.FORM_ARMY] = true,
-  [InterfaceModeTypes.FORM_CORPS] = true,
-  [InterfaceModeTypes.RANGE_ATTACK] = true,
-  [InterfaceModeTypes.CITY_RANGE_ATTACK] = true,
-  [InterfaceModeTypes.DISTRICT_RANGE_ATTACK] = true,
-  [InterfaceModeTypes.AIR_ATTACK] = true,
-  [InterfaceModeTypes.PRIORITY_TARGET] = true,
-  [InterfaceModeTypes.REBASE] = true,
-  [InterfaceModeTypes.DEPLOY] = true,
-  [InterfaceModeTypes.AIRLIFT] = true,
-  [InterfaceModeTypes.COASTAL_RAID] = true,
-  [InterfaceModeTypes.TELEPORT_TO_CITY] = true,
-  [InterfaceModeTypes.WMD_STRIKE] = true,
-  [InterfaceModeTypes.ICBM_STRIKE] = true,
-  [InterfaceModeTypes.MOVE_TO] = false,
-};
-
-local selectPlotKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_NUMPAD5),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_SELECT_PLOT",
-    "LOC_MORE_KEY_BINDINGS_SELECT_PLOT_TOOLTIP");
-
----------------------------------- Auto select modes ------------------------------------------
-local autoSelectModesHeaderSetting = ModSettings.Header:new(
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_AUTO_SELECT_MODES_HEADER");
-
-local autoMoveKeyboardTargetForAttack = AutoMoveKeyboardTargetHandler:new("ATTACK", 3);
-local autoMoveKeyboardTargetForFormCorps = AutoMoveKeyboardTargetHandler:new("FORM_CORPS", 5);
-local autoMoveKeyboardTargetForFormArmy = AutoMoveKeyboardTargetHandler:new("FORM_ARMY", 5);
-local autoMoveKeyboardTargetForAirAttack = AutoMoveKeyboardTargetHandler:new("AIR_ATTACK", 3);
-local autoMoveKeyboardTargetForRebase = AutoMoveKeyboardTargetHandler:new("REBASE", 3);
-local autoMoveKeyboardTargetForAirlift = AutoMoveKeyboardTargetHandler:new("AIRLIFT", 3);
-local autoMoveKeyboardTargetForCoastalRaid = AutoMoveKeyboardTargetHandler:new("COASTAL_RAID", 3);
--- Not local since used in worldinput_expansion1
-autoMoveKeyboardTargetForPriorityTarget = AutoMoveKeyboardTargetHandler:new("PRIORITY_TARGET", 3);
-local autoMoveKeyboardTargetForTeleport = AutoMoveKeyboardTargetHandler:new("TELEPORT", 2);
-local autoMoveKeyboardTargetForNuclearAttack = AutoMoveKeyboardTargetHandler:new("NUCLEAR_STRIKE", 3);
-local autoMoveKeyboardTargetForDeploy = AutoMoveKeyboardTargetHandler:new("DEPLOY", 3);
-local autoMoveKeyboardTargetForMoveTo = AutoMoveKeyboardTargetHandler:new("MOVE_TO", 2, 
-    {
-      "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_DISABLED",
-      "LOC_MORE_KEY_BINDINGS_KEYBOARD_TARGETING_MOVE_KEYBOARD_TARGET_PREVIOUS",
-    });
-
------------------------------ City commands -----------------------------------
-local cityCommandsHeaderSettings = ModSettings.Header:new(
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_CITY_COMMAND_CONTROLS");
-local districtRangedAttackKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.R, {Ctrl=true}),
-    "LOC_MORE_KEY_BINDINGS_MOD_SETTINGS_CATEGORY", "LOC_MORE_KEY_BINDINGS_DISTRICT_RANGED_ATTACK", 
-    "LOC_MORE_KEY_BINDINGS_DISTRICT_RANGED_ATTACK_TOOLTIP");
-
 -- ===========================================================================
 --	FUNCTIONS
 -- ===========================================================================
@@ -317,106 +161,6 @@ function clear()				m_debugTrace = {};									end
 --
 -- .,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,.,;/^`'^\:,
 
-function IsInList(list:table, item)
-  for i,v in ipairs(list) do
-    if v == item then
-      return true;
-    end
-  end
-  return false;
-end
-
--- ===========================================================================
--- Keyboard targeting
--- ===========================================================================
-
-local keyboardTargetingPlot = nil;
-
-function GetKeyboardTargetingPlot() 
-  return keyboardTargetingPlot;
-end
-
-function MoveKeyboardTargetingTo(plot:table, implicit:boolean)
-  if plot then
-    keyboardTargetingPlot = plot;
-    LuaEvents.WorldNavigation_UpdateKeyboardTargetingPlot(plot:GetX(), plot:GetY(), implicit or false);
-    MaybeMoveScreenForKeyboardTarget();
-  end
-end
-
-function MaybeMoveScreenForKeyboardTarget()
-  if keepKeyboardTargetOnScreen.Value then
-    -- Normalized screen pos is from [-1, -1] at bottom left to [1, 1] at top right with [0,0]
-    -- being in the center of the window.  Recenter if we're within 7.5% of any screen edge.
-    local worldBLX, worldBLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.85, -0.85);
-    local worldTLX, worldTLY = UI.GetWorldFromNormalizedScreenPos_NoWrap(-0.85, 0.85);
-    local worldBRX, worldBRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.85, -0.85);
-    local worldTRX, worldTRY = UI.GetWorldFromNormalizedScreenPos_NoWrap(0.85, 0.85);
-    local worldX, worldY = UI.GridToWorld(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY());
-
-    -- True if x,y is left of the line defined by (startX, startY) (endX, endY)
-    -- and looking from start to end.
-    local function IsLeftOf(startX:number, startY:number, endX:number, endY:number)
-      return ((endX - startX) * (worldY - startY)) > ((endY - startY) * (worldX - startX));
-    end
-
-    if not (IsLeftOf(worldTLX, worldTLY, worldBLX, worldBLY) and 
-            IsLeftOf(worldBLX, worldBLY, worldBRX, worldBRY) and
-            IsLeftOf(worldBRX, worldBRY, worldTRX, worldTRY) and
-            IsLeftOf(worldTRX, worldTRY, worldTLX, worldTRY)) then
-      UI.LookAtPlot(keyboardTargetingPlot);
-    end
-  end
-end
-
-function MoveKeyboardTargetingToScreenCenter()
-  MoveKeyboardTargetingTo(Map.GetPlot(UI.GetPlotCoordFromNormalizedScreenPos(0,0)));
-end
-
-function MoveKeyboardTargetingInDirection(direction:number)
-  if keyboardTargetingPlot then
-    MoveKeyboardTargetingTo(Map.GetAdjacentPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), direction));
-  end
-end
-
-function SelectNextInKeyboardTargetingPlot()
-  if not keyboardTargetingPlot then 
-    return;
-  end
-  if SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY()) then
-    MaybeMoveScreenForKeyboardTarget();
-  end
-end
-
-function SelectPreviousInKeyboardTargetingPlot()
-  if not keyboardTargetingPlot then 
-    return;
-  end
-  SelectInPlot(keyboardTargetingPlot:GetX(), keyboardTargetingPlot:GetY(), true);
-end
-
-function CenterScreenOnKeyboardTargeting()
-  if keyboardTargetingPlot then
-    UI.LookAtPlot(keyboardTargetingPlot);
-  end
-end
-
-local InterfaceModesWithTargetingArrow = {
-    InterfaceModeTypes.RANGE_ATTACK,
-    InterfaceModeTypes.CITY_RANGE_ATTACK,
-    InterfaceModeTypes.DISTRICT_RANGE_ATTACK,
-    InterfaceModeTypes.WMD_STRIKE,
-    InterfaceModeTypes.ICBM_STRIKE,
-};
-
-function OnUpdateKeyboardTargetingPlot(plotX:number, plotY:number, implicit:boolean)
-  local uiMode = UI.GetInterfaceMode();
-  if IsInList(InterfaceModesWithTargetingArrow, uiMode) then
-    RealizeRangedAttackArrow(Map.GetPlotIndex(plotX, plotY));
-  elseif uiMode == InterfaceModeTypes.MOVE_TO then
-    RealizeMovementPath(false, Map.GetPlotIndex(plotX, plotY));
-  end
-end
 
 -- ===========================================================================
 --	Empty function (to override default)
@@ -431,13 +175,13 @@ end
 function ProcessPan( panX :number, panY :number )
 
 	if( panY == 0.0 ) then
-		if( m_isUPpressed ) then panY = panY + PAN_SPEED * mapPanSpeed.Value / 100; end 
-		if( m_isDOWNpressed) then panY = panY - PAN_SPEED * mapPanSpeed.Value / 100; end
+		if( m_isUPpressed ) then panY = panY + PAN_SPEED; end 
+		if( m_isDOWNpressed) then panY = panY - PAN_SPEED; end
 	end
 
 	if( panX == 0.0 ) then 
-		if( m_isRIGHTpressed ) then panX = panX + PAN_SPEED * mapPanSpeed.Value / 100; end
-		if( m_isLEFTpressed ) then panX = panX - PAN_SPEED * mapPanSpeed.Value / 100; end
+		if( m_isRIGHTpressed ) then panX = panX + PAN_SPEED; end
+		if( m_isLEFTpressed ) then panX = panX - PAN_SPEED; end
 	end
 
 	UI.PanMap( panX, panY );
@@ -493,46 +237,58 @@ end
 
 -- ===========================================================================
 function GetCurrentlySelectUnitIndex( unitList:table, ePlayer:number )
-	local iCount		:number = 1;	-- # of units in the list owned by the player
+	local iSelectedUnit :number = -1;	-- Which unit index is selected.  This is the unit index for the player's units, not all the units in the list
+	local iCount		:number = 0;	-- # of units in the list owned by the player
 	for i, pUnit in ipairs(unitList) do
 		-- Owned by the local player?
 		if (pUnit:GetOwner() == ePlayer) then
 			-- Already selected?  
 			if UI.IsUnitSelected(pUnit) then
-				return iCount;
+				iSelectedUnit = iCount;
 			end
 			iCount = iCount + 1;
 		end
 	end
+
+	return iSelectedUnit;
 end
 
-function SelectNextFrom(list:table, currentlySelected, wrap:boolean, reverse:boolean)
-  local index = 0;
-  for i, v in ipairs(list) do
-    if v == currentlySelected then 
-      index = i;
-    end
-  end
-  if reverse then 
-    if index > 0 then
-      index = index - 1;
-      if index < 1 and wrap then
-        index = #list;
-      end
-    else 
-      index = #list;
-    end
-  else
-    if index > 0 then
-      index = index + 1;
-      if index > #list and wrap then 
-        index = 1;
-      end
-    else 
-      index = 1;
-    end
-  end
-  return list[index];
+-- ===========================================================================
+function SelectNextUnit(unitList:table, iCurrentlySelectedUnit:number, ePlayer:number, bWrap:boolean)
+	if iCurrentlySelectedUnit == -1 then
+		-- Nothing selected yet
+		for i, pUnit in ipairs(unitList) do
+			-- Owned by the player?
+			if (pUnit:GetOwner() == ePlayer) then
+				SelectUnit(pUnit);
+			end
+		end
+	else
+		local bSelected = false;
+		local iCount = 0;	-- number of units in the list owned by the player
+		for i, pUnit in ipairs(unitList) do
+			-- Owned by the player?
+			if (pUnit:GetOwner() == ePlayer) then
+				if (iCount > iCurrentlySelectedUnit) then
+					SelectUnit(pUnit);
+					bSelected = true;
+					break;
+				end
+				iCount = iCount + 1;
+			end
+		end
+
+		if not bSelected and bWrap then
+			-- Either the input was wrong or we wrapped, go back and select the first one.
+			for i, pUnit in ipairs(unitList) do
+				-- Owned by the player?
+				if (pUnit:GetOwner() == ePlayer) then
+					SelectUnit(pUnit);
+					break;
+				end
+			end
+		end
+	end
 end
 
 -- ===========================================================================
@@ -562,38 +318,54 @@ end
 -- ===========================================================================
 --	Selects the unit or city at the plot passed in.
 -- ===========================================================================
-function SelectInPlot( plotX:number, plotY:number, reverse:boolean )
+function SelectInPlot( plotX:number, plotY:number )
+
 	local kUnitList		:table	= Units.GetUnitsInPlotLayerID( plotX, plotY, MapLayers.ANY );
 	local tryCity		:boolean= false;
 	local eLocalPlayer	:number = Game.GetLocalPlayer();
 	local pCity			:table = Cities.GetCityInPlot( plotX, plotY );
-  local selectableItems = {};
 	if pCity ~= nil then
 		if (pCity:GetOwner() ~= eLocalPlayer) then
 			pCity = nil;
 		end
 	end
 
-  if pCity ~= nil then
-    table.insert(selectableItems, pCity);
-  end
-  for i, unit in ipairs(kUnitList) do 
-    if unit:GetOwner() == eLocalPlayer then
-      table.insert(selectableItems, unit);
-    end
-  end
-
 	-- If there are units to try selecting...
-  if #selectableItems > 0 then
-    local nextSelect = SelectNextFrom(selectableItems, UI.GetHeadSelectedCity() or UI.GetHeadSelectedUnit(), true, reverse);
-    if nextSelect == pCity then
-      UI.SelectCity(pCity);
-    else
-      SelectUnit(nextSelect);
-    end
-    return true;
+	if table.count(kUnitList) ~= 0 then		
+		-- Get any currently selected unit so we can cycle to the next.
+		local iSelected:number = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
+		
+		-- Cycle to the next, or select the first one if nothing was selected and there is no city
+		SelectNextUnit(kUnitList, iSelected, eLocalPlayer, pCity == nil);
+
+		local iNewSelected = GetCurrentlySelectUnitIndex(kUnitList, eLocalPlayer);
+		if (iNewSelected == -1 or (iNewSelected == iSelected and pCity ~= nil)) then
+			-- No valid units to select
+			UI.DeselectAllUnits();
+			tryCity = true;
+		else
+			if (iNewSelected ~= -1 and iNewSelected ~= iSelected) then
+				local pNewSelectedUnit = UI.GetHeadSelectedUnit();
+				if (pNewSelectedUnit ~= nil and UI.RebuildSelectionList ~= nil) then		-- Checking UI.RebuildSelectionList, so that if an artist fetches the scripts before the next build, they won't be stuck.  Remove that check ASAP.
+					-- The user has manually selected a unit, rebuild the selection list from that unit.
+					UI.RebuildSelectionList(pNewSelectedUnit);
+				end
+			end
+		end
+	else
+		UI.DeselectAllUnits();
+		tryCity = true;
 	end
-	return false;
+	
+	if tryCity then
+		if pCity ~= nil then
+			UI.SelectCity(pCity);
+		end
+		-- No else, as this would be the case when click on a city banner,
+		-- and so the CityBannerManager will handle the selection.
+	end
+
+	return true;
 end
 
 -- ===========================================================================
@@ -881,28 +653,7 @@ function MoveUnitToCursorPlot( pUnit:table )
 			UI.PlaySound("UI_Move_Confirm");
 		end
 		MoveUnitToPlot( pUnit, plotX, plotY );
-    autoMoveKeyboardTargetForMoveTo:RecordLastTargetPlot(Map.GetPlot(plotX, plotY));
 	end
-end
-
-function MoveUnitToKeyboardPlot(plotID:number)
-  local pSelectedUnit:table = UI.GetHeadSelectedUnit();
-	if pSelectedUnit ~= nil then
-		local playerID :number = Game.GetLocalPlayer();	
-		if playerID ~= -1 and Players[playerID]:IsTurnActive() then
-			if IsUnitAllowedToMoveToCursorPlot( pSelectedUnit ) then
-        if (m_constrainToPlotID == 0 or plotID == m_constrainToPlotID) and not GameInfo.Units[pSelectedUnit:GetUnitType()].IgnoreMoves then
-          if m_previousTurnsCount >= 1 then
-			      UI.PlaySound("UI_Move_Confirm");
-		      end
-          local plotX, plotY = Map.GetPlotLocation(plotID);
-          MoveUnitToPlot(pSelectedUnit, plotX, plotY);
-          autoMoveKeyboardTargetForMoveTo:RecordLastTargetPlot(Map.GetPlot(plotX, plotY));
-        end
-      end
-    end
-    UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-  end
 end
 
 -- ===========================================================================
@@ -939,7 +690,6 @@ function UnitRangeAttack( plotID:number )
 
 	if UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.RANGE_ATTACK, nil, tParameters) then
 		UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.RANGE_ATTACK, tParameters);
-    autoMoveKeyboardTargetForAttack:RecordLastTargetPlot(plot);
 	else
 		-- LClicking on an empty hex, deselect unit.
 		UI.DeselectUnit( pSelectedUnit );
@@ -969,7 +719,7 @@ end
 -- ===========================================================================
 --	Update the 3D displayed path for a unit.
 -- ===========================================================================
-function RealizeMovementPath(showQueuedPath:boolean, endPlotId:number)
+function RealizeMovementPath(showQueuedPath:boolean)
 
 	if not UI.IsMovementPathOn() or UI.IsGameCoreBusy() then
 		return;
@@ -990,7 +740,7 @@ function RealizeMovementPath(showQueuedPath:boolean, endPlotId:number)
 	end
 
 	-- Bail if end plot is not determined.
-	endPlotId = endPlotId or UI.GetCursorPlotID();
+	local endPlotId	:number = UI.GetCursorPlotID();
 
 	-- Use the queued destinationt o show the queued path
 	if (showQueuedPath) then
@@ -1243,6 +993,25 @@ function DefaultKeyDownHandler( uiKey:number )
 			ReadyForDragMap();
 		end
 	end
+	if( uiKey == Keys.VK_UP ) then
+		keyPanChanged = true;
+		m_isUPpressed = true;
+	end
+	if( uiKey == Keys.VK_RIGHT ) then
+		keyPanChanged = true;
+		m_isRIGHTpressed = true;
+	end
+	if( uiKey == Keys.VK_DOWN ) then
+		keyPanChanged = true;
+		m_isDOWNpressed = true;
+	end
+	if( uiKey == Keys.VK_LEFT ) then
+		keyPanChanged = true;
+		m_isLEFTpressed = true;
+	end
+	if( keyPanChanged == true ) then
+		ProcessPan(m_edgePanX,m_edgePanY);
+	end
 	return false;
 end
 
@@ -1259,6 +1028,36 @@ function DefaultKeyUpHandler( uiKey:number )
 		end
 	end
 
+	if( uiKey == Keys.VK_UP ) then
+		m_isUPpressed = false;
+		keyPanChanged = true;
+	end
+	if( uiKey == Keys.VK_RIGHT ) then
+		m_isRIGHTpressed = false;
+		keyPanChanged = true;
+	end
+	if( uiKey == Keys.VK_DOWN ) then
+		m_isDOWNpressed = false;
+		keyPanChanged = true;
+	end
+	if( uiKey == Keys.VK_LEFT ) then
+		m_isLEFTpressed = false;
+		keyPanChanged = true;
+	end
+	if( keyPanChanged == true ) then
+		ProcessPan(m_edgePanX,m_edgePanY);
+	end
+
+	if( uiKey == Keys.VK_ADD or uiKey == Keys.VK_SUBTRACT ) then
+		local oldZoom = UI.GetMapZoom();
+		if( uiKey == Keys.VK_ADD ) then
+			UI.SetMapZoom( oldZoom - ZOOM_SPEED, 0.0, 0.0 );
+		elseif( uiKey == Keys.VK_SUBTRACT ) then
+			UI.SetMapZoom( oldZoom + ZOOM_SPEED, 0.0, 0.0 );
+		end
+		return true;
+	end
+
 	return false;
 end
 
@@ -1273,77 +1072,28 @@ end
 -- ===========================================================================
 function OnDefaultKeyDown( pInputStruct:table )
 	if m_isPauseMenuOpen then return; end
-
 	local uiKey			:number = pInputStruct:GetKey();
-
 	return DefaultKeyDownHandler( uiKey );	
 end
 
 -- ===========================================================================
 function OnDefaultKeyUp( pInputStruct:table )
 	if m_isPauseMenuOpen then return; end
-
 	local uiKey			:number = pInputStruct:GetKey();
-
 	return DefaultKeyUpHandler( uiKey );	
 end
 
 -- ===========================================================================
 --	Placing a building, wonder, or district; ESC to leave 
 -- ===========================================================================
-function OnPlacementKeyUp(onSelect:ifunction)
-  return function(pInputStruct:table)
-	  if m_isPauseMenuOpen then return; end
-	  local uiKey			:number = pInputStruct:GetKey();
-    local interfaceMode = UI.GetInterfaceMode();
-	  if uiKey == Keys.VK_ESCAPE then
-		  UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      g_targetPlots = nil;
-		  return true;
-	  end
-    local keyboardTargetingPlot = GetKeyboardTargetingPlot();
-    if KeyBindingHelper.InputMatches(selectPlotKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
-      if keyboardTargetingPlot and onSelect then
-        onSelect(keyboardTargetingPlot:GetIndex());
-      end
-      return true;
-    elseif KeyBindingHelper.InputMatches(selectNextKeyBinding(), pInputStruct, selectPlotMatchOptions) then
-      if restrictedPlotSelectionModes[interfaceMode] then
-        local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-        local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true);
-        if nextPlotID then
-          MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
-        end
-      end
-    elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct, selectPlotMatchOptions) then
-      if restrictedPlotSelectionModes[interfaceMode] then
-        local currentPlotID = keyboardTargetingPlot and keyboardTargetingPlot:GetIndex() or -1;
-        local nextPlotID = SelectNextFrom(g_targetPlots, currentPlotID, true, true);
-        if nextPlotID then
-          MoveKeyboardTargetingTo(Map.GetPlotByIndex(nextPlotID));
-        end
-      end
-    end
-	  return DefaultKeyUpHandler( uiKey );
-  end
-end
-
-function OnPlotPointerSelect(onSelect:ifunction)
-  return function(input:table)
-  	-- If a drag was occurring, end it; otherwise attempt selection of whatever
-	  -- is in the plot the mouse is currently at.
-	  if g_isMouseDragging then
-		  g_isMouseDragging = false;
-	  else
-      if onSelect then
-        onSelect(UI.GetCursorPlotID());
-        return true;
-      end
-    end
-	  EndDragMap();					-- Reset any dragging
-	  g_isMouseDownInWorld = false;
-	  return true;
-  end
+function OnPlacementKeyUp( pInputStruct:table )
+	if m_isPauseMenuOpen then return; end
+	local uiKey			:number = pInputStruct:GetKey();
+	if uiKey == Keys.VK_ESCAPE then
+		UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
+		return true;
+	end
+	return DefaultKeyUpHandler( uiKey );	
 end
 
 
@@ -1428,7 +1178,7 @@ function OnMouseSelectionEnd( pInputStruct:table )
 		if IsSelectionAllowedAt( UI.GetCursorPlotID() ) then
 			local plotX:number, plotY:number = UI.GetCursorPlotCoord();
 			SelectInPlot( plotX, plotY );
-    end
+		end
 	end
 	EndDragMap();					-- Reset any dragging
 	g_isMouseDownInWorld = false;
@@ -1553,7 +1303,7 @@ end
 --	Zoom
 -- ===========================================================================
 function OnMouseWheelZoom( pInputStruct:table )
-	local wheelValue = pInputStruct:GetWheel() * (-( (1.0/12000.0) * MOUSE_SCALAR * mapZoomSpeed.Value / 100));		-- Wheel values come in as multiples of 120, make it so that one 'click' is %1, modified by a speed scalar.
+	local wheelValue = pInputStruct:GetWheel() * (-( (1.0/12000.0) * MOUSE_SCALAR));		-- Wheel values come in as multiples of 120, make it so that one 'click' is %1, modified by a speed scalar.
 	local normalizedX		:number, normalizedY:number = UIManager:GetNormalizedMousePos();
 	local oldZoom = UI.GetMapZoom();
 	local newZoom = oldZoom + wheelValue;
@@ -1617,7 +1367,7 @@ function OnMouseTeleportToCityEnd( pInputStruct:table )
 	if g_isMouseDragging then
 		g_isMouseDragging = false;
 	else
-		TeleportToCity(UI.GetCursorPlotID());
+		TeleportToCity();
 	end
 	EndDragMap();
 	g_isMouseDownInWorld = true;
@@ -1700,7 +1450,11 @@ function OnMouseUnitRangeAttack( pInputStruct:table )
 end
 
 -- ===========================================================================
-function RealizeRangedAttackArrow(plotID)
+function OnMouseMoveRangeAttack( pInputStruct:table )
+	OnMouseMove( pInputStruct );
+		
+	local plotID:number = UI.GetCursorPlotID();
+
 	if (Map.IsPlot(plotID)) then
 		if m_focusedTargetPlot ~= plotID then
 			if m_focusedTargetPlot ~= -1 then
@@ -1725,13 +1479,6 @@ function RealizeRangedAttackArrow(plotID)
 		end
 	end
 	return true;
-end
-
-function OnMouseMoveRangeAttack( pInputStruct:table )
-  OnMouseMove( pInputStruct );
-  if pInputStruct:GetMouseDX() ~= 0 or pInputStruct:GetMouseDY() ~= 0 then
-    RealizeRangedAttackArrow(UI.GetCursorPlotID());
-  end
 end
 
 -- ===========================================================================
@@ -1780,10 +1527,7 @@ function OnMouseMoveToUpdate( pInputStruct:table )
 			end
 		end
 	end
-
-  if pInputStruct:GetMouseDX() ~= 0 or pInputStruct:GetMouseDY() ~= 0 then
-	  RealizeMovementPath();
-  end
+	RealizeMovementPath();
 	return true;
 end
 
@@ -2020,7 +1764,7 @@ function OnTouchTeleportToCityEnd( pInputStruct:table )
 	if m_isTouchDragging then
 		m_isTouchDragging = false;
 	else
-		TeleportToCity(UI.GetCursorPlotID());
+		TeleportToCity();
 	end
 
 	EndDragMap();
@@ -2130,8 +1874,6 @@ function OnInterfaceModeChange_UnitRangeAttack(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
-
-        autoMoveKeyboardTargetForAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(unitPlotID));
 			end
 		end
 	end
@@ -2145,7 +1887,8 @@ end
 -- ===========================================================================
 --	Code related to the Unit Air Attack interface mode
 -- ===========================================================================
-function UnitAirAttack(plotID:number)
+function UnitAirAttack( pInputStruct )
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 		local plotX = plot:GetX();
@@ -2174,7 +1917,6 @@ function UnitAirAttack(plotID:number)
 			if (UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.AIR_ATTACK, nil, tParameters)) then
 				UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.AIR_ATTACK, tParameters);
 				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-        autoMoveKeyboardTargetForAirAttack:RecordLastTargetPlot(plot);
 			end
 		end
 	end						
@@ -2201,7 +1943,6 @@ function OnInterfaceModeChange_Air_Attack(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots);
-        autoMoveKeyboardTargetForAirAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 			end
 		end
 	end
@@ -2221,15 +1962,13 @@ function OnWMDStrikeEnd( pInputStruct )
 	if ClearRangeAttackDragging() then
 		return true;
 	end
-  return DoWMDStrike(UI.GetCursorPlotID());
-end
 
-function DoWMDStrike(plotID:number)
 	local pSelectedUnit = UI.GetHeadSelectedUnit();
 	if (pSelectedUnit == nil) then
 		return false;
 	end
 
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 		local eWMD = UI.GetInterfaceModeParameter(UnitOperationTypes.PARAM_WMD_TYPE);
@@ -2268,7 +2007,6 @@ function WMDStrike( plot, unit, eWMD )
 	if (UnitManager.CanStartOperation( unit, UnitOperationTypes.WMD_STRIKE, nil, tParameters)) then
 		UnitManager.RequestOperation( unit, UnitOperationTypes.WMD_STRIKE, tParameters);
 		UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-    autoMoveKeyboardTargetForNuclearAttack:RecordLastTargetPlot(plot);
 	end
 end
 -------------------------------------------------------------------------------
@@ -2303,7 +2041,6 @@ function OnInterfaceModeChange_WMD_Strike(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots, kVariations);
-        autoMoveKeyboardTargetForNuclearAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(sourcePlot));
 			end
 		end
 	end
@@ -2323,15 +2060,13 @@ function OnICBMStrikeEnd( pInputStruct )
 	if ClearRangeAttackDragging() then
 		return true;
 	end
-  return DoICBMStrike(UI.GetCursorPlotID());
-end
 
-function DoICBMStrike(targetPlotID:number)
 	local pSelectedCity = UI.GetHeadSelectedCity();
 	if (pSelectedCity == nil) then
 		return false;
 	end
 
+	local targetPlotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(targetPlotID)) then
 		local targetPlot = Map.GetPlotByIndex(targetPlotID);
 		local eWMD = UI.GetInterfaceModeParameter(CityCommandTypes.PARAM_WMD_TYPE);
@@ -2376,7 +2111,6 @@ function ICBMStrike( fromCity, sourcePlotX, sourcePlotY, targetPlot, eWMD )
 	if (CityManager.CanStartCommand( fromCity, CityCommandTypes.WMD_STRIKE, tParameters)) then
 		CityManager.RequestCommand( fromCity, CityCommandTypes.WMD_STRIKE, tParameters);
 		UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-    autoMoveKeyboardTargetForNuclearAttack:RecordLastTargetPlot(targetPlot);
 	end
 end
 -------------------------------------------------------------------------------
@@ -2417,7 +2151,6 @@ function OnInterfaceModeChange_ICBM_Strike(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots, kVariations);
-        autoMoveKeyboardTargetForNuclearAttack:MaybeMoveKeyboardTarget(Map.GetPlot(iSourceLocX, iSourceLocY));
 			end
 		else
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
@@ -2435,7 +2168,8 @@ end
 -- ===========================================================================
 --	Code related to the Coastal Raid interface mode
 -- ===========================================================================
-function CoastalRaid(plotID:number)
+function CoastalRaid( pInputStruct )
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -2458,7 +2192,6 @@ function CoastalRaid(plotID:number)
 			if (UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.COASTAL_RAID, nil, tParameters)) then
 				UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.COASTAL_RAID, tParameters);
 				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-        autoMoveKeyboardTargetForCoastalRaid:RecordLastTargetPlot(plot);
 			end
 		end
 	end						
@@ -2483,7 +2216,6 @@ function OnInterfaceModeChange_CoastalRaid(eNewMode)
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_ATTACK);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_ATTACK, eLocalPlayer, g_targetPlots);
 			end
-      autoMoveKeyboardTargetForCoastalRaid:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 		end
 	end
 end
@@ -2498,7 +2230,22 @@ end
 -- ===========================================================================
 --	Code related to the Unit Air Deploy interface mode
 -- ===========================================================================
-function AirUnitDeploy( plotID:number )
+function OnMouseDeployEnd( pInputStruct )
+	-- If a drag was occurring, end it; otherwise raise event.
+	if g_isMouseDragging then
+		g_isMouseDragging = false;
+	else
+		if IsSelectionAllowedAt( UI.GetCursorPlotID() ) then
+			AirUnitDeploy(pInputStruct);
+		end
+	end
+	EndDragMap();
+	g_isMouseDownInWorld = false;
+	return true;
+end
+-------------------------------------------------------------------------------
+function AirUnitDeploy( pInputStruct )
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -2511,7 +2258,6 @@ function AirUnitDeploy( plotID:number )
 		if (UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.DEPLOY, nil, tParameters)) then
 			UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.DEPLOY, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      autoMoveKeyboardTargetForDeploy:RecordLastTargetPlot(plot);
 		end
 	end						
 	return true;
@@ -2537,7 +2283,6 @@ function OnInterfaceModeChange_Deploy(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, eLocalPlayer, g_targetPlots);
-        autoMoveKeyboardTargetForDeploy:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 			end
 		end
 	end
@@ -2553,7 +2298,22 @@ end
 -- ===========================================================================
 --	Code related to the Unit Air Re-Base interface mode
 -- ===========================================================================
-function AirUnitReBase(plotID:number)
+function OnMouseRebaseEnd( pInputStruct )
+	-- If a drag was occurring, end it; otherwise raise event.
+	if g_isMouseDragging then
+		g_isMouseDragging = false;
+	else
+		if IsSelectionAllowedAt( UI.GetCursorPlotID() ) then
+			AirUnitReBase(pInputStruct);
+		end
+	end
+	EndDragMap();
+	g_isMouseDownInWorld = false;
+	return true;
+end
+-------------------------------------------------------------------------------
+function AirUnitReBase( pInputStruct )
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -2566,9 +2326,8 @@ function AirUnitReBase(plotID:number)
 		if (UnitManager.CanStartOperation( pSelectedUnit, UnitOperationTypes.REBASE, nil, tParameters)) then
 			UnitManager.RequestOperation( pSelectedUnit, UnitOperationTypes.REBASE, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      autoMoveKeyboardTargetForRebase:RecordLastTargetPlot(plot);
 		end
-	end
+	end						
 	return true;
 end
 -------------------------------------------------------------------------------
@@ -2590,7 +2349,6 @@ function OnInterfaceModeChange_ReBase(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, eLocalPlayer, g_targetPlots);
-        autoMoveKeyboardTargetForRebase:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 			end
 		end
 	end
@@ -2619,16 +2377,12 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the City and District Range Attack interface mode
 ------------------------------------------------------------------------------------------------
-function OnPointerCityRangeAttack( pInputStruct )
+function CityRangeAttack( pInputStruct )
 	if ClearRangeAttackDragging() then
 		return true;
 	end
 
-	CityRangeAttack(UI.GetCursorPlotID());
-  return true;
-end
-
-function CityRangeAttack(plotID:number)
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -2641,7 +2395,6 @@ function CityRangeAttack(plotID:number)
 		if (CityManager.CanStartCommand( pSelectedCity, CityCommandTypes.RANGE_ATTACK, tParameters)) then
 			CityManager.RequestCommand( pSelectedCity, CityCommandTypes.RANGE_ATTACK, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      autoMoveKeyboardTargetForAttack:RecordLastTargetPlot(plot);
 		end
 	end						
 	return true;
@@ -2683,8 +2436,7 @@ function OnInterfaceModeChange_CityRangeAttack(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
-
-        autoMoveKeyboardTargetForAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(sourcePlotID));
+							
 			end
 		end
 	end
@@ -2696,16 +2448,12 @@ function OnInterfaceModeLeave_CityRangeAttack(eNewMode)
 end
 
 -------------------------------------------------------------------------------
-function OnPointerDistrictRangeAttack( pInputStruct )
+function DistrictRangeAttack( pInputStruct )
 	if ClearRangeAttackDragging() then
 		return true;
 	end
 
-	DistrictRangeAttack(UI.GetCursorPlotID());
-  return true;
-end
-
-function DistrictRangeAttack(plotID:number)
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -2718,9 +2466,8 @@ function DistrictRangeAttack(plotID:number)
 		if (CityManager.CanStartCommand( pSelectedDistrict, CityCommandTypes.RANGE_ATTACK, tParameters)) then
 			CityManager.RequestCommand( pSelectedDistrict, CityCommandTypes.RANGE_ATTACK, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      autoMoveKeyboardTargetForAttack:RecordLastTargetPlot(plot);
 		end
-	end
+	end						
 	return true;
 end
 -------------------------------------------------------------------------------
@@ -2760,8 +2507,7 @@ function OnInterfaceModeChange_DistrictRangeAttack(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				
 				UILens.SetLayerHexesArea(LensLayers.ATTACK_RANGE, eLocalPlayer, allPlots, kVariations);
-				
-        autoMoveKeyboardTargetForAttack:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(sourcePlotID));
+								
 			end
 		end
 	end
@@ -2788,7 +2534,8 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'Teleport to City' mode
 ------------------------------------------------------------------------------------------------
-function TeleportToCity(plotID:number)
+function TeleportToCity()
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 
@@ -2803,7 +2550,6 @@ function TeleportToCity(plotID:number)
 			UnitManager.RequestOperation( pSelectedUnit, eOperation, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
 			UI.PlaySound("Unit_Relocate");
-      autoMoveKeyboardTargetForTeleport:RecordLastTargetPlot(plot);
 		end
 	end
 	return true;
@@ -2828,7 +2574,6 @@ function OnInterfaceModeChange_TeleportToCity(eNewMode)
 				local eLocalPlayer:number = Game.GetLocalPlayer();
 				UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
 				UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, eLocalPlayer, g_targetPlots);
-        autoMoveKeyboardTargetForTeleport:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 			end
 		end
 	end
@@ -2845,16 +2590,7 @@ end
 function OnInterfaceModeChange_MoveTo( eNewMode:number )
 	m_cachedPathUnit	= nil;
 	m_cachedPathPlotId	= -1 ;
-  local unit = UI.GetHeadSelectedUnit();
-  if unit then
-    g_targetPlots = {};
-    local validTargets = {};
-    if autoMoveKeyboardTargetForMoveTo.lastTargetPlot then
-      validTargets[1] = autoMoveKeyboardTargetForMoveTo.lastTargetPlot:GetIndex();
-    end
-    RealizeMovementPath();
-    autoMoveKeyboardTargetForMoveTo:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(unit:GetPlotId()), validTargets);
-  end
+	RealizeMovementPath();
 end
 
 -- =============================================================================================
@@ -2948,7 +2684,8 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'Form Corps' mode
 ------------------------------------------------------------------------------------------------
-function FormCorps(plotID:number)
+function FormCorps( pInputStruct )
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 		local unitList	= Units.GetUnitsInPlotLayerID(  plot:GetX(), plot:GetY(), MapLayers.ANY );
@@ -2961,7 +2698,6 @@ function FormCorps(plotID:number)
 			if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.FORM_CORPS, tParameters)) then
 				UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.FORM_CORPS, tParameters);
 				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);	
-        autoMoveKeyboardTargetForFormCorps:RecordLastTargetPlot(plot);
 			end
 		end
 	end						
@@ -2985,7 +2721,6 @@ function OnInterfaceModeChange_UnitFormCorps(eNewMode)
 		UILens.ToggleLayerOn(LensLayers.HEX_COLORING_PLACEMENT);
 		UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_PLACEMENT, player, unitPlots);
 		g_targetPlots = unitPlots;
-    autoMoveKeyboardTargetForFormCorps:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 	end
 end
 
@@ -2999,7 +2734,8 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'Form Army' mode
 ------------------------------------------------------------------------------------------------
-function FormArmy(plotID:number)
+function FormArmy( pInputStruct )
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 		local unitList	= Units.GetUnitsInPlotLayerID(  plot:GetX(), plot:GetY(), MapLayers.ANY );
@@ -3011,8 +2747,7 @@ function FormArmy(plotID:number)
 			tParameters[UnitCommandTypes.PARAM_UNIT_ID] = pUnit:GetID();
 			if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.FORM_ARMY, tParameters)) then
 				UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.FORM_ARMY, tParameters);
-				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-        autoMoveKeyboardTargetForFormArmy:RecordLastTargetPlot(plot);
+				UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);	
 			end
 		end
 	end
@@ -3037,7 +2772,6 @@ function OnInterfaceModeChange_UnitFormArmy(eNewMode)
 		UILens.ToggleLayerOn(LensLayers.HEX_COLORING_PLACEMENT);
 		UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_PLACEMENT, player, unitPlots);
 		g_targetPlots = unitPlots;
-    autoMoveKeyboardTargetForFormArmy:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 	end
 end
 
@@ -3051,7 +2785,23 @@ end
 ------------------------------------------------------------------------------------------------
 -- Code related to the Unit's 'Airlift' mode
 ------------------------------------------------------------------------------------------------
-function UnitAirlift(plotID:number)
+function OnMouseAirliftEnd( pInputStruct )
+	-- If a drag was occurring, end it; otherwise raise event.
+	if g_isMouseDragging then
+		g_isMouseDragging = false;
+	else
+		if IsSelectionAllowedAt( UI.GetCursorPlotID() ) then
+			UI.PlaySound("Unit_Airlift");
+			UnitAirlift(pInputStruct);
+		end
+	end
+	EndDragMap();
+	g_isMouseDownInWorld = false;
+	return true;
+end
+------------------------------------------------------------------------------------------------
+function UnitAirlift( pInputStruct )
+	local plotID = UI.GetCursorPlotID();
 	if (Map.IsPlot(plotID)) then
 		local plot = Map.GetPlotByIndex(plotID);
 			
@@ -3064,7 +2814,6 @@ function UnitAirlift(plotID:number)
 		if (UnitManager.CanStartCommand( pSelectedUnit, UnitCommandTypes.AIRLIFT, nil, tParameters)) then
 			UnitManager.RequestCommand( pSelectedUnit, UnitCommandTypes.AIRLIFT, tParameters);
 			UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      autoMoveKeyboardTargetForAirlift:RecordLastTargetPlot(plot);
 		end
 	end						
 	return true;
@@ -3087,7 +2836,6 @@ function OnInterfaceModeChange_UnitAirlift(eNewMode)
 			UILens.ToggleLayerOn(LensLayers.HEX_COLORING_MOVEMENT);
 			UILens.SetLayerHexesArea(LensLayers.HEX_COLORING_MOVEMENT, eLocalPlayer, g_targetPlots);
 		end
-    autoMoveKeyboardTargetForAirlift:MaybeMoveKeyboardTarget(Map.GetPlotByIndex(pSelectedUnit:GetPlotId()));
 	end
 end
 --------------------------------------------------------------------------------------------------
@@ -3142,6 +2890,7 @@ end
 --	eNewMode, new mode the engine has just changed to
 -- ===========================================================================
 function OnInterfaceModeChanged( eOldMode:number, eNewMode:number )
+
 	-- Optional: function run before a mode is exited.
 	local pOldModeHandler :table = InterfaceModeMessageHandler[eOldMode];
 	if pOldModeHandler then
@@ -3290,6 +3039,7 @@ function Test()
 	return true;
 end
 
+
 -- ===========================================================================
 --	UI Event
 --	Input Event Processing
@@ -3304,6 +3054,7 @@ function OnInputHandler( pInputStruct:table )
 		ProcessPan(0,0);
 		return;
 	end
+
 
 	-- DEBUG: T for Test (remove eventually; or at least comment out)
 	--if pInputStruct:GetKey() == Keys.T and pInputStruct:IsControlDown() and pInputStruct:IsShiftDown() then
@@ -3379,124 +3130,11 @@ function OnInputHandler( pInputStruct:table )
 		end
 	end
 
-  local keyPanChanged = false;
-
-  if KeyBindingHelper.InputMatches(mapPanNorthKeyBinding.Value, pInputStruct, mapPanKeyDownMatchOptions) then
-    keyPanChanged = true;
-    m_isUPpressed = true;
-  end
- 	if KeyBindingHelper.InputMatches(mapPanWestKeyBinding.Value, pInputStruct, mapPanKeyDownMatchOptions) then
-		keyPanChanged = true;
-		m_isLEFTpressed = true;
-	end
-	if KeyBindingHelper.InputMatches(mapPanSouthKeyBinding.Value, pInputStruct, mapPanKeyDownMatchOptions) then
-		keyPanChanged = true;
-		m_isDOWNpressed = true;
-	end
-	if KeyBindingHelper.InputMatches(mapPanEastKeyBinding.Value, pInputStruct, mapPanKeyDownMatchOptions) then
-		keyPanChanged = true;
-		m_isRIGHTpressed = true;
-	end
-  if KeyBindingHelper.InputMatches(mapPanNorthKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
-    keyPanChanged = true;
-    m_isUPpressed = false;
-  end
-  if KeyBindingHelper.InputMatches(mapPanWestKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
-		m_isLEFTpressed = false;
-		keyPanChanged = true;
-	end
-	if KeyBindingHelper.InputMatches(mapPanSouthKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
-		m_isDOWNpressed = false;
-		keyPanChanged = true;
-	end
-	if KeyBindingHelper.InputMatches(mapPanEastKeyBinding.Value, pInputStruct, mapPanKeyUpMatchOptions) then
-		m_isRIGHTpressed = false;
-		keyPanChanged = true;
-	end
-	if keyPanChanged then
-		ProcessPan(m_edgePanX,m_edgePanY);
-    return true;
-	end
-
-  if KeyBindingHelper.InputMatches(mapZoomInKeyBinding.Value, pInputStruct, mapZoomKeyDownMatchOptions) then
-    local oldZoom = UI.GetMapZoom();
-	  UI.SetMapZoom( oldZoom - ZOOM_SPEED * mapZoomSpeed.Value / 100, 0.0, 0.0 );
-		return true;
-  end
-  if KeyBindingHelper.InputMatches(mapZoomOutKeyBinding.Value, pInputStruct, mapZoomKeyDownMatchOptions) then
-    local oldZoom = UI.GetMapZoom();
-	  UI.SetMapZoom( oldZoom + ZOOM_SPEED * mapZoomSpeed.Value / 100, 0.0, 0.0 );
-		return true;
-  end
-
-  if enableKeyboardPlotTargeting.Value then 
-    if KeyBindingHelper.InputMatches(moveKeyboardTargetToScreenCenterKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      MoveKeyboardTargetingToScreenCenter();
-      return true;
-    elseif KeyBindingHelper.InputMatches(moveScreenToKeyboardTargetKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      CenterScreenOnKeyboardTargeting();
-      return true;
-    elseif KeyBindingHelper.InputMatches(directionNEKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_NORTHEAST);
-      return true;
-    elseif KeyBindingHelper.InputMatches(directionEKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_EAST);
-      return true;
-    elseif KeyBindingHelper.InputMatches(directionSEKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_SOUTHEAST);
-      return true;
-    elseif KeyBindingHelper.InputMatches(directionSWKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_SOUTHWEST);
-      return true;
-    elseif KeyBindingHelper.InputMatches(directionWKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_WEST);
-      return true;
-    elseif KeyBindingHelper.InputMatches(directionNWKeyBinding.Value, pInputStruct, keyboardTargetingKeyDownMatchOptions) then
-      MoveKeyboardTargetingInDirection(DirectionTypes.DIRECTION_NORTHWEST);
-      return true;
-    end
-  end
-  
-  if KeyBindingHelper.InputMatches(selectNextKeyBinding.Value, pInputStruct, selectNextPreviousInPlotMatchOptions) or
-     KeyBindingHelper.InputMatches(selectPlotKeyBinding.Value, pInputStruct, selectNextPreviousInPlotMatchOptions) then
-    SelectNextInKeyboardTargetingPlot();
-    return true;
-  elseif KeyBindingHelper.InputMatches(selectPreviousKeyBinding.Value, pInputStruct, selectNextPreviousInPlotMatchOptions) then
-    SelectPreviousInKeyboardTargetingPlot();
-    return true;
-  end
-
-  if KeyBindingHelper.InputMatches(districtRangedAttackKeyBinding.Value, pInputStruct) then
-    local localPlayerID = Game.GetLocalPlayer();
-    local city = UI.GetHeadSelectedCity();
-    if not city then
-      city = CityManager.GetCityAt(GetKeyboardTargetingPlot());
-    end
-    if city and city:GetOwner() == localPlayerID then
-      if CityManager.CanStartCommand(city, CityCommandTypes.RANGE_ATTACK) then
-        UI.SelectCity(city);
-        UI.SetInterfaceMode(InterfaceModeTypes.CITY_RANGE_ATTACK);
-      end
-      return true;
-    end
-    
-    local district = UI.GetHeadSelectedDistrict();
-    if not district then 
-      district = CityManager.GetDistrictAt(GetKeyboardTargetingPlot());
-    end
-    if district and district:GetOwner() == localPlayerID then 
-      if CityManager.CanStartCommand(district, CityCommandTypes.RANGE_ATTACK) then
-        UI.SelectDistrict(district);
-        UI.SetInterfaceMode(InterfaceModeTypes.DISTRICT_RANGE_ATTACK);
-      end
-    end
-    return true;
-  end
-
 	local isHandled:boolean = false;
 
 	-- Get the handler for the mode
 	local modeHandler = InterfaceModeMessageHandler[mode];
+	
 	-- Is it valid and is able to handle this message?
 	if modeHandler and modeHandler[uiMsg] then
 		isHandled = modeHandler[uiMsg]( pInputStruct );
@@ -3510,22 +3148,6 @@ function OnInputHandler( pInputStruct:table )
 		g_isMouseDragging = false;	-- No mouse down, no dragging is occuring!
 	end
 
-  -- Last-case fallback for pressing esc key.  If esc is pressed and it was not handled somewhere 
-  -- else then deselect all units/cities/districts and return to the default interface mode (selection).
-  -- This would not be necessary if everything correctly and consistently cleaned up after themselves.  
-  -- Of course, with Firaxis involved, that's not the case.  For example, when you press esc in trade 
-  -- mode it closes all the trade screen ui but doesn't switch out of the MAKE_TRADE_ROUTE interface mode.
-  -- (It does things correctly when the x button is used, just not when the esc key is used.)
-  if not isHandled and uiMsg == KeyEvents.KeyUp and pInputStruct:GetKey() == Keys.VK_ESCAPE then
-    if UI.GetHeadSelectedUnit() or UI.GetHeadSelectedCity() or UI.GetHeadSelectedDistrict() then
-      UI.DeselectAll();
-      isHandled = true;
-    end
-    if UI.GetInterfaceMode() ~= InterfaceModeTypes.SELECTION then
-      UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
-      isHandled = true;
-    end
-  end
 
 	return isHandled;
 end
@@ -3646,16 +3268,10 @@ function OnInputActionTriggered( actionId )
 		UI.PlaySound("Play_UI_Click");
 
 	elseif actionId == m_actionHotkeyPrevUnit then
-    -- Switch back to selection mode before switching units so we don't get left in an 
-    -- interface mode with no relevance to the unit.
-    UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
 		UI.SelectPrevReadyUnit();
 		UI.PlaySound("Play_UI_Click");
 
 	elseif actionId == m_actionHotkeyNextUnit then
-    -- Switch back to selection mode before switching units so we don't get left in an 
-    -- interface mode with no relevance to the unit.
-    UI.SetInterfaceMode(InterfaceModeTypes.SELECTION);
 		UI.SelectNextReadyUnit();
 		UI.PlaySound("Play_UI_Click");
 
@@ -3702,45 +3318,6 @@ end
 include ("StrategicView_MapPlacement");	-- handlers for: BUILDING_PLACEMENT, DISTRICT_PLACEMENT
 include ("StrategicView_DebugSupport");	-- the Debug interface mode
 
-function CustomInterfaceModePlotSelect(plotID:number)
-  if Map.IsPlot(plotID) then
-    local interfaceMode = UI.GetInterfaceMode();
-    local eligible = true;
-    if restrictedPlotSelectionModes[interfaceMode] then
-      eligible = IsInList(g_targetPlots, plotID);
-    end
-    if eligible then
-      LuaEvents.WorldNavigation_PlotSelected(interfaceMode, plotID);
-    end
-  end
-  return true;
-end
-
-function OnRegisterInterfaceModeHandling(interfaceMode:number, useKeyboardTargeting:boolean, restrictedPlotSelection:boolean)
-  if useKeyboardTargeting then
-    InterfaceModeMessageHandler[interfaceMode] = {};
-    -- Plugin should handle interface mode change by attaching to 
-    -- Events.InterfaceModeChanged directly.  We don't need to care here.
-    InterfaceModeMessageHandler[interfaceMode][KeyEvents.KeyUp]	= OnPlacementKeyUp(CustomInterfaceModePlotSelect);
-    InterfaceModeMessageHandler[interfaceMode][MouseEvents.LButtonUp]	= OnPlotPointerSelect(CustomInterfaceModePlotSelect);
-    if g_isTouchEnabled then
-      InterfaceModeMessageHandler[interfaceMode][MouseEvents.PointerUp]	= OnPlotPointerSelect(CustomInterfaceModePlotSelect);
-    end
-
-    selectPlotMatchOptions.InterfaceModes[interfaceMode] = true;
-    restrictedPlotSelectionModes[interfaceMode] = restrictedPlotSelection or false;
-  else
-    InterfaceModeMessageHandler[interfaceMode] = {};
-    selectPlotMatchOptions.InterfaceModes[interfaceMode] = true;
-  end
-end
-
-function OnRegisterSelectablePlots(plots:table)
-  g_targetPlots = {};
-  for _, v in ipairs(plots) do 
-    table.insert(g_targetPlots, v);
-  end
-end
 
 -- ===========================================================================
 --	Assign callbacks
@@ -3783,6 +3360,7 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_UnitRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]				[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_ReBase;
 	InterfaceModeMessageHandler[InterfaceModeTypes.SELECTION]			[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_Selection;
+	InterfaceModeMessageHandler[InterfaceModeTypes.MOVE_TO]				[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_MoveTo;
 	InterfaceModeMessageHandler[InterfaceModeTypes.PLACE_MAP_PIN]		[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_PlaceMapPin;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WB_SELECT_PLOT]		[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_WBSelectPlot;
 	InterfaceModeMessageHandler[InterfaceModeTypes.SPY_CHOOSE_MISSION]	[INTERFACEMODE_ENTER]		= OnInterfaceModeChange_SpyChooseMission;
@@ -3810,24 +3388,24 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[INTERFACEMODE_LEAVE]		= OnInterfaceModeLeave_UnitAirlift;
 
 	-- Keyboard Events (all happen on up!)
-	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
-	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(); 
-	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp();
-	InterfaceModeMessageHandler[InterfaceModeTypes.MOVE_TO]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(MoveUnitToKeyboardPlot);
-	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitRangeAttack);
-	InterfaceModeMessageHandler[InterfaceModeTypes.NATURAL_WONDER]			[KeyEvents.KeyUp]		= OnPlacementKeyUp();  -- Not actually a plot selection mode.  Just picks up esc key behavior.
-	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]		[KeyEvents.KeyUp]		= OnPlacementKeyUp(CityRangeAttack);
-	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp(DistrictRangeAttack);
-	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(DoWMDStrike);
-	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(DoICBMStrike);
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitAirAttack);
-	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp(CoastalRaid);
-	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(AirUnitDeploy);
-	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(AirUnitReBase);
-	InterfaceModeMessageHandler[InterfaceModeTypes.TELEPORT_TO_CITY]		[KeyEvents.KeyUp]		= OnPlacementKeyUp(TeleportToCity);
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(FormCorps);
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]				[KeyEvents.KeyUp]		= OnPlacementKeyUp(FormArmy);
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[KeyEvents.KeyUp]		= OnPlacementKeyUp(UnitAirlift);
+	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]			[KeyEvents.KeyUp]		= OnPlacementKeyUp; 
+	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_PLACEMENT]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.MOVE_TO]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]			[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.NATURAL_WONDER]			[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK]	[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]			[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.TELEPORT_TO_CITY]		[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]				[KeyEvents.KeyUp]		= OnPlacementKeyUp;
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]					[KeyEvents.KeyUp]		= OnPlacementKeyUp;
 
 
 	-- Mouse Events
@@ -3854,23 +3432,23 @@ function Initialize()
 	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.LButtonUp]		= OnMouseUnitRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.MouseMove]	= OnMouseMoveRangeAttack;
-	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.LButtonUp]	= OnPointerDistrictRangeAttack;	
+	InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.LButtonUp]	= DistrictRangeAttack;	
 	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.LButtonUp]		= OnMouseBuildingPlacementEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.RButtonUp]		= OnMouseBuildingPlacementCancel;
 	InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.MouseMove]		= OnMouseBuildingPlacementMove;
-	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.LButtonUp]		= OnPointerCityRangeAttack;
+	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.LButtonUp]		= CityRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormCorps);
-	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(FormArmy);
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitAirlift);
-	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.LButtonUp]		= OnPlotPointerSelect(UnitAirAttack);
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.LButtonUp]		= FormCorps;
+	InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.LButtonUp]		= FormArmy;
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.LButtonUp]		= OnMouseAirliftEnd;
+	InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.LButtonUp]		= UnitAirAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.LButtonUp]		= OnWMDStrikeEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.LButtonUp]		= OnICBMStrikeEnd;
 	InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.MouseMove]		= OnMouseMoveRangeAttack;
-	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.LButtonUp]		= OnPlotPointerSelect(AirUnitDeploy);
-	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]				[MouseEvents.LButtonUp]		= OnPlotPointerSelect(AirUnitReBase);
-	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.LButtonUp]		= OnPlotPointerSelect(CoastalRaid);
+	InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.LButtonUp]		= OnMouseDeployEnd;
+	InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]				[MouseEvents.LButtonUp]		= OnMouseRebaseEnd;
+	InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.LButtonUp]		= CoastalRaid;
 	InterfaceModeMessageHandler[InterfaceModeTypes.PLACE_MAP_PIN]		[MouseEvents.LButtonUp]		= PlaceMapPin;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WB_SELECT_PLOT]		[MouseEvents.LButtonUp]		= OnMouseEnd_WBSelectPlot;
 	InterfaceModeMessageHandler[InterfaceModeTypes.WB_SELECT_PLOT]		[MouseEvents.RButtonUp]		= OnRButtonUp_WBSelectPlot;
@@ -3899,18 +3477,18 @@ function Initialize()
 		InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.PointerDown]	= OnTouchStart;
 		InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.PointerUpdate]	= OnTouchUpdate;
 		InterfaceModeMessageHandler[InterfaceModeTypes.BUILDING_PLACEMENT]	[MouseEvents.PointerUp]		= OnTouchBuildingPlacementEnd;
-		InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.PointerUp]		= OnPointerCityRangeAttack;
-		InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.PointerUp]	= OnPointerDistrictRangeAttack;
-		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormArmy);
-		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(FormCorps);
-		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitAirlift);
+		InterfaceModeMessageHandler[InterfaceModeTypes.CITY_RANGE_ATTACK]	[MouseEvents.PointerUp]		= CityRangeAttack;
+		InterfaceModeMessageHandler[InterfaceModeTypes.DISTRICT_RANGE_ATTACK][MouseEvents.PointerUp]	= DistrictRangeAttack;
+		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_ARMY]			[MouseEvents.PointerUp]		= FormArmy;
+		InterfaceModeMessageHandler[InterfaceModeTypes.FORM_CORPS]			[MouseEvents.PointerUp]		= FormCorps;
+		InterfaceModeMessageHandler[InterfaceModeTypes.AIRLIFT]				[MouseEvents.PointerUp]		= Airlift;
 		InterfaceModeMessageHandler[InterfaceModeTypes.RANGE_ATTACK]		[MouseEvents.PointerUp]		= OnTouchUnitRangeAttack;
-		InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.PointerUp]		= OnPlotPointerSelect(UnitAirAttack);
+		InterfaceModeMessageHandler[InterfaceModeTypes.AIR_ATTACK]			[MouseEvents.PointerUp]		= UnitAirAttack;
 		InterfaceModeMessageHandler[InterfaceModeTypes.WMD_STRIKE]			[MouseEvents.PointerUp]		= OnWMDStrikeEnd;
 		InterfaceModeMessageHandler[InterfaceModeTypes.ICBM_STRIKE]			[MouseEvents.PointerUp]		= OnICBMStrikeEnd;
-		InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.PointerUp]		= OnPlotPointerSelect(AirUnitDeploy);
-		InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]				[MouseEvents.PointerUp]		= OnPlotPointerSelect(AirUnitReBase);
-		InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.PointerUp]		= OnPlotPointerSelect(CoastalRaid);
+		InterfaceModeMessageHandler[InterfaceModeTypes.DEPLOY]				[MouseEvents.PointerUp]		= AirUnitDeploy;
+		InterfaceModeMessageHandler[InterfaceModeTypes.REBASE]				[MouseEvents.PointerUp]		= AirUnitReBase;
+		InterfaceModeMessageHandler[InterfaceModeTypes.COASTAL_RAID]		[MouseEvents.PointerUp]		= CoastalRaid;
 		InterfaceModeMessageHandler[InterfaceModeTypes.PLACE_MAP_PIN]		[MouseEvents.PointerUp]		= PlaceMapPin;
 		InterfaceModeMessageHandler[InterfaceModeTypes.CITY_MANAGEMENT]		[MouseEvents.PointerUp]		= OnDoNothing;
 	end
@@ -3923,7 +3501,6 @@ function Initialize()
 	Events.CycleUnitSelectionRequest.Add( OnCycleUnitSelectionRequest );
 	Events.InputActionTriggered.Add( OnInputActionTriggered );
 	Events.InterfaceModeChanged.Add(OnInterfaceModeChanged);
-  Events.LoadScreenClose.Add(MoveKeyboardTargetingToScreenCenter);
 	Events.MultiplayerGameLastPlayer.Add(OnMultiplayerGameLastPlayer);
 	Events.MultiplayerGameAbandoned.Add(OnMultiplayerGameAbandoned);
 	Events.UnitSelectionChanged.Add( OnUnitSelectionChanged );
@@ -3944,10 +3521,6 @@ function Initialize()
 	LuaEvents.InGameTopOptionsMenu_Show.Add(function() m_isPauseMenuOpen = true; end);
 	LuaEvents.InGameTopOptionsMenu_Close.Add(function() m_isPauseMenuOpen = false; ClearAllCachedInputState(); end);
 
-  LuaEvents.WorldNavigation_UpdateKeyboardTargetingPlot.Add(OnUpdateKeyboardTargetingPlot);
-  LuaEvents.WorldNavigation_RegisterInterfaceModeHandling.Add(OnRegisterInterfaceModeHandling);
-  LuaEvents.WorldNavigation_RegisterSelectablePlots.Add(OnRegisterSelectablePlots);
-
 	-- UI Events
 	ContextPtr:SetInputHandler( OnInputHandler, true );
 	ContextPtr:SetRefreshHandler( OnRefresh );
@@ -3959,5 +3532,4 @@ function Initialize()
 	-- Popup setup
 	m_kConfirmWarDialog = PopupDialogInGame:new( "ConfirmWarPopup" );
 end
-
 Initialize();

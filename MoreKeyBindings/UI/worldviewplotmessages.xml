@@ -14,13 +14,5 @@
       </SlideAnim>
     </WorldAnchor>
   </Instance>
-
-  <WorldAnchor ID="KeyboardPlotTargetingAnchor">
-    <Container Size="64,64" Anchor="C,C" Offset="0,-10">
-      <AlphaAnim ID="KeyboardPlotTargetAlpha" Anchor="C,C" AlphaBegin="1.0" AlphaEnd="0.4" Cycle="Once" Speed="3">
-        <Image ID="KeyboardPlotTargetOutline" Texture="keyboard_targeting_indicator.dds" Size="64,64" Anchor="C,C"/>
-        <Image ID="KeyboardTargetAction" Size="32,32" Icon="ICON_MORE_KEY_BINDINGS_KEYBOARD" Anchor="C,C"/>
-      </AlphaAnim>
-    </Container>
-  </WorldAnchor>
+  
 </Context>
