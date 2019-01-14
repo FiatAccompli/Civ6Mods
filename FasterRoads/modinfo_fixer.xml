@@ -37,6 +37,20 @@
         <zh_Hans_CN>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hans_CN>
         <zh_Hant_HK>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hant_HK>
       </Text>
+      <Text id="LOC_FASTER_ROADS_DESCRIPTION">
+        <en_US>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</en_US>
+        <de_DE>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</de_DE>
+        <es_ES>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</es_ES>
+        <fr_FR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</fr_FR>
+        <it_IT>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</it_IT>
+        <pl_PL>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</pl_PL>
+        <pt_BR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</pt_BR>
+        <ru_RU>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ru_RU>
+        <ja_JP>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ja_JP>
+        <ko_KR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ko_KR>
+        <zh_Hans_CN>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hans_CN>
+        <zh_Hant_HK>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hant_HK>
+      </Text>
     </LocalizedText>
   </xsl:template>
 

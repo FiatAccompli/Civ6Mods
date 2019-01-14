@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
@@ -12,7 +12,7 @@
     <SupportsSinglePlayer>true</SupportsSinglePlayer>
     <SupportsMultiplayer>true</SupportsMultiplayer>
     <SupportsHotSeat>true</SupportsHotSeat>
-    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="FasterRoads"><Properties><LoadOrder>10200</LoadOrder></Properties><File>FasterRoutes.sql</File></UpdateDatabase></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="FasterRoads"><Properties><LoadOrder>10200</LoadOrder></Properties><File>faster_routes.sql</File></UpdateDatabase></InGameActions>]]></InGameActionData>
     <AssemblyName>FasterRoads</AssemblyName>
     <RootNamespace>FasterRoads</RootNamespace>
     <Authors>FiatAccompli</Authors>
@@ -24,8 +24,8 @@
     <OutputPath>bin\Copy Scripts\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="FasterRoutes.sql">
-      <SubType>Content</SubType>
+    <Content Include="faster_routes.sql">
+        <SubType>Content</SubType>
     </Content>
     <None Include="README.md">
       <SubType>Content</SubType>
