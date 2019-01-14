@@ -2,9 +2,9 @@
 
 ## Overview
 
-Provides an easy way for other mods to declare user configurable settings and provides a ui for the user to change setting values. 
-Setting values are persisted within game saves and if the user desires it is (relatively) easy to save a global default setting 
-that applies across all saves.
+Provides an easy way for other mods to declare user configurable settings and gives users a nice UI to change those settings.
+Setting values are persisted within game saves and if desired it is easy to save a set of global default values 
+that apply across all saves.
 
 ## Installation
 * [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)
@@ -27,6 +27,24 @@ When you have changed the settings use the "Confirm" button at the bottom to loc
 
 To make the current settings the default for all games, click the "Show Saveable Config" button at the bottom
 left of the settings popup and follow the in-game instructions.
+
+### Compatibility
+This mod should be compatible with all other mods. However, as with any mod, unforeseen 
+conflicts may occur.
+
+### Disclaimer
+Sid Meier's Civilization VI, Civ, Civilization, 2K Games, Firaxis Games, and 
+Take-Two Interactive Software are all trademarks and/or registered trademarks of 
+Take-Two Interactive Software, Inc who do not sponsor, endorse, authorize or are 
+in any other way associated with this mod.
+
+This mod is provided "as is", without warranty of any kind, express or implied, 
+including but not limited to the warranties of merchantability, fitness for a 
+particular purpose and noninfringement. In no event shall the authors or copyright 
+holders be liable for any claim, damages or other liability, whether in an action 
+of contract, tort or otherwise, arising from, out of or in connection with the mod
+or the use or other dealings in the mod.
+
 
 ## For Modders
 
@@ -209,6 +227,9 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
       a key is held down and should end when the key is released.  (Without this the user can first press the key, 
       then press a modifier, and then release the key while holding the modifier resulting in the key-up not being 
       handled and the action permanently taking place.)
+* `KeyBindingHelper.IsInputStateMatch(options)` - from `mod_settings_key_binding_helper.lua`.
+  Returns true if the current program state matches that in `options`. `options` can contain 
+  `InputContexts`, `InterfaceModes`, and `AllowInPopups` as described for `InputMatches`.
 
 ---
 

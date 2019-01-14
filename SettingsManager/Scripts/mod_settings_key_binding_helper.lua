@@ -19,7 +19,7 @@ local civicTreeOpen = false;
 LuaEvents.CivicsTree_CloseCivicsTree.Add(function() civicTreeOpen=false; end);
 LuaEvents.CivicsTree_OpenCivicsTree.Add(function() civicTreeOpen=true; end);
 LuaEvents.TechTree_CloseTechTree.Add(function() techTreeOpen=false; end);
-LuaEvents.TechTree_OpenTechTree.Add(function() techTreeOpen=true; end);
+LuaEvents.TechTree_OpenTechTree.Add(function() print("The tech tree has opened"); techTreeOpen=true; end);
 
 local ONLY_WORLD_INPUT_CONTEXT = { [InputContext.World] = true };
 local ONLY_SELECTION_INTERFACE_MODE = { [InterfaceModeTypes.SELECTION] = true };
@@ -37,6 +37,20 @@ KeyBindingHelper.ONLY_SELECTION_INTERFACE_MODE = ONLY_SELECTION_INTERFACE_MODE;
 KeyBindingHelper.ONLY_WORLD_INPUT_CONTEXT = ONLY_WORLD_INPUT_CONTEXT;
 KeyBindingHelper.ALL_INTERFACE_MODES = ALL_INTERFACE_MODES;
 
+function KeyBindingHelper.IsInputStateMatch(options:table)
+  -- Generally bindings should only be active in main game mode.  Not in menus, diplomacy or other input contexts.
+  if not (options.InputContexts or ONLY_WORLD_INPUT_CONTEXT)[Input.GetActiveContext()] then
+    return false;
+  end
+  if not (options.InterfaceModes or ONLY_SELECTION_INTERFACE_MODE)[UI.GetInterfaceMode()] then
+    return false;
+  end
+  if (UI.IsAnyPopupInterfaceVisible() or techTreeOpen or civicTreeOpen) and not options.AllowInPopups then 
+    return false;
+  end
+  return true
+end
+
 function KeyBindingHelper.InputMatches(value:table, input:table, options:table) 
   options = options or NO_OPTIONS;
 
@@ -45,22 +59,13 @@ function KeyBindingHelper.InputMatches(value:table, input:table, options:table)
   end
 
   if input:GetMessageType() == (options.Event or KeyEvents.KeyUp) then
-    -- Generally bindings should only be active in main game mode.  Not in menus, diplomacy or other input contexts.
-    if not (options.InputContexts or ONLY_WORLD_INPUT_CONTEXT)[Input.GetActiveContext()] then
-      return false;
+    if KeyBindingHelper.IsInputStateMatch(options) then
+		  return input:GetKey() == value.KeyCode and 
+             ((options.IgnoreModifiers or false) or 
+                 (input:IsShiftDown() == value.IsShift and 
+                  input:IsControlDown() == value.IsControl and 
+                  input:IsAltDown() == value.IsAlt));
     end
-    if not (options.InterfaceModes or ONLY_SELECTION_INTERFACE_MODE)[UI.GetInterfaceMode()] then
-      return false;
-    end
-    if (UI.IsAnyPopupInterfaceVisible() or techTreeOpen or civicTreeOpen) and not options.AllowInPopups then 
-      return false;
-    end
-	
-		return input:GetKey() == value.KeyCode and 
-           ((options.IgnoreModifiers or false) or 
-               (input:IsShiftDown() == value.IsShift and 
-                input:IsControlDown() == value.IsControl and 
-                input:IsAltDown() == value.IsAlt));
   end
   return false;
 end
