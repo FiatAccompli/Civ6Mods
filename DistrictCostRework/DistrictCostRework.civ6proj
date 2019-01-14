@@ -7,7 +7,7 @@
     <ProjectGuid>d33bf38c-5679-4ea6-8894-e03406cdd4b7</ProjectGuid>
     <ModVersion>100</ModVersion>
     <Teaser>LOC_DISTRICT_COST_REWORK_TEASER</Teaser>
-    <Description>Reworks district cost to be based on the number of districts of that type previously built in your civilization as well as the number of specialty districts  (of any type) already present in the city.  The intent is that it should still be possible in the late game to found a new city and get districts up and running fairly quickly (particularly if your empire is small).  The current gaem[NEWLINE]Changes:[NEWLINE][ICON_BULLET]District cost no longer scales with game time or has catchup mechanisms relative to other civs.[ICON_BULLET]District cost nows scales based on the number of previous districts of that type constructed.  Each district constructed adds 1/3 of the base cost of that district to future constructions of that district.(Does not apply to Neighborhoods.)[ICON_BULLET]Building a district in a city with 1/2/3/... specialty districts already built increases district cost by  10/25/45/70/100/140/180/220/260/300%.</Description>
+    <Description>LOC_DISTRICT_COST_REWORK_DESCRIPTION</Description>
     <Authors>FiatAccompli</Authors>
     <SpecialThanks>
     </SpecialThanks>
@@ -17,7 +17,7 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>DistrictPriceRework</AssemblyName>
     <RootNamespace>DistrictPriceRework</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="DistrictCosts"><Properties><LoadOrder>10200</LoadOrder></Properties><File priority="10100">DistrictCosts.sql</File><File>Reyna.sql</File></UpdateDatabase><UpdateText id="DistrictCosts_Text"><File>Reyna_Text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><UpdateDatabase id="DistrictCosts"><Properties><LoadOrder>10200</LoadOrder></Properties><File>dcr_reyna.sql</File><File>dcr_district_costs.sql</File></UpdateDatabase><UpdateText id="DistrictCosts_Text"><Properties><LoadOrder>10200</LoadOrder></Properties><File>dcr_reyna_text.xml</File></UpdateText></InGameActions>]]></InGameActionData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>
@@ -29,7 +29,13 @@
     <OutputPath>bin\Copy Scripts\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="DistrictCosts.sql">
+    <Content Include="dcr_district_costs.sql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="dcr_reyna.sql">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="dcr_reyna_text.xml">
       <SubType>Content</SubType>
     </Content>
     <None Include="modinfo_fixer.xml">
@@ -38,12 +44,6 @@
     <None Include="README.md">
       <SubType>Content</SubType>
     </None>
-    <Content Include="Reyna_Text.xml">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Reyna.sql">
-      <SubType>Content</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
 </Project>

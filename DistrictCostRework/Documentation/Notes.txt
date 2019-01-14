@@ -1,0 +1,6 @@
+DistrictsCostRework image:
+  Scales of Justice by Karen Arnold
+  https://www.publicdomainpictures.net/en/view-image.php?image=72186&picture=scales-of-justice
+  Licensed under CC0 Public Domain (https://creativecommons.org/publicdomain/zero/1.0/)
+  
+  District and production icons from Civilization VI SDK Assets.
