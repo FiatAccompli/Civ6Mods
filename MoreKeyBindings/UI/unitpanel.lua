@@ -3061,18 +3061,20 @@ function OnInputActionTriggered( actionId )
 	if ( not m_isOkayToProcess or ContextPtr:IsHidden() ) then
 		return;
 	end
-	-- If an entry with this actionId exists, call the function associated with it.
-	if m_kHotkeyActions[actionId] ~= nil then		
-        UI.PlaySound("Play_UI_Click");
-        if m_kSoundCV1[actionId] ~= nil and m_kSoundCV1[actionId] ~= "" then
-            UI.PlaySound(m_kSoundCV1[actionId]);
-        end
-		m_kHotkeyActions[actionId](m_kHotkeyCV1[actionId], m_kHotkeyCV2[actionId]);
-	end
+  if KeyBindingHelper.IsInputStateMatch(actionKeyMatchOptions) then
+	  -- If an entry with this actionId exists, call the function associated with it.
+	  if m_kHotkeyActions[actionId] ~= nil then		
+      UI.PlaySound("Play_UI_Click");
+      if m_kSoundCV1[actionId] ~= nil and m_kSoundCV1[actionId] ~= "" then
+          UI.PlaySound(m_kSoundCV1[actionId]);
+      end
+		  m_kHotkeyActions[actionId](m_kHotkeyCV1[actionId], m_kHotkeyCV2[actionId]);
+	  end
     -- "Delete" Hotkey doesn't appear in UnitOperations.xml, we need to hotwire it here
     if m_DeleteHotkeyId ~= nil and (actionId == m_DeleteHotkeyId) then
         OnPromptToDeleteUnit();
     end
+  end
 end
 
 -- ===========================================================================

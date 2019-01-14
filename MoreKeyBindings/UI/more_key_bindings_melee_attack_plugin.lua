@@ -1,3 +1,7 @@
+-- ============================= --
+--	Copyright 2019 FiatAccompli  --
+-- ============================= --
+
 -- Code related to Melee Attack interface mode
 include ("Civ6Common");
 
