@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 FiatAccompli -->
+<GameData>
+  <LocalizedText>
+    <Row Language="en_US" Tag="LOC_UI_PLUGINS_PANEL_CHECK_FORMATTER">
+      <Text>{1} Panel</Text>
+    </Row>
+  </LocalizedText>
+</GameData>

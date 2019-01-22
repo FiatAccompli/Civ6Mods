@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 FiatAccompli -->
+<Context>
+  <SlideAnim ID="SlideAnim" Anchor="R,T" Size="514,parent" Start="-514,27" End="-1,27" Cycle="Once" Speed="3.4" Function="OutSine" Stopped="1" >
+    <Grid Anchor="R,T" Size="parent,parent+5" Texture="Controls_BannerWide" SliceTextureSize="514,Sli" StretchMode="Tile" ConsumeMouse="1" >
+      <Image Texture="Controls_GradientSmall" Size="22,parent" AnchorSide="O,I" Anchor="L,T" Color="0,0,0,255" Rotate="90" Offset="-2,0"/>
+    </Grid>
+
+    <Container ID="Content" Size="parent,parent">
+      <Grid ID="HeaderBG" Size="parent,165" Texture="Controls_TitleBarDark" SliceCorner="21,17" SliceTextureSize="42,34">
+        <Grid ID="TitleBG" Anchor="R,T" Offset="-50,-2" Size="600,74" Texture="Controls_BannerHeaderRed" SliceCorner="371,0" SliceSize="1,74" SliceTextureSize="426,74">
+          <Label ID="Title" Anchor="L,T" Offset="42,15" Style="WorldRankingsTitle" String="EXAMPLE SCREEN"/>
+        </Grid>
+        <Container ID="AllCityStates" Size="parent,parent" >
+          <Button ID="CloseListButton" Anchor="R,T" Offset="0,56" Style="CloseButtonSmall" />
+        </Container>
+      </Grid>-->
+      <Grid Anchor="C,B" Offset="1,-4" Size="parent+5,32" Texture="Controls_BannerBottom" SliceCorner="18,2" SliceTextureSize="37,32" />
+    </Container>
+  </SlideAnim>
+</Context>

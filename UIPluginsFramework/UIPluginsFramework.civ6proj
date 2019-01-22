@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>UI Plugins Framework</Name>
+    <Guid>c8e215b9-b317-4fae-a9b5-907570575893</Guid>
+    <ProjectGuid>04c4fb25-e148-4705-ac05-e967c5864002</ProjectGuid>
+    <ModVersion>1</ModVersion>
+    <Teaser>Stuff goes here.</Teaser>
+    <Description>Stuff goes here.</Description>
+    <Authors>FiatAccompli</Authors>
+    <SpecialThanks>
+    </SpecialThanks>
+    <AffectsSavedGames>false</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <AssemblyName>UIPluginsFramework</AssemblyName>
+    <RootNamespace>UIPluginsFramework</RootNamespace>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ImportLua"><Properties><LoadOrder>10200</LoadOrder></Properties><File>UI/toppanel.lua</File><File>UI/toppanel.xml</File><File>UI/launchbar.lua</File><File>UI/launchbar.xml</File><File>UI/ingame_uiplugins_replacement.lua</File><File>UI/partialscreenhooks.lua</File><File>UI/partialscreenhooks.xml</File><File>UI/worldtracker.lua</File><File>UI/worldtracker.xml</File><File>UI/worldtracker_expansion1.lua</File><File>UI/minimap_toolbar_plugins_handler.lua</File></ImportFiles><ImportFiles id="ImportTextures"><File>Textures/world_tracker_additional_panel_border.dds</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/ui_plugins_text.xml</File></UpdateText><AddUserInterfaces id="AddMinimapToolbarPluginsHandler"><Properties><Context>InGame</Context></Properties><File>UI/minimap_toolbar_plugins_handler.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
+    <FrontEndActionData><![CDATA[<FrontEndActions />]]></FrontEndActionData>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Text" />
+    <Folder Include="Textures\" />
+    <Folder Include="UI" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UI\minimap_toolbar_plugins_handler.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\minimap_toolbar_plugins_handler.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\worldtracker_expansion1.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <None Include="modinfo_fixer.xml">
+      <SubType>Content</SubType>
+    </None>
+    <None Include="README.md">
+      <SubType>Content</SubType>
+    </None>
+    <Content Include="Textures\world_tracker_additional_panel_border.dds">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Textures\world_tracker_panel_separator.dds">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Text\ui_plugins_text.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\launchbar.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\launchbar.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\ingame_uiplugins_replacement.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\partialscreenhooks.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\partialscreenhooks.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\worldtracker.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\worldtracker.xml">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>

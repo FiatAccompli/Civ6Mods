@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Name>UI Plugins Example</Name>
+    <Guid>cdc599f1-0170-4ac9-ac70-3e1064a6edb0</Guid>
+    <ProjectGuid>9c67d99e-892a-47f0-8790-7f1d0e778546</ProjectGuid>
+    <ModVersion>1</ModVersion>
+    <Teaser>Example usages of UI Plugins hooks.</Teaser>
+    <Description>Example usages of UI Plugins hooks.</Description>
+    <Authors>FiatAccompli</Authors>
+    <SpecialThanks>
+    </SpecialThanks>
+    <AffectsSavedGames>false</AffectsSavedGames>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>true</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <AssemblyName>UIPluginsExample</AssemblyName>
+    <RootNamespace>UIPluginsExample</RootNamespace>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ImportLua"><File>UI/toppanel_plugin.lua</File><File>UI/toppanel_plugin2.lua</File><File>UI/partial_screen_example.lua</File><File>UI/world_tracker_example.lua</File><File>UI/minimap_toolbar_example.lua</File><File>UI/launch_bar_example_screen.lua</File></ImportFiles><AddUserInterfaces id="AddTopPanelPlugin"><Properties><Context>InGame_TopPanel</Context></Properties><File>UI/toppanel_plugin.xml</File></AddUserInterfaces><AddUserInterfaces id="AddTopPanelPlugin2"><Properties><Context>InGame_TopPanel</Context></Properties><File>UI/toppanel_plugin2.xml</File></AddUserInterfaces><AddUserInterfaces id="AddLaunchBarExampleScreen"><Properties><Context>InGame_Screen</Context></Properties><File>UI/launch_bar_example_screen.xml</File></AddUserInterfaces><AddUserInterfaces id="AddPartialScreenExample"><Properties><Context>InGame_PartialScreen</Context></Properties><File>UI/partial_screen_example.xml</File></AddUserInterfaces><AddUserInterfaces id="AddWorldTrackerExample"><Properties><Context>InGame_WorldTracker</Context></Properties><File>UI/world_tracker_example.xml</File></AddUserInterfaces><AddUserInterfaces id="AddMinimapToolbarExample"><Properties><Context>InGame</Context></Properties><File>UI/minimap_toolbar_example.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md">
+      <SubType>Content</SubType>
+    </None>
+    <Content Include="UI\launch_bar_example_screen.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\launch_bar_example_screen.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\minimap_toolbar_example.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\minimap_toolbar_example.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\partial_screen_example.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\partial_screen_example.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel_plugin.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel_plugin.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel_plugin2.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel_plugin2.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\world_tracker_example.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\world_tracker_example.xml">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)Civ6.targets" />
+</Project>

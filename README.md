@@ -13,5 +13,11 @@ A collection of civ 6 mods.
 * [Map Tacks +](MapTacksPlus) - It's map tacks, but with even more icon options.  What a plus!
 
 ### Modding mods
-* [Settings Manager](SettingsManager) - Provides an easy way for other mods to declare user configurable settings.  Provides users an easy in-game UI to change settings.
-* [Settings Manager Example](SettingsManagerExample) - Provides a very simple example usage of Mod Settings Manager. 
+* [Settings Manager](SettingsManager) - Provides an easy way for other mods to declare user configurable settings.
+  Provides users an easy in-game UI to change settings.
+* [Settings Manager Example](SettingsManagerExample) - A simple example usage of the 
+  functionality of Settings Manager.
+* [UI Plugins Framework](UIPluginsFramework) - Provides other mods the ability to easily add UI elements to 
+  parts of the in-game UI without needing to overwrite the base game UI files.  Provides methods to 
+  add buttons 
+* [UI Plugins Example](UIPluginsExample) - An example usage of the features of UI Plugins Framework.

@@ -1,0 +1,5 @@
+UIPluginsFramework image:
+  In-game screenshot + paint
+  
+UIPluginsExcample image:
+  In-game screenshot + paint

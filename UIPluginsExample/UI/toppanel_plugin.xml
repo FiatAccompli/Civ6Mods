@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 FiatAccompli -->
+<Context>
+  <Container ID="Plugin" Size="auto,25">
+    <Label Color="128,128,255,255" String="This a Top Panel Plugin!" Anchor="L,C" Style="FontNormal18"/>
+  </Container>
+</Context>

@@ -21,6 +21,14 @@ Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "MoreKeyBindings", "MoreKeyB
 EndProject
 Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "PlayTheKeyboard_GlobalHotkeys", "PlayTheKeyboard_GlobalHotkeys\PlayTheKeyboard_GlobalHotkeys.civ6proj", "{B31147D3-7A21-4A16-ABED-095DB94D5263}"
 EndProject
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "WorldTrackerUnitList", "WorldTrackerUnitList\WorldTrackerUnitList.civ6proj", "{85D38370-B226-4C67-AE37-EEBED661B4AE}"
+EndProject
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "UIPluginsFramework", "UIPluginsFramework\UIPluginsFramework.civ6proj", "{04C4FB25-E148-4705-AC05-E967C5864002}"
+EndProject
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "PlayTheKeyboard_UnitActions", "PlayTheKeyboard_UnitActions\PlayTheKeyboard_UnitActions.civ6proj", "{2C44C11B-0F6B-4A04-AD3D-BC0DFC9DEA6A}"
+EndProject
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "UIPluginsExample", "UIPluginsExample\UIPluginsExample.civ6proj", "{9C67D99E-892A-47F0-8790-7F1D0E778546}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Civ6 = Default|Civ6
@@ -45,6 +53,14 @@ Global
 		{70562607-5F95-481F-9A73-A71197A839FB}.Default|Civ6.Build.0 = Default|Civ6
 		{B31147D3-7A21-4A16-ABED-095DB94D5263}.Default|Civ6.ActiveCfg = Default|Civ6
 		{B31147D3-7A21-4A16-ABED-095DB94D5263}.Default|Civ6.Build.0 = Default|Civ6
+		{85D38370-B226-4C67-AE37-EEBED661B4AE}.Default|Civ6.ActiveCfg = Default|Civ6
+		{85D38370-B226-4C67-AE37-EEBED661B4AE}.Default|Civ6.Build.0 = Default|Civ6
+		{04C4FB25-E148-4705-AC05-E967C5864002}.Default|Civ6.ActiveCfg = Default|Civ6
+		{04C4FB25-E148-4705-AC05-E967C5864002}.Default|Civ6.Build.0 = Default|Civ6
+		{2C44C11B-0F6B-4A04-AD3D-BC0DFC9DEA6A}.Default|Civ6.ActiveCfg = Default|Civ6
+		{2C44C11B-0F6B-4A04-AD3D-BC0DFC9DEA6A}.Default|Civ6.Build.0 = Default|Civ6
+		{9C67D99E-892A-47F0-8790-7F1D0E778546}.Default|Civ6.ActiveCfg = Default|Civ6
+		{9C67D99E-892A-47F0-8790-7F1D0E778546}.Default|Civ6.Build.0 = Default|Civ6
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

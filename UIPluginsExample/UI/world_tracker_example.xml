@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 FiatAccompli -->
+<Context Name="Tracker Example">
+  <Container ID="Plugin" Size="292,parent">
+    <Box Anchor="L,T" Size="parent,parent" Color="32,39,72,229">
+      <Label Color="255,128,0,255" String="This a World Tracker Plugin!" Anchor="L,C" Style="FontNormal18"/>
+    </Box>
+  </Container>
+</Context>
