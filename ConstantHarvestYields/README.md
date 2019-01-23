@@ -33,7 +33,7 @@ As making harvest yields constant requires changing a global parameter that
 also affects district cost scaling it is recommended to also use a mod that changes how 
 district costs are handled.  For example: [District Cost Rework](../DistrictCostRework)
 
-### Installation
+## Installation
 * [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1618194442) 
 * [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
 
