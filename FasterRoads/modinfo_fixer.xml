@@ -3,72 +3,33 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml" encoding="utf-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
-  
+
+  <xsl:include href="../modinfo_fixer_base.xml"/>
+
   <xsl:template match="/Mod/Properties">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
     <LocalizedText>
-      <Text id="LOC_FASTER_ROADS_MOD_NAME">
-        <en_US>Faster Roads</en_US>
-        <de_DE>Faster Roads</de_DE>
-        <es_ES>Faster Roads</es_ES>
-        <fr_FR>Faster Roads</fr_FR>
-        <it_IT>Faster Roads</it_IT>
-        <pl_PL>Faster Roads</pl_PL>
-        <pt_BR>Faster Roads</pt_BR>
-        <ru_RU>Faster Roads</ru_RU>
-        <ja_JP>Faster Roads</ja_JP>
-        <ko_KR>Faster Roads</ko_KR>
-        <zh_Hans_CN>Faster Roads</zh_Hans_CN>
-        <zh_Hant_HK>Faster Roads</zh_Hant_HK>
-      </Text>
-      <Text id="LOC_FASTER_ROADS_TEASER">
-        <en_US>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</en_US>
-        <de_DE>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</de_DE>
-        <es_ES>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</es_ES>
-        <fr_FR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</fr_FR>
-        <it_IT>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</it_IT>
-        <pl_PL>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</pl_PL>
-        <pt_BR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</pt_BR>
-        <ru_RU>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ru_RU>
-        <ja_JP>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ja_JP>
-        <ko_KR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ko_KR>
-        <zh_Hans_CN>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hans_CN>
-        <zh_Hant_HK>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hant_HK>
-      </Text>
-      <Text id="LOC_FASTER_ROADS_DESCRIPTION">
-        <en_US>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</en_US>
-        <de_DE>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</de_DE>
-        <es_ES>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</es_ES>
-        <fr_FR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</fr_FR>
-        <it_IT>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</it_IT>
-        <pl_PL>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</pl_PL>
-        <pt_BR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</pt_BR>
-        <ru_RU>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ru_RU>
-        <ja_JP>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ja_JP>
-        <ko_KR>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</ko_KR>
-        <zh_Hans_CN>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hans_CN>
-        <zh_Hant_HK>Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</zh_Hant_HK>
-      </Text>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_FASTER_ROADS_MOD_NAME</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="true()"/>
+        <xsl:with-param name="base">Faster Roads</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_FASTER_ROADS_TEASER</xsl:with-param>
+        <xsl:with-param name="base">Reduces the movement costs of roads in all eras to make their existence (or lack thereof) more meaningful and impactful.</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_FASTER_ROADS_DESCRIPTION</xsl:with-param>
+        <xsl:with-param name="base">Reduces the movement costs of roads in all eras.  In early eras this makes the choice of which roads you build have a more meaningful impact.  In the late game reduced road costs enable armies to more quickly respond to your needs - either in attack or defense.
+
+* Ancient roads continue to cost 1 movement point per hex, regardless of terrain.
+* Classical roads changed from 1 to 0.5 movement points per hex to make the impact of early roads more meaningful.
+* Industrial roads changed from 0.75 to 0.333 movement points to simulate the impact of faster forms of transportation (primarily railroads).
+* Modern roads changed from 0.5 to 0.25 movements points per hex.</xsl:with-param>
+      </xsl:call-template>
     </LocalizedText>
   </xsl:template>
-
-  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
-  <xsl:template match="/Mod/LocalizedText"/>
-
-  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
-       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
-  <xsl:template match="@priority">
-    <xsl:attribute name="Priority">
-      <xsl:value-of select="."/>
-    </xsl:attribute>
-  </xsl:template>
-
-  <!--Identity template, provides default behavior that copies all content into the output -->
-  <xsl:template match="@*|node()">
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:copy>
-  </xsl:template>
+  
 </xsl:stylesheet>

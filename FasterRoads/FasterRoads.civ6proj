@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
@@ -7,7 +7,7 @@
     <ProjectGuid>7562de76-162e-4ce4-a042-fa2b7fa0c46b</ProjectGuid>
     <ModVersion>100</ModVersion>
     <Teaser>LOC_FASTER_ROADS_TEASER</Teaser>
-    <Description>Reduces the movement costs of roads in all eras.  In early eras this makes the choice of which roads you build have a more meaningful impact.  In the late game reduced road costs enable armies to more quickly respond to your needs - either in attack or defense.[NEWLINE][NEWLINE][ICON_BULLET]Ancient roads continue to cost 1 movement point per hex, regardless of terrain.[NEWLINE][ICON_BULLET]Classical roads changed from 1 to 0.5 movement points per hex (and moved forward from medieval to classical era) to make the impact of early roads more meaningful.[NEWLINE][ICON_BULLET]Industrial roads changed from 0.75 to 0.333 movement points to simulate the impact of faster forms of transportation (primarily railroads).[NEWLINE][ICON_BULLET]Modern roads changed from 0.5 to 0.25 movements points per hex.</Description>
+    <Description>LOC_FASTER_ROADS_DESCRIPTION</Description>
     <AffectsSavedGames>true</AffectsSavedGames>
     <SupportsSinglePlayer>true</SupportsSinglePlayer>
     <SupportsMultiplayer>true</SupportsMultiplayer>
@@ -25,7 +25,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="faster_routes.sql">
-        <SubType>Content</SubType>
+      <SubType>Content</SubType>
     </Content>
     <None Include="README.md">
       <SubType>Content</SubType>
