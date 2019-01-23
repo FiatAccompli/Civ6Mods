@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!-- Copyright 2018 FiatAccompli -->
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:strip-space elements="*"/>
+  
+  <xsl:param name="name_suffix" select="''"/>
+
+  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
+       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
+  <xsl:template match="@priority">
+    <xsl:attribute name="Priority">
+      <xsl:value-of select="."/>
+    </xsl:attribute>
+  </xsl:template>
+
+  <!--Identity template, provides default behavior that copies all content into the output -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template name="GenerateText">
+    <xsl:param name="identifier"/>
+    <xsl:param name="is_mod_name" select="false()"/>
+    <xsl:param name="base"/>
+    <xsl:param name="en_US" select="''" />
+    <xsl:param name="es_ES" select="''" />
+    <xsl:param name="fr_FR" select="''" />
+    <xsl:param name="it_IT" select="''" />
+    <xsl:param name="pl_PL" select="''" />
+    <xsl:param name="pt_BR" select="''" />
+    <xsl:param name="ru_RU" select="''" />
+    <xsl:param name="ja_JP" select="''" />
+    <xsl:param name="ko_KR" select="''" />
+    <xsl:param name="zh_Hans_CN" select="''" />
+    <xsl:param name="zh_Hant_HK" select="''" />
+    <Text>
+      <xsl:attribute name="id">
+        <xsl:value-of select="$identifier"/>
+      </xsl:attribute>
+      <en_US>
+        <xsl:choose>
+          <xsl:when test="string-length($en_US) &gt; 0">
+            <xsl:value-of select="$en_US"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+						<xsl:if test="$is_mod_name and string-length($name_suffix) &gt; 0">
+							<xsl:value-of select="' *** '"/>
+							<xsl:value-of select="$name_suffix"/>
+						</xsl:if>
+          </xsl:otherwise>
+        </xsl:choose>
+      </en_US>
+      <es_ES>
+        <xsl:choose>
+          <xsl:when test="string-length($es_ES) &gt; 0">
+            <xsl:value-of select="$es_ES"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </es_ES>
+      <fr_FR>
+        <xsl:choose>
+          <xsl:when test="string-length($fr_FR) &gt; 0">
+            <xsl:value-of select="$fr_FR"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </fr_FR>
+      <it_IT>
+        <xsl:choose>
+          <xsl:when test="string-length($it_IT) &gt; 0">
+            <xsl:value-of select="$it_IT"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </it_IT>
+      <pl_PL>
+        <xsl:choose>
+          <xsl:when test="string-length($pl_PL) &gt; 0">
+            <xsl:value-of select="$pl_PL"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </pl_PL>
+      <pt_BR>
+        <xsl:choose>
+          <xsl:when test="string-length($pt_BR) &gt; 0">
+            <xsl:value-of select="$pt_BR"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </pt_BR>
+      <ru_RU>
+        <xsl:choose>
+          <xsl:when test="string-length($ru_RU) &gt; 0">
+            <xsl:value-of select="$ru_RU"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </ru_RU>
+      <ja_JP>
+        <xsl:choose>
+          <xsl:when test="string-length($ja_JP) &gt; 0">
+            <xsl:value-of select="$ja_JP"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </ja_JP>
+      <ko_KR>
+        <xsl:choose>
+          <xsl:when test="string-length($ko_KR) &gt; 0">
+            <xsl:value-of select="$ko_KR"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </ko_KR>
+      <zh_Hans_CN>
+        <xsl:choose>
+          <xsl:when test="string-length($zh_Hans_CN) &gt; 0">
+            <xsl:value-of select="$zh_Hans_CN"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </zh_Hans_CN>
+      <zh_Hant_HK>
+        <xsl:choose>
+          <xsl:when test="string-length($zh_Hant_HK) &gt; 0">
+            <xsl:value-of select="$zh_Hant_HK"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$base"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </zh_Hant_HK>
+    </Text>
+  </xsl:template>
+
+  <!-- LocalizedText element and contents will be generated by GenerateText 
+       template calls from the main template.  Remove the existing one. -->
+  <xsl:template match="LocalizedText"/>
+</xsl:stylesheet>

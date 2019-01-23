@@ -4,33 +4,24 @@
   <xsl:output method="xml" encoding="utf-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
 
+  <xsl:include href="../modinfo_fixer_base.xml"/>
+
   <xsl:template match="/Mod/Properties">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
     <LocalizedText>
-      <Text id="LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME">
-        <en_US>UI Plugins Framework</en_US>
-        <de_DE>Settings Manager</de_DE>
-        <es_ES>Settings Manager</es_ES>
-        <fr_FR>Settings Manager</fr_FR>
-        <it_IT>Settings Manager</it_IT>
-        <pl_PL>Settings Manager</pl_PL>
-        <pt_BR>Settings Manager</pt_BR>
-        <ru_RU>Settings Manager</ru_RU>
-        <ja_JP>Settings Manager</ja_JP>
-        <ko_KR>Settings Manager</ko_KR>
-        <zh_Hans_CN>Settings Manager</zh_Hans_CN>
-        <zh_Hant_HK>Settings Manager</zh_Hant_HK>
-      </Text>
-      <Text id="LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME_TEASER">
-        <en_US>Does stuff</en_US>
-      </Text>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier" select="'LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME'"/>
+        <xsl:with-param name="is_mod_name" select="true()"/>
+        <xsl:with-param name="base" select="'UI Plugins Framework'"/>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier" select="'LOC_MOD_UI_PLUGINS_FRAMEWORK_TEASER'"/>
+        <xsl:with-param name="base" select="'Stuff'"/>
+      </xsl:call-template>
     </LocalizedText>
   </xsl:template>
-
-  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
-  <xsl:template match="LocalizedText"/>
 
   <xsl:template match="/Mod/InGameActions">
     <xsl:copy>
@@ -46,19 +37,4 @@
   </xsl:template>
 
   <xsl:template match="/Mod/InGameActions/ReplaceUIScript[@id='ReplaceInGame']"/>
-
-  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
-       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
-  <xsl:template match="@priority">
-    <xsl:attribute name="Priority">
-      <xsl:value-of select="."/>
-    </xsl:attribute>
-  </xsl:template>
-
-  <!--Identity template, provides default behavior that copies all content into the output -->
-  <xsl:template match="@*|node()">
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:copy>
-  </xsl:template>
 </xsl:stylesheet>

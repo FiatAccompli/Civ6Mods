@@ -1,4 +1,4 @@
-﻿param([string] $to="")
+﻿param([string] $to="", $name_suffix="")
 
 # So there's an annoying number of things that you can do in a valid .modinfo file 
 # that are not supported by modbuddy.  For example, you can have a LocalizedText element 
@@ -10,7 +10,7 @@
 # This can be configured as an external tool (Tools > External Tools) in Modbuddy with settings
 # Name: Fix ModInfo Files
 # Command: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-# Arguments: -file "AlterModInfoFiles.ps1"
+# Arguments: -file "AlterModInfoFiles.ps1" -name_suffix="In Development"
 # Initial Directory: "$(SolutionDir)"
 
 function XSLT(
@@ -33,8 +33,10 @@ function XSLT(
         $memoutput = New-Object System.IO.MemoryStream(1024)
         $Xslt = New-Object System.Xml.Xsl.XslCompiledTransform
         $Xslt.Load($Transform)
+        $transformArgs = New-Object System.Xml.Xsl.XsltArgumentList
+        $transformArgs.AddParam("name_suffix", "", $name_suffix);
         $xmlWriter = [System.Xml.XmlWriter]::Create($memoutput, $Xslt.OutputSettings)
-        $Xslt.Transform($InputFile, $xmlWriter)
+        $Xslt.Transform($InputFile, $transformArgs, $xmlWriter)
         $xmlWriter.Close()
         #$memoutput.Seek(0, [System.IO.SeekOrigin]::Begin)
         $outputStream = New-Object System.IO.FileStream($OutputFile, [System.IO.FileMode]::Create)
