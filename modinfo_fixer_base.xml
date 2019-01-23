@@ -93,6 +93,7 @@
     <xsl:param name="identifier"/>
     <xsl:param name="is_mod_name" select="false()"/>
     <xsl:param name="base"/>
+    <xsl:param name="de_DE" select="''" />
     <xsl:param name="en_US" select="''" />
     <xsl:param name="es_ES" select="''" />
     <xsl:param name="fr_FR" select="''" />
@@ -113,6 +114,12 @@
         <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
         <xsl:with-param name="base" select="$base"/>
         <xsl:with-param name="localized" select="$en_US"/>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateLanguageText">
+				<xsl:with-param name="language">de_DE</xsl:with-param>
+				<xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+				<xsl:with-param name="base" select="$base"/>
+				<xsl:with-param name="localized" select="$de_DE"/>
       </xsl:call-template>
 			<xsl:call-template name="GenerateLanguageText">
         <xsl:with-param name="language">es_ES</xsl:with-param>
