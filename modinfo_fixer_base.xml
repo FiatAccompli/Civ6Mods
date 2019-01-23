@@ -19,6 +19,75 @@
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
+
+  <!-- Fucking Microsoft.  Even if you don't want to implement an XSLT 2.0 processor there's 
+       no reason you can't provide xpath 2.0 functions or their equivalent -->
+  <!-- From http://geekswithblogs.net/Erik/archive/2008/04/01/120915.aspx -->
+  <xsl:template name="string-replace-all">
+		<xsl:param name="text" />
+		<xsl:param name="replace" />
+		<xsl:param name="by" />
+		<xsl:choose>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)" />
+				<xsl:value-of select="$by" />
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text"
+					select="substring-after($text,$replace)" />
+					<xsl:with-param name="replace" select="$replace" />
+					<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text" />
+			</xsl:otherwise>
+		</xsl:choose>
+  </xsl:template>
+  
+  <xsl:template name="FormatText">
+    <xsl:param name="text"/>
+    <xsl:param name="is_mod_name" select="false()"/>
+
+    <xsl:call-template name="string-replace-all">
+      <xsl:with-param name="text">
+				<xsl:call-template name="string-replace-all">
+					<xsl:with-param name="text" select="$text"/>
+					<xsl:with-param name="replace" select="'&#10;'"/>
+					<xsl:with-param name="by" select="'[NEWLINE]'"/>
+				</xsl:call-template>
+			</xsl:with-param>
+			<xsl:with-param name="replace" select="'* '"/>
+			<xsl:with-param name="by" select="'[ICON_BULLET]'"/>
+		</xsl:call-template>
+		
+		<xsl:if test="$is_mod_name and string-length($name_suffix) &gt; 0">
+			<xsl:value-of select="' *** '"/>
+			<xsl:value-of select="$name_suffix"/>
+	  </xsl:if>
+  </xsl:template>
+  
+  <xsl:template name="GenerateLanguageText">
+    <xsl:param name="language"/>
+    <xsl:param name="is_mod_name"/>
+    <xsl:param name="base"/>
+    <xsl:param name="localized"/>
+
+    <xsl:element name="{$language}">
+			<xsl:call-template name="FormatText">
+			  <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+				<xsl:with-param name="text">
+					<xsl:choose>
+				    <xsl:when test="string-length($localized) &gt; 0">
+				      <xsl:value-of select="$localized"/>
+				    </xsl:when>
+				    <xsl:otherwise>
+				      <xsl:value-of select="$base"/>
+				    </xsl:otherwise>
+			    </xsl:choose>
+			  </xsl:with-param>
+			</xsl:call-template>
+		</xsl:element>
+  </xsl:template>
   
   <xsl:template name="GenerateText">
     <xsl:param name="identifier"/>
@@ -39,120 +108,72 @@
       <xsl:attribute name="id">
         <xsl:value-of select="$identifier"/>
       </xsl:attribute>
-      <en_US>
-        <xsl:choose>
-          <xsl:when test="string-length($en_US) &gt; 0">
-            <xsl:value-of select="$en_US"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-						<xsl:if test="$is_mod_name and string-length($name_suffix) &gt; 0">
-							<xsl:value-of select="' *** '"/>
-							<xsl:value-of select="$name_suffix"/>
-						</xsl:if>
-          </xsl:otherwise>
-        </xsl:choose>
-      </en_US>
-      <es_ES>
-        <xsl:choose>
-          <xsl:when test="string-length($es_ES) &gt; 0">
-            <xsl:value-of select="$es_ES"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </es_ES>
-      <fr_FR>
-        <xsl:choose>
-          <xsl:when test="string-length($fr_FR) &gt; 0">
-            <xsl:value-of select="$fr_FR"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </fr_FR>
-      <it_IT>
-        <xsl:choose>
-          <xsl:when test="string-length($it_IT) &gt; 0">
-            <xsl:value-of select="$it_IT"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </it_IT>
-      <pl_PL>
-        <xsl:choose>
-          <xsl:when test="string-length($pl_PL) &gt; 0">
-            <xsl:value-of select="$pl_PL"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </pl_PL>
-      <pt_BR>
-        <xsl:choose>
-          <xsl:when test="string-length($pt_BR) &gt; 0">
-            <xsl:value-of select="$pt_BR"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </pt_BR>
-      <ru_RU>
-        <xsl:choose>
-          <xsl:when test="string-length($ru_RU) &gt; 0">
-            <xsl:value-of select="$ru_RU"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </ru_RU>
-      <ja_JP>
-        <xsl:choose>
-          <xsl:when test="string-length($ja_JP) &gt; 0">
-            <xsl:value-of select="$ja_JP"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </ja_JP>
-      <ko_KR>
-        <xsl:choose>
-          <xsl:when test="string-length($ko_KR) &gt; 0">
-            <xsl:value-of select="$ko_KR"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </ko_KR>
-      <zh_Hans_CN>
-        <xsl:choose>
-          <xsl:when test="string-length($zh_Hans_CN) &gt; 0">
-            <xsl:value-of select="$zh_Hans_CN"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </zh_Hans_CN>
-      <zh_Hant_HK>
-        <xsl:choose>
-          <xsl:when test="string-length($zh_Hant_HK) &gt; 0">
-            <xsl:value-of select="$zh_Hant_HK"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$base"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </zh_Hant_HK>
+      <xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">en_US</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$en_US"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">es_ES</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$es_ES"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">fr_FR</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$fr_FR"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">it_IT</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$it_IT"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">pl_PL</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$pl_PL"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">pt_BR</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$pt_BR"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">ru_RU</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$ru_RU"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">ja_JP</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$ja_JP"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">ko_KR</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$ko_KR"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">zh_Hans_CN</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$zh_Hans_CN"/>
+      </xsl:call-template>
+			<xsl:call-template name="GenerateLanguageText">
+        <xsl:with-param name="language">zh_Hant_HK</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="$is_mod_name"/>
+        <xsl:with-param name="base" select="$base"/>
+        <xsl:with-param name="localized" select="$zh_Hant_HK"/>
+      </xsl:call-template>
     </Text>
   </xsl:template>
 
