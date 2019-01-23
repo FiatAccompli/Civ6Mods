@@ -5,7 +5,7 @@
     <Name>UI Plugins Example</Name>
     <Guid>cdc599f1-0170-4ac9-ac70-3e1064a6edb0</Guid>
     <ProjectGuid>9c67d99e-892a-47f0-8790-7f1d0e778546</ProjectGuid>
-    <ModVersion>1</ModVersion>
+    <ModVersion>100</ModVersion>
     <Teaser>Example usages of UI Plugins hooks.</Teaser>
     <Description>Example usages of UI Plugins hooks.</Description>
     <Authors>FiatAccompli</Authors>
