@@ -2,7 +2,7 @@
 <!-- Copyright 2018 FiatAccompli -->
 <Context Name="ModSettingsPopup" >
   <Include File="PopupDialog" />
-  
+
   <Container Style="FullScreenVignetteConsumer"/>
   <Box ID="MainGrid" Style="ShellBGBox">
     <Container ID="MainWindow" Style="ShellWindowContainer">

@@ -2,12 +2,12 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
-    <Name>LOC_MOD_SETTINGS_MANAGER_MOD_NAME</Name>
+    <Name>LOC_SETTINGS_MANAGER_MOD_NAME</Name>
     <Guid>1cb1beaf-0428-4aad-b11d-e3168429c071</Guid>
     <ProjectGuid>2b269c1b-074e-49ed-87e3-fc27027d5f6d</ProjectGuid>
     <ModVersion>100</ModVersion>
-    <Teaser>LOC_MOD_SETTINGS_MANAGER_TEASER</Teaser>
-    <Description>LOC_MOD_SETTINGS_MANAGER_TEASER</Description>
+    <Teaser>LOC_SETTINGS_MANAGER_TEASER</Teaser>
+    <Description>LOC_SETTINGS_MANAGER_DESCRIPTION</Description>
     <Authors>FiatAccompli</Authors>
     <SpecialThanks>
     </SpecialThanks>
@@ -17,10 +17,13 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>SettingsManager</AssemblyName>
     <RootNamespace>SettingsManager</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ModSettingsUI"><File>UI/mod_settings_manager.lua</File><File>UI/mod_settings_manager.xml</File><File>UI/mod_settings_popup.lua</File><File>UI/mod_settings_popup.xml</File></ImportFiles><AddUserInterfaces id="SettingsManagerUI"><Properties><Context>InGame</Context></Properties><File>UI/mod_settings_manager.xml</File></AddUserInterfaces><UpdateText id="ModSettingsText"><File>Text/mod_settings_text.xml</File></UpdateText><ImportFiles id="TextureFiles"><File>Textures/mod_settings_minimap_icon.dds</File></ImportFiles><ImportFiles id="ModSettingsAPI"><Properties><LoadOrder>200</LoadOrder></Properties><File>Scripts/mod_settings.lua</File><File>Scripts/mod_settings_key_binding_helper.lua</File></ImportFiles><UpdateDatabase id="ModSettingsUserDefaults"><Properties><LoadOrder>100</LoadOrder></Properties><File priority="2">Database/mod_settings_defaults_schema.sql</File></UpdateDatabase></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ModSettingsUI"><File>UI/mod_settings_manager.lua</File><File>UI/mod_settings_manager.xml</File><File>UI/mod_settings_popup.lua</File><File>UI/mod_settings_popup.xml</File></ImportFiles><AddUserInterfaces id="SettingsManagerUI"><Properties><Context>InGame</Context></Properties><File>UI/mod_settings_manager.xml</File></AddUserInterfaces><UpdateText id="ModSettingsText"><File>Text/mod_settings_text.xml</File></UpdateText><ImportFiles id="TextureFiles"><File>Textures/mod_settings_minimap_icon.dds</File></ImportFiles><ImportFiles id="ModSettingsAPI"><Properties><LoadOrder>200</LoadOrder></Properties><File>Scripts/mod_settings.lua</File><File>Scripts/mod_settings_key_binding_helper.lua</File></ImportFiles><UpdateDatabase id="ModSettingsUserDefaults"><Properties><LoadOrder>0</LoadOrder></Properties><File priority="2">Database/mod_settings_defaults_schema.sql</File></UpdateDatabase></InGameActions>]]></InGameActionData>
     <ModProperties>
       <CustomProperties xmlns="" />
     </ModProperties>
+    <AssociationData><![CDATA[<Associations>
+  <Dependency type="Mod" title="UI Plugins Framework" id="c8e215b9-b317-4fae-a9b5-907570575893" />
+</Associations>]]></AssociationData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>

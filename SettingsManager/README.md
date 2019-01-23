@@ -2,13 +2,9 @@
 
 ## Overview
 
-Provides an easy way for other mods to declare user configurable settings and gives users a nice UI to change those settings.
+Makes it easy for other mods to declare user configurable settings and gives users a nice UI to change those settings.
 Setting values are persisted within game saves and if desired it is easy to save a set of global default values 
 that apply across all saves.
-
-## Installation
-* [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)
-* [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
 
 ## For Users
 
@@ -16,17 +12,28 @@ Settings Manager adds a fairly standard looking "options" pinwheel to the "toolb
 
 ![Access Button](Documentation/SettingsManagerAccessButton.jpg)
 
-When clicked this will bring up the settings popup that allows you to change all settings declared by mods that use this framework.
+When clicked this opens the settings popup that allows you to change all settings declared by mods that use this framework.
+
+*Note that your screen will not look exactly like this - the tabs and settings available depend on which mods you 
+have installed that use this framework.*
 
 ![Example Settings](Documentation/SettingsManagerExamplePage.jpg)
 
-When you have changed the settings use the "Confirm" button at the bottom to lock in the changes 
-(pressing ESC or the back button at the upper right will revert changes).
+After changing settings as desired, use the "Confirm" button at the bottom to lock in the changes.
+Pressing ESC or the back button at the upper right will revert settings to the values present 
+when the screen was opened.
 
-### Saving settings as the default for all games
+### Saving settings as default for all games
 
 To make the current settings the default for all games, click the "Show Saveable Config" button at the bottom
 left of the settings popup and follow the in-game instructions.
+
+## Installation
+* [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)
+* [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
+
+You also need to install [UI Plugins Framework](https://github.com/FiatAccompli/Civ6Mods/tree/master/UIPluginsFramework) 
+([Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1632664596)).
 
 ### Compatibility
 This mod should be compatible with all other mods. However, as with any mod, unforeseen 
@@ -68,16 +75,17 @@ To use Settings Manager in other mods:
    and construct the settings you need.  All settings constructed will be automatically registered with the ui 
    and available for users to configure.
 
-   Keybinding settings will also need to include the input matching code in `mod_settings_key_binding_helper.lua`.
+   Keybinding settings will also want to include the input matching code in `mod_settings_key_binding_helper.lua`.
 
-   *Note that mod settings can only control behavior of lua code - either UI behavior or custom behavior 
-   implemented with lua gameplay scripts.  You can't use the features of this mod to control changes made 
-   to the gameplay database.*
+*Note that mod settings can only control behavior of lua code - either UI behavior or custom behavior 
+implemented with lua gameplay scripts.  You can't use the features of this mod to control changes made 
+to the gameplay database.*
 
 ## Settings Api
 
-### Common Api
+All settings api is found in the table `ModSettings`.  The table `ModSettings.Types` enumerates the available types.
 
+### Settings Constructors
 Settings are declared by calling a constructor of the form
 ```
 ModSettings.<Type>:new(...)
@@ -94,18 +102,19 @@ ModSettings.<Type>:new(...)
   assumes they are the same and will only show one of them in the ui. *If they don't have the same 
   definition (type, defaultValue, etc.) then bad things will probably happen.*
 * `tooltip` - A localizable string that is used as a tooltip for the setting.  For example, to provide more 
-  details about how the individual select items behave.  `nil` is a valid value if the setting name is sufficiently explanatory.
+  details about how the individual select items behave.  Optional and `nil` is a valid value if the setting 
+  name is sufficiently explanatory.
 
 #### Setting Members
 
 * `Value` - This is how the current value of the setting is accessed by your mod code.  The current value can 
   also be retrieved with lua call syntax: (e.g. `value = mySetting()`).
-* `Type` - The type of the setting as a member of ModSettings.Types.
+* `Type` - The type of the setting as a member of `ModSettings.Types`.
 
 #### Setting Methods
 
 * `Change(value)` - Update the setting to the given value. *Note that this does not persist the change.*
-* `AddChangedHandler(onChanged, callImmediately)` - Register a function `onChanged(value, oldValue)` to be called 
+* `AddChangedHandler(onChanged, callImmediately)` - Registers a function `onChanged(value, oldValue)` to be called 
   after the setting value has changed.  This is equivalent to adding a listener to 
   `LuaEvents.ModSettingsManager_SettingValueChanged` and filtering to matching categoryName/settingName.
   If `callImmediately` is true, then `onChanged` will also be invoked with only the current setting value.
@@ -117,12 +126,12 @@ ModSettings.<Type>:new(...)
   publicly exposed `Value` to the new value.  You probably don't need to interact with this.
 * `LuaEvents.ModSettingsManager_SettingValueChanged(categoryName, settingName, value, oldValue)` - 
   Called *after* settings have had values updated via the ModSettingsManager_SettingValueChange event.
-  This is generally the only event modders need to care about.  The convenience helper `AddChangeHandler` 
-  on settings objects is the preferred way to interact with this event.
+  This is generally the only event you need to interact with.  The convenience helper `AddChangedHandler` 
+  is the preferred way to interact with this event.
 * `LuaEvents.ModSettingsManager_UIReadyForRegistration()` - Called by the popup ui to trigger registration of settings.
-  You probably don't need to interact with this.
+  You probably don't need to interact with this.  Settings automatically handle this event.
 * `LuaEvents.ModSettingsManager_RegisterSetting(setting)` - Called by settings to register themselves with the ui.
-  You probably don't need to interact with this.
+  You probably don't need to interact with this.  Settings automatically handle this event.
 
 ### Setting Types
 
@@ -152,7 +161,7 @@ setting = ModSettings.Select:new(values, defaultIndex, categoryName, settingName
 * `values` is a lua array of the values the user can select.  Each item is treated as a localizable string for display.
 * `defaultIndex` is the index of the item within `values` that should be used as the setting default.
 
-The `Value` of the setting is one of the strings in the `values` array.
+The `Value` of the setting is one of the strings from the `values` array.
 
 ---
 
@@ -221,12 +230,13 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
       If the ui is not in one of these modes this method returns false. Default is to only be active in `SELECTION` mode.
     * `Event` is the event to match, either `KeyEvents.KeyUp` or `KeyEvents.KeyDown`.  Default is `KeyUp`.
     * `AllowInPopups` determines whether a match is permitted if the ui is displaying a "popup".  This is anything displayed 
-      via `UI.QueuePopup` (and also tech/civic trees). Default is false.
+      via `UI.QueuePopup` (and also tech/civic trees, which, for who knows what reason, Firaxis choose not to implement 
+      as true popups). Default is false.
     * `IgnoreModifiers` ignores shift/ctrl/alt matching between the binding and the current keyboard state.
-      This is useful on the key-up detection if you have an action that should take place throughout the duration 
-      a key is held down and should end when the key is released.  (Without this the user can first press the key, 
+      This is useful on key-up detection if you have an action that should take place throughout the duration 
+      a key is held down and ends when the key is released.  (Without this the user can first press the key, 
       then press a modifier, and then release the key while holding the modifier resulting in the key-up not being 
-      handled and the action permanently taking place.)
+      handled and the action stuck permanently taking place.)
 * `KeyBindingHelper.IsInputStateMatch(options)` - from `mod_settings_key_binding_helper.lua`.
   Returns true if the current program state matches that in `options`. `options` can contain 
   `InputContexts`, `InterfaceModes`, and `AllowInPopups` as described for `InputMatches`.
@@ -259,12 +269,14 @@ setting = ModSettings.Header:new(categoryName, settingName, tooltip)
 
 The `Value` of the setting is meaningless.
 
+---
+
 ### Setting ordering
 All settings with the same `categoryName` are grouped into a single 'tab' in the configuration UI.  For settings 
 declared within a single file the order in the configuration UI will be the same as the order the settings are declared 
 in the file.  For multiple files that use the same `categoryName` the ordering of settings from these files 
 is random (all the settings from each file will appear together and in the order stated previously).
-    
+
 ### Examples
 See [SettingsManagerExample](../SettingsManagerExample) for a very simple mod that declares settings 
 (but doesn't really do much with them).

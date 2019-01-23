@@ -2,13 +2,14 @@
 --	Copyright 2018 FiatAccompli  --
 -- ============================= --
 
--- "Main" ui for mod settings.  Actually all this file does is handle the button that is put in the 
--- minimap "toolbar" that opens the settings popup.  The real content lives in ModSettingsPopup.
+-- "Main" ui for mod settings.  Actually all this file does is handle the setup of the 
+-- minimap bar button and handle keyboard input to open the popup. The real content 
+-- lives in ModSettingsPopup.
 
 include("mod_settings")
 include("mod_settings_key_binding_helper")
 
-function ShowModOptions()
+function OpenModOptions()
   UIManager:QueuePopup(Controls.SettingsPopup, PopupPriority.Current);
 end
 
@@ -19,52 +20,26 @@ local showModSettingsPopupKeyBinding = ModSettings.KeyBinding:new(ModSettings.Ke
     "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME", 
     "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_TOOLTIP");
 
--- Move the access button from the ui space where it is created into the minimap toolbar.
-function InitializeUI() 
-  local settingsButton = Controls.SettingsButton;
-  local settingsButtonSpacer = Controls.SettingsButtonSpacer;
-  local minimapBar = ContextPtr:LookUpControl("/InGame/MinimapPanel/OptionsStack");
-  local minimapWoodBackground = ContextPtr:LookUpControl("/InGame/MinimapPanel/MinimapBacking");
+local MINIMAP_BAR_BUTTON_ID = "SettingsManagerMinimapButton";
 
-  settingsButton:ChangeParent(minimapBar);
-  settingsButtonSpacer:ChangeParent(minimapBar);
-  minimapBar:CalculateSize();
-  minimapBar:ReprocessAnchoring();
-
-  -- Extend wood background by the length of stuff we're adding.
-  minimapWoodBackground:SetSizeX(
-      minimapWoodBackground:GetSizeX() + settingsButton:GetSizeX() + settingsButtonSpacer:GetSizeX());
-
-  settingsButton:RegisterCallback(Mouse.eLClick, ShowModOptions);
-  settingsButton:RegisterCallback(Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over") end);
-
-  ContextPtr:SetShutdown(OnShutdown);
+function OnRegisterMinimapBarAdditions()
+  local buttonInfo = {
+    Texture = "mod_settings_minimap_icon.dds";
+    Tooltip = "LOC_MOD_SETTINGS_MANAGER_MOD_SETTINGS";
+    Id = MINIMAP_BAR_BUTTON_ID;
+  };
+  LuaEvents.MinimapBar_AddButton(buttonInfo);
 end
 
-function OnInit(isReload:boolean)
-  if isReload then
-    InitializeUI();
-  end
-end
-
--- Put the minimap toolbar button and other ui elements back in our ui space so it gets destroyed properly.
-function OnShutdown()
-  local settingsButton = Controls.SettingsButton;
-  local settingsButtonSpacer = Controls.SettingsButtonSpacer;
-  local minimapWoodBackground = ContextPtr:LookUpControl("/InGame/MinimapPanel/MinimapBacking");
-
-  settingsButton:ChangeParent(ContextPtr);
-  settingsButtonSpacer:ChangeParent(ContextPtr);
-  -- May not exist when UI is being torn down on loading a new game or exiting to menu.
-  if minimapWoodBackground then 
-    minimapWoodBackground:SetSizeX(
-        minimapWoodBackground:GetSizeX() - settingsButton:GetSizeX() - settingsButtonSpacer:GetSizeX()); 
+function OnMinimapBarCustomButtonClicked(id:string)
+  if id == MINIMAP_BAR_BUTTON_ID then
+    OpenModOptions();
   end
 end
 
 function OnInput(input:table)
   if KeyBindingHelper.InputMatches(showModSettingsPopupKeyBinding.Value, input) then
-    ShowModOptions();
+    OpenModOptions();
   end
 end
 
@@ -72,7 +47,14 @@ end
 function Initialize()
   ContextPtr:SetInitHandler(OnInit);
   ContextPtr:SetInputHandler(OnInput, true);
-  Events.LoadScreenClose.Add(InitializeUI);
+
+  -- Minimap bar registration stuff
+  LuaEvents.MinimapBar_RegisterAdditions.Add(OnRegisterMinimapBarAdditions);
+  LuaEvents.MinimapBar_CustomButtonClicked.Add(OnMinimapBarCustomButtonClicked);
+
+  -- Register button (if this is a reload of this context the MinimapBar_RegisterAdditions
+  -- event will not be forthcoming).
+  OnRegisterMinimapBarAdditions();
 end
 
 Initialize();

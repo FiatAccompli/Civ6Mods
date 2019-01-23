@@ -3,52 +3,28 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml" encoding="utf-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
-  
+
+  <xsl:include href="../modinfo_fixer_base.xml"/>
+
   <xsl:template match="/Mod/Properties">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
     <LocalizedText>
-      <Text id="LOC_MOD_SETTINGS_MANAGER_MOD_NAME">
-        <en_US>Settings Manager</en_US>
-        <de_DE>Settings Manager</de_DE>
-        <es_ES>Settings Manager</es_ES>
-        <fr_FR>Settings Manager</fr_FR>
-        <it_IT>Settings Manager</it_IT>
-        <pl_PL>Settings Manager</pl_PL>
-        <pt_BR>Settings Manager</pt_BR>
-        <ru_RU>Settings Manager</ru_RU>
-        <ja_JP>Settings Manager</ja_JP>
-        <ko_KR>Settings Manager</ko_KR>
-        <zh_Hans_CN>Settings Manager</zh_Hans_CN>
-        <zh_Hant_HK>Settings Manager</zh_Hant_HK>
-      </Text>
-      <Text id="LOC_MOD_SETTINGS_MANAGER_TEASER">
-        <en_US>Provides mods a simple way to access user configurable settings.</en_US>
-        <de_DE>Provides mods a simple way to access user configurable settings.</de_DE>
-        <es_ES>Provides mods a simple way to access user configurable settings.</es_ES>
-        <fr_FR>Provides mods a simple way to access user configurable settings.</fr_FR>
-        <it_IT>Provides mods a simple way to access user configurable settings.</it_IT>
-        <pl_PL>Provides mods a simple way to access user configurable settings.</pl_PL>
-        <pt_BR>Provides mods a simple way to access user configurable settings.</pt_BR>
-        <ru_RU>Provides mods a simple way to access user configurable settings.</ru_RU>
-        <ja_JP>Provides mods a simple way to access user configurable settings.</ja_JP>
-        <ko_KR>Provides mods a simple way to access user configurable settings.</ko_KR>
-        <zh_Hans_CN>Provides mods a simple way to access user configurable settings.</zh_Hans_CN>
-        <zh_Hant_HK>Provides mods a simple way to access user configurable settings.</zh_Hant_HK>
-      </Text>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_SETTINGS_MANAGER_MOD_NAME</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="true()"/>
+        <xsl:with-param name="base">Settings Manager</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_SETTINGS_MANAGER_TEASER</xsl:with-param>
+        <xsl:with-param name="base">Makes it easy for other mods to declare user configurable settings and gives users a nice UI to change those settings.</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_SETTINGS_MANAGER_DESCRIPTION</xsl:with-param>
+        <xsl:with-param name="base">Makes it easy for other mods to declare user configurable settings and gives users a nice UI to change those settings. Setting values are persisted within game saves and if desired it is easy to save a set of global default values that apply across all saves.</xsl:with-param>
+      </xsl:call-template>
     </LocalizedText>
-  </xsl:template>
-
-  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
-  <xsl:template match="LocalizedText"/>
-
-  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
-       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
-  <xsl:template match="@priority">
-    <xsl:attribute name="Priority">
-      <xsl:value-of select="."/>
-    </xsl:attribute>
   </xsl:template>
 
   <!-- Add Database/mod_settings_default_values.sql to the modinfo.  We don't want that file to actually 
@@ -70,11 +46,4 @@
   </xsl:template>
 
   <xsl:template match="UpdateDatabase[@id='ModSettingsUserDefaults']/File[text()='Database/mod_settings_default_values.sql']"/>
-
-  <!--Identity template, provides default behavior that copies all content into the output -->
-  <xsl:template match="@*|node()">
-  <xsl:copy>
-    <xsl:apply-templates select="@*|node()"/>
-  </xsl:copy>
-  </xsl:template>
 </xsl:stylesheet>

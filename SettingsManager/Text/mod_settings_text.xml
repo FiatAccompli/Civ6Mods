@@ -55,10 +55,10 @@
     </Row>
 
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY">
-      <Text>Mod settings</Text>
+      <Text>Settings Manager</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME">
-      <Text>Open mod settings</Text>
+      <Text>Open settings manager</Text>
     </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_TOOLTIP">
       <Text>The key binding that will bring up this configuration window.</Text>
