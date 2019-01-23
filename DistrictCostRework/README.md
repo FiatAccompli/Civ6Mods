@@ -42,15 +42,14 @@ empire is small).
 The end result of these changes is that districts should cost a similar amount of production as the base 
 game in the early eras but much less in later eras and for smaller empires.
 
-### Compatibility
-This mod should be compatible with all other mods and since the statements
-that change district costs are generic it should alter the costs of custom districts 
-added by other mods.  However, as with any mod, unforeseen conflicts may occur.
-
 ### Installation
 * [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1621028856) 
 * [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
 
+### Compatibility
+This mod should be compatible with all other mods and since the statements
+that change district costs are generic it should alter the costs of custom districts 
+added by other mods.  However, as with any mod, unforeseen conflicts may occur.
 
 ### Disclaimer
 Sid Meier's Civilization VI, Civ, Civilization, 2K Games, Firaxis Games, and 
