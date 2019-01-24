@@ -16,7 +16,24 @@ Currently this mod supports two types of plugin points.
 * Addition of toolbar buttons
 * Addition of arbitrary panels in elements of the UI.
 
+The following image shows the available plugin points.
+
 ![Example Image](Documentation/UIPluginsExamples.jpg)
+
+To use UI Plugins Framework in other mods:
+
+1. Add a dependency to your mod on UI Plugins Framework.
+   In Modbuddy go to Project Settings > Associations > Dependencies > Add Mod.
+   Use Title = "UI Plugins Framework" and Id = "c8e215b9-b317-4fae-a9b5-907570575893".
+   If you're authoring the .modinfo by hand, then add the following within the root `Mod` element
+   ```
+   <Dependencies>
+     <Mod id="c8e215b9-b317-4fae-a9b5-907570575893" title="UI Plugins Framework" />
+   </Dependencies>
+   ```
+   This makes it so users can't enable your mod without also enabling Settings Manager. 
+
+2. Use the plugin points.
 
 ### Panel plugin points
 Panels can be added to the:
@@ -38,7 +55,9 @@ of `InGame` the following values are used in its place.
 * `InGame_TopPanel` - Adds a custom panel to the info bar at the top of the screen (the one 
   that contains overall civilization yields and some other things).
 * `InGame_WorldTracker` - Adds a custom panel within the world tracker (the left side of the 
-  screen that contains tech/civic and emergency panels (for Rise+Fall))
+  screen that contains tech/civic and emergency panels (for Rise+Fall)). Expand/collapse 
+  functionality and a header is automatically added to world tracker plugins to build 
+  the complete panel the user sees.
 
 In the case of `InGame_TopPanel` and `InGame_WorldTracker` plugin points it is necessary to
 explicitly control the size of the top-level control (`ContextPtr` in lua code) as it
@@ -56,10 +75,13 @@ To fit nicely within their containers, plugins should use the following dimensio
 * `InGame_WorldTracker` plugins should use a width of 292 pixels and arbitrary height (should
   be >=22 or the expander icon will overlap weirdly).
 
-`InGame_WorldTracker` plugins should also specify a `Name="something"` on the top-level 
-`Context` element in the UI xml file. This string (after localization) is used as the name of
-the panel when it is collapsed (and also the name of the panel within the dropdown menu 
-for the world tracker).
+For world tracker plugins you also need to:
+* Specify a `Name="something"` on the top-level `Context` element in the UI xml file. 
+  This string (after localization) is used as the name of the panel in its header 
+  (and also the name of the panel within the dropdown menu for the world tracker).
+* Use a background color of `30,32,64,228`.  Or not.  That's the color used in the 
+  header so using it will give your panel a nice seamless look.  Not a requirement though, 
+  if you want a different look you can do so.
 
 ### Button plugin points
 Buttons can be added to the:

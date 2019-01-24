@@ -524,14 +524,12 @@ function CreateAdditionalPanel(addin:table)
   panel.PanelName:SetText(Locale.ToUpper(id));
 
   local function ToggleExpandPanel()
-    local value = panel.ClosedPanel:IsHidden();
-    newContext:SetHide(value);
-    panel.ClosedPanel:SetHide(not value);
-    panel.ExpanderIcon:SetTextureOffsetVal(0, value and 0 or panel.ExpanderIcon:GetSizeY());
+    local isClosed = panel.PanelHost:IsHidden();
+    panel.PanelHost:SetHide(not isClosed);
+    panel.ExpanderIcon:SetTextureOffsetVal(0, isClosed and 22 or 0);
   end
 
-  panel.ExpanderIcon:RegisterCallback(Mouse.eLClick, ToggleExpandPanel);
-  panel.ClosedPanel:RegisterCallback(Mouse.eLClick, ToggleExpandPanel);
+  panel.PanelHeader:RegisterCallback(Mouse.eLClick, ToggleExpandPanel);
 
   local checkBox = {};
   ContextPtr:BuildInstanceForControl("PanelSelectCheck", checkBox, Controls.PanelSelectChecks);

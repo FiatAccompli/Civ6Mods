@@ -63,18 +63,21 @@
   </ScrollPanel>
 
   <Instance	Name="AdditionalPanel">
-    <Grid ID="MainPanel" ConsumeMouseOver="1" Size="296,auto" AutoSizePadding="0,2" Texture="world_tracker_additional_panel_border.dds" SliceCorner="25,4" SliceTextureSize="110,9">
-      <Container ID="Contents" Size="parent-4,auto" Anchor="L,T" Offset="2,2">
-        <Stack ID="PanelHost" Size="parent,auto">
-          <Button ID="ClosedPanel" Size="parent,22" NoStateChange="true" Anchor="L,T" Hidden="true">
-            <Box Anchor="L,T" Size="parent,parent" Color="32,39,72,229">
-              <Label ID="PanelName" Style="PanelHeaderText" Size="parent,22" Offset="6,0" Anchor="L,C" />
-            </Box>
+    <!-- Using a button here because that makes the inscrutable method UIManager.GetMouseOverWorld()
+         return false when the mouse is over it.  And that disables plot tool tips when the 
+         mouse is inside the world tracker panel.-->
+    <GridButton ID="MainPanel" Size="296,auto" AutoSizePadding="0,2" Texture="world_tracker_additional_panel_border.dds" SliceCorner="25,4" SliceTextureSize="110,9">
+      <Stack StackGrowth="Down" Size="parent-4, auto" Offset="2,2">
+        <Box Size="parent,22" Color="30,32,64,228">
+          <Button ID="PanelHeader" Size="parent,parent" NoStateChange="true">
+            <Label ID="PanelName" Style="PanelHeaderText" Offset="0,1" Size="auto,auto" Anchor="C,C" />
+            <Image ID="ExpanderIcon" Anchor="R,T" Offset="0,0" Size="22,22" Texture="Controls_ExpandButton" TextureOffset="0,22" NoStateChange="true"/>
           </Button>
-        </Stack>
-        <Button ID="ExpanderIcon" Anchor="R,T" Offset="0,0" Size="22,22"	Texture="Controls_ExpandButton" TextureOffset="0,22" NoStateChange="true"/>
-      </Container>
-    </Grid>
+        </Box>
+        <Container ID="PanelHost" Size="parent,auto">
+        </Container>
+      </Stack>
+    </GridButton>
   </Instance>
 
   <Instance Name="PanelSelectCheck">
