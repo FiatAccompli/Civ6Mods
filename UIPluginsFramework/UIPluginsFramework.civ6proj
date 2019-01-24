@@ -2,12 +2,12 @@
 <Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
-    <Name>UI Plugins Framework</Name>
+    <Name>LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME</Name>
     <Guid>c8e215b9-b317-4fae-a9b5-907570575893</Guid>
     <ProjectGuid>04c4fb25-e148-4705-ac05-e967c5864002</ProjectGuid>
-    <ModVersion>1</ModVersion>
-    <Teaser>Stuff goes here.</Teaser>
-    <Description>Stuff goes here.</Description>
+    <ModVersion>100</ModVersion>
+    <Teaser>LOC_MOD_UI_PLUGINS_FRAMEWORK_TEASER</Teaser>
+    <Description>LOC_MOD_UI_PLUGINS_FRAMEWORK_DESCRIPTION</Description>
     <Authors>FiatAccompli</Authors>
     <SpecialThanks>
     </SpecialThanks>
@@ -45,9 +45,6 @@
       <SubType>Content</SubType>
     </None>
     <Content Include="Textures\world_tracker_additional_panel_border.dds">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Textures\world_tracker_panel_separator.dds">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Text\ui_plugins_text.xml">

@@ -12,13 +12,28 @@
     </xsl:copy>
     <LocalizedText>
       <xsl:call-template name="GenerateText">
-        <xsl:with-param name="identifier" select="'LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME'"/>
+        <xsl:with-param name="identifier">LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME</xsl:with-param>
         <xsl:with-param name="is_mod_name" select="true()"/>
-        <xsl:with-param name="base" select="'UI Plugins Framework'"/>
+        <xsl:with-param name="base">UI Plugins Framework</xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="GenerateText">
-        <xsl:with-param name="identifier" select="'LOC_MOD_UI_PLUGINS_FRAMEWORK_TEASER'"/>
-        <xsl:with-param name="base" select="'Stuff'"/>
+        <xsl:with-param name="identifier">LOC_MOD_UI_PLUGINS_FRAMEWORK_TEASER</xsl:with-param>
+        <xsl:with-param name="base">Makes it easy for other mods to add UI elements to parts of the in-game UI without needing to overwrite the base game UI files.</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_MOD_UI_PLUGINS_FRAMEWORK_DESCRIPTION</xsl:with-param>
+        <xsl:with-param name="base">Makes it easy for other mods to add UI panels and buttons in standard places.
+
+Buttons can be added to the
+* Launch bar ("toolbar" at top left with tech/civic/government/etc buttons)
+* Partial screen bar ("toolbar" at top right with city states/trade routes/etc buttons)
+* Minimap bar ("toolbar" at bottom left above minimap with lenses/strategy view/map tack/etc buttons)
+
+Arbitrary panels can be added to the 
+* Top bar (very top of screen)
+* World tracker (left side of screen)
+
+[COLOR:255,128,0,255]Note that this mod does not make any UI changes on its own.  It merely provides the functionality for other mods to do so.[ENDCOLOR]</xsl:with-param>
       </xsl:call-template>
     </LocalizedText>
   </xsl:template>
