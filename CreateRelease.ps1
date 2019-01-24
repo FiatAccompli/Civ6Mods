@@ -1,6 +1,6 @@
 ﻿param([string]$modsSource, [string] $to="", [string] $name="")
 
-./AlterModInfoFiles.ps1 -To $modsSource
+./AlterModInfoFiles.ps1 -To $modsSource -Release
 
 # Builds a zip file of current mods from the solution for uploading to GitHub release.
 # Mods with version < 100 are not included in the zip.

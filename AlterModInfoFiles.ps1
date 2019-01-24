@@ -1,4 +1,4 @@
-﻿param([string] $to="", $name_suffix="")
+﻿param([string] $to="", [switch] $release=$false)
 
 # So there's an annoying number of things that you can do in a valid .modinfo file 
 # that are not supported by modbuddy.  For example, you can have a LocalizedText element 
@@ -34,7 +34,7 @@ function XSLT(
         $Xslt = New-Object System.Xml.Xsl.XslCompiledTransform
         $Xslt.Load($Transform)
         $transformArgs = New-Object System.Xml.Xsl.XsltArgumentList
-        $transformArgs.AddParam("name_suffix", "", $name_suffix);
+        $transformArgs.AddParam("release", "", $release.ToBool())
         $xmlWriter = [System.Xml.XmlWriter]::Create($memoutput, $Xslt.OutputSettings)
         $Xslt.Transform($InputFile, $transformArgs, $xmlWriter)
         $xmlWriter.Close()

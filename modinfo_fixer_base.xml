@@ -3,7 +3,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:strip-space elements="*"/>
   
-  <xsl:param name="name_suffix" select="''"/>
+  <xsl:param name="release" select="false()"/>
 
   <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
        Because I guess even the most cursory testing is unnecessary for Firaxis. -->
@@ -19,6 +19,12 @@
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
+
+  <!-- Dependencies.  Don't put these in development versions because it's a pain
+       in the ass in-game because the development version gets linked to the 
+       published version of requirements so you can't mix and match from the 
+       hierarchies. -->
+	<xsl:template match="/Mod/Dependencies"/>
 
   <!-- Fucking Microsoft.  Even if you don't want to implement an XSLT 2.0 processor there's 
        no reason you can't provide xpath 2.0 functions or their equivalent -->
@@ -60,9 +66,8 @@
 			<xsl:with-param name="by" select="'[ICON_BULLET]'"/>
 		</xsl:call-template>
 		
-		<xsl:if test="$is_mod_name and string-length($name_suffix) &gt; 0">
-			<xsl:value-of select="' *** '"/>
-			<xsl:value-of select="$name_suffix"/>
+		<xsl:if test="$is_mod_name and not($release)">
+			<xsl:value-of select="' *** (In Development)'"/>
 	  </xsl:if>
   </xsl:template>
   
