@@ -45,7 +45,6 @@ end
 
 -- ===========================================================================
 function Initialize()
-  ContextPtr:SetInitHandler(OnInit);
   ContextPtr:SetInputHandler(OnInput, true);
 
   -- Minimap bar registration stuff

@@ -25,6 +25,11 @@
         <xsl:with-param name="base">Makes it easy for other mods to declare user configurable settings and gives users a nice UI to change those settings. Setting values are persisted within game saves and if desired it is easy to save a set of global default values that apply across all saves.</xsl:with-param>
       </xsl:call-template>
     </LocalizedText>
+    <xsl:if test="$release">
+      <Dependencies>
+        <Mod id="c8e215b9-b317-4fae-a9b5-907570575893" title="UI Plugins Framework" />
+      </Dependencies>
+    </xsl:if>
   </xsl:template>
 
   <!-- Add Database/mod_settings_default_values.sql to the modinfo.  We don't want that file to actually 
@@ -35,9 +40,9 @@
       <xsl:element name="File">Database/mod_settings_default_values.sql</xsl:element>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="/Mod/Files/File[text()='Database/mod_settings_default_values.sql']"/>
-  
+
   <xsl:template match="UpdateDatabase[@id='ModSettingsUserDefaults']">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>

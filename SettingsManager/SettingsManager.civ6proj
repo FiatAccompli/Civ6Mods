@@ -21,9 +21,7 @@
     <ModProperties>
       <CustomProperties xmlns="" />
     </ModProperties>
-    <AssociationData><![CDATA[<Associations>
-  <Dependency type="Mod" title="UI Plugins Framework" id="c8e215b9-b317-4fae-a9b5-907570575893" />
-</Associations>]]></AssociationData>
+    <AssociationData><![CDATA[<Associations />]]></AssociationData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>
