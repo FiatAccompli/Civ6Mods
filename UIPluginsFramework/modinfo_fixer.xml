@@ -6,6 +6,15 @@
 
   <xsl:include href="../modinfo_fixer_base.xml"/>
 
+  <xsl:template match="/Mod/@id">
+    <xsl:attribute name="id">
+      <xsl:choose>
+        <xsl:when test="$release">c8e215b9-b317-4fae-a9b5-907570575893</xsl:when>
+        <xsl:otherwise>88ce7acc-18e7-4c6c-9c44-f4d0d1683844</xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+  </xsl:template>
+
   <xsl:template match="/Mod/Properties">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
