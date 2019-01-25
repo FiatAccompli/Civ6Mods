@@ -282,7 +282,7 @@ function MakeAllDuplicatesMessage()
       table.insert(duplicateStrings, binding .. "[NEWLINE]" .. duplicatesMessage);
     end
   end
-  return table.concat(duplicateStrings, "[NEWLINE][NEWLINE]");
+  return #duplicateStrings > 0 and table.concat(duplicateStrings, "[NEWLINE][NEWLINE]") or nil;
 end
 
 --------------------------------------------------------------
@@ -672,6 +672,7 @@ end
 
 function ConfirmPopup()
   local duplicatesMessage = MakeAllDuplicatesMessage();
+  print("All duplicates is", duplicatesMessage, duplicatesMessage and string.len(duplicatesMessage));
   if duplicatesMessage then
     Controls.AllDuplicatedBindingsLabel:SetText(duplicatesMessage);
     Controls.DuplicateBindingsPopup:SetHide(false);
