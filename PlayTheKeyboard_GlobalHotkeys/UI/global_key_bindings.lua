@@ -6,6 +6,12 @@ include("mod_settings.lua");
 include("mod_settings_key_binding_helper.lua");
 include("inputsupport");
 
+ModSettings.PageHeader(
+  "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", 
+  "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY",
+  "LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_DESCRIPTION", 
+  "fiataccompli_logo.dds");
+
 ---------------- Minimap size controls -----------------------
 ModSettings.Header:new("LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY", "LOC_PTK_GLOBAL_HOTKEYS_MINIMAP_CONTROLS");
 

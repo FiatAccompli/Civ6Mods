@@ -5,6 +5,9 @@
     <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_CATEGORY">
       <Text>Global hotkeys</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_MOD_SETTINGS_DESCRIPTION">
+      <Text>Adds key bindings for quickly changing global settings rather than going through the game's option menu. Plus some functionality not supported by the in-game options.</Text>
+    </Row>
 
     <!-- Map control -->
     <Row Language="en_US" Tag="LOC_PTK_GLOBAL_HOTKEYS_MINIMAP_CONTROLS">
