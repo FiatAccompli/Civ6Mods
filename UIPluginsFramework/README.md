@@ -11,6 +11,26 @@ are incompatible with one another.
 * [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1632664596)
 * [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
 
+### Compatibility
+This mod should be compatible with mods that do not touch the UI (e.g. city state, 
+civilization, and other db level mods).  It will likely conflict with mods that touch 
+the same parts of the UI that this mod does (and do not use the framework provided by 
+this mod).  As with any mod, unforeseen conflicts may occur.
+
+### Disclaimer
+Sid Meier's Civilization VI, Civ, Civilization, 2K Games, Firaxis Games, and 
+Take-Two Interactive Software are all trademarks and/or registered trademarks of 
+Take-Two Interactive Software, Inc who do not sponsor, endorse, authorize or are 
+in any other way associated with this mod.
+
+This mod is provided "as is", without warranty of any kind, express or implied, 
+including but not limited to the warranties of merchantability, fitness for a 
+particular purpose and noninfringement. In no event shall the authors or copyright 
+holders be liable for any claim, damages or other liability, whether in an action 
+of contract, tort or otherwise, arising from, out of or in connection with the mod
+or the use or other dealings in the mod.
+
+
 ## For Modders
 Currently this mod supports two types of plugin points.
 * Addition of toolbar buttons
@@ -72,8 +92,7 @@ ContextPtr:SetSizeY(Controls.Panel:GetSizeY());
 
 To fit nicely within their containers, plugins should use the following dimensions:
 * `InGame_TopPanel` plugins should use a height of 25 pixels and arbitrary width.
-* `InGame_WorldTracker` plugins should use a width of 292 pixels and arbitrary height (should
-  be >=22 or the expander icon will overlap weirdly).
+* `InGame_WorldTracker` plugins should use a width of 292 pixels and arbitrary height.
 
 For world tracker plugins you also need to:
 * Specify a `Name="something"` on the top-level `Context` element in the UI xml file. 
