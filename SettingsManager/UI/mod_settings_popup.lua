@@ -464,6 +464,10 @@ end
 function HeaderSettingUIHandler:RestoreDefault()
 end
 
+function HeaderSettingUIHandler:HideSpacer()
+  self.ui.Spacer:SetHide(true);
+end
+
 function HeaderSettingUIHandler:UpdateUIToValue(value)
   -- Nothing to do here.
 end
@@ -517,6 +521,16 @@ function CategoryUI:ShowSettings()
   self.tab.Tab:SetHide(false);
 end
 
+function CategoryUI:SetHeaderInfo(title:string, description:string, texture:string)
+  self.tab.AboutTitle:SetText(Locale.ToUpper(Locale.Lookup(title)));
+  self.tab.AboutDescription:LocalizeAndSetText(description);
+  self.tab.AboutImage:SetTexture(texture);
+  if self.tab.Header:IsHidden() then
+    self.tab.Header:SetHide(false);
+    self.tab.SettingsHolder:SetOffsetY(self.tab.SettingsHolder:GetOffsetY() + 75);
+  end
+end
+
 function CategoryUI:AddSetting(setting:table)
   if self.settings[setting.settingName] then
     -- Already have a setting of this name registered.  We assume that mod writers are well behaved 
@@ -548,6 +562,9 @@ function CategoryUI:AddSetting(setting:table)
   elseif setting.Type == ModSettings.Types.HEADER then
     ui = self.headersManager:GetInstance();
     uiHandler = HeaderSettingUIHandler:new(setting, ui);
+    if self.tab.SettingsStack:GetNumChildren() == 1 then 
+      uiHandler:HideSpacer();
+    end
   end
 
   self.settings[setting.settingName] = {
@@ -574,18 +591,24 @@ function RestoreAllDefaults()
   end
 end
 
-function RegisterModSetting(setting:table)
-  local categoryName = setting.categoryName;
-  
+function GetCategory(name:string)
   -- Create category ui if we haven't seen this category before.
-  local categoryUI = categories[categoryName];
+  local categoryUI = categories[name];
   if categoryUI == nil then 
-    categoryUI = CategoryUI:new(categoryName);
+    categoryUI = CategoryUI:new(name);
     categoryUI.tab.Tab:SetHide(true);
-    categories[categoryName] = categoryUI;
+    categories[name] = categoryUI;
   end
+  return categoryUI;
+end
 
-  categoryUI:AddSetting(setting); 
+function RegisterPageHeader(categoryName:string, title:string, description:string, texture:string)
+  print("RegisterPageHeader", categoryName, title, description, texture);
+  GetCategory(categoryName):SetHeaderInfo(title, description, texture);
+end
+
+function RegisterModSetting(setting:table)
+  GetCategory(setting.categoryName):AddSetting(setting); 
 end
 
 function OnSettingValueChanged(categoryName:string, settingName:string, value, oldValue)
@@ -762,6 +785,7 @@ function Initialize()
   ContextPtr:SetInputHandler(OnInput, true);
 
   LuaEvents.ModSettingsManager_RegisterSetting.Add(RegisterModSetting);
+  LuaEvents.ModSettingsManager_RegisterPageHeader.Add(RegisterPageHeader);
   LuaEvents.ModSettingsManager_SettingValueChanged.Add(OnSettingValueChanged);
 end
 

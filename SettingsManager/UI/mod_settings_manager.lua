@@ -15,6 +15,12 @@ end
 
 -- Use this mod functionality to bind a key to bring up the mod setting ui popup.  
 -- More just cool than actually useful.
+ModSettings.PageHeader(
+  "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY", 
+  "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY",
+  "LOC_MOD_SETTINGS_MANAGER_SETTINGS_DESCRIPTION", 
+  "fiataccompli_logo.dds");
+
 local showModSettingsPopupKeyBinding = ModSettings.KeyBinding:new(ModSettings.KeyBinding.MakeValue(Keys.VK_F1, {Ctrl=true}),
     "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY", 
     "LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME", 

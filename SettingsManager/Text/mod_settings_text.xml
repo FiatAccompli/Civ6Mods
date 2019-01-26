@@ -57,6 +57,9 @@
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_CATEGORY">
       <Text>Settings Manager</Text>
     </Row>
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_DESCRIPTION">
+      <Text>Provides a framework that makes it easy for other mods to declare user configurable settings and has a nice UI (this one!) to configure those settings.</Text>
+    </Row>
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTINGS_UI_ACCESS_KEY_BINDING_NAME">
       <Text>Open settings manager</Text>
     </Row>

@@ -83,7 +83,19 @@ to the gameplay database.*
 
 ## Settings Api
 
-All settings api is found in the table `ModSettings`.  The table `ModSettings.Types` enumerates the available types.
+Most of the settings api is found in the table `ModSettings`.  
+
+### Members
+* `ModSettings.Types` enumerates the available types.
+* `ModSettings.PageHeader(categoryName, title, description, texture)` - Helper for registering page header 
+  info for a category of settings.
+  * `categoryName` - Identifier for the settings category
+  * `title` - String to be used at the top of the settings tab.
+  * `description` - Description of the mod.
+  * `texture` - An logo for the mod.  Size should be 200*75 pixels.
+* `ModSettings.Boolean`, `ModSettings.Select`, `ModSettings.Range`, `ModSettings.Text`, 
+  `ModSettings.KeyBinding`, `ModSettings.Header`, `ModSettings.Action` - Classes for the various 
+  types of settings.
 
 ### Settings Constructors
 Settings are declared by calling a constructor of the form
@@ -118,20 +130,6 @@ ModSettings.<Type>:new(...)
   after the setting value has changed.  This is equivalent to adding a listener to 
   `LuaEvents.ModSettingsManager_SettingValueChanged` and filtering to matching categoryName/settingName.
   If `callImmediately` is true, then `onChanged` will also be invoked with only the current setting value.
-  
-#### Events
-
-* `LuaEvents.ModSettingsManager_SettingValueChange(categoryName, settingName, value)` -
-  Called when the setting value has been changed by the ui or programmatically.  Allows setting objects to update their 
-  publicly exposed `Value` to the new value.  You probably don't need to interact with this.
-* `LuaEvents.ModSettingsManager_SettingValueChanged(categoryName, settingName, value, oldValue)` - 
-  Called *after* settings have had values updated via the ModSettingsManager_SettingValueChange event.
-  This is generally the only event you need to interact with.  The convenience helper `AddChangedHandler` 
-  is the preferred way to interact with this event.
-* `LuaEvents.ModSettingsManager_UIReadyForRegistration()` - Called by the popup ui to trigger registration of settings.
-  You probably don't need to interact with this.  Settings automatically handle this event.
-* `LuaEvents.ModSettingsManager_RegisterSetting(setting)` - Called by settings to register themselves with the ui.
-  You probably don't need to interact with this.  Settings automatically handle this event.
 
 ### Setting Types
 
@@ -276,6 +274,23 @@ All settings with the same `categoryName` are grouped into a single 'tab' in the
 declared within a single file the order in the configuration UI will be the same as the order the settings are declared 
 in the file.  For multiple files that use the same `categoryName` the ordering of settings from these files 
 is random (all the settings from each file will appear together and in the order stated previously).
+
+### Events
+
+* `LuaEvents.ModSettingsManager_SettingValueChange(categoryName, settingName, value)` -
+  Called when the setting value has been changed by the ui or programmatically.  Allows setting objects to update their 
+  publicly exposed `Value` to the new value.  You probably don't need to interact with this.
+* `LuaEvents.ModSettingsManager_SettingValueChanged(categoryName, settingName, value, oldValue)` - 
+  Called *after* settings have had values updated via the ModSettingsManager_SettingValueChange event.
+  This is generally the only event you need to interact with.  The convenience helper `AddChangedHandler` 
+  is the preferred way to interact with this event.
+* `LuaEvents.ModSettingsManager_UIReadyForRegistration()` - Called by the popup ui to trigger registration of settings.
+  You probably don't need to interact with this.  Settings automatically handle this event.
+* `LuaEvents.ModSettingsManager_RegisterSetting(setting)` - Called by settings to register themselves with the ui.
+  You probably don't need to interact with this.  Settings automatically handle this event.
+* `LuaEvents.ModSettingsManager_RegisterPageHeader(categoryName, title, description, texture)` - Called to register 
+  a page header with the ui. The convenience function `ModSettings.PageHeader` is the preferred way 
+  to interact with this event.
 
 ### Examples
 See [SettingsManagerExample](../SettingsManagerExample) for a very simple mod that declares settings 

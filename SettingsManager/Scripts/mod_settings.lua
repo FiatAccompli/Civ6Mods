@@ -470,6 +470,16 @@ function HeaderSetting:ParseValue(value:string)
   return 0;
 end
 
+----------------------------------------------------------------------------------------------
+-- Header data registration
+----------------------------------------------------------------------------------------------
+local function PageHeader(categoryName:string, title:string, description:string, texture:string)
+  LuaEvents.ModSettingsManager_UIReadyForRegistration.Add(
+      function()
+        LuaEvents.ModSettingsManager_RegisterPageHeader(categoryName, title, description, texture);
+      end);
+end
+
 --------------------------------------------------------------------------------------------------
 -- Expose the public api in ModSettings.
 --------------------------------------------------------------------------------------------------
@@ -482,6 +492,7 @@ ModSettings = {
   KeyBinding = KeyBindingSetting,
   Action = ActionSetting,
   Header = HeaderSetting,
+  PageHeader = PageHeader,
 };
 
 end

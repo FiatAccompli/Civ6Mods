@@ -94,9 +94,19 @@
   <!-- Holds the settings for a single category. -->
   <Instance Name="SettingTab">
     <Container ID="Tab" Size="parent,parent">
-      <ScrollPanel Offset="20,3" Size="parent-20,parent-30" AutoScrollBar="1" Vertical="1" Anchor="R,T">
+      <Container ID="Header" Size="parent,75" Offset="0,8" Hidden="1">
+        <Image ID="AboutImage" Size="200,75" Offset="10,0" StretchMode="None"/>
+        <Container Size="parent-310,20" Offset="100,0" Anchor="R,T">
+          <Label ID="AboutTitle" Size="parent,parent" Anchor="C,C" Style="HeaderLargeCaps"/>
+        </Container>
+        <ScrollPanel Size="parent-235,52" Offset="20,23" Anchor="R,T" AutoScrollBar="1" Vertical="1">
+          <ScrollBar Style="Slider_Blue" Anchor="R,C" AnchorSide="O,I"/>
+          <Label ID="AboutDescription" Size="parent-5,auto" Anchor="L,T" Style="FontNormal14" WrapWidth="parent" String=" "/>
+        </ScrollPanel>
+      </Container>
+      <ScrollPanel ID="SettingsHolder" Offset="20,13" Size="parent-20,parent-115" AutoScrollBar="1" Vertical="1" Anchor="R,T">
         <ScrollBar Style="Slider_Blue" Anchor="R,C" AnchorSide="O,I"/>
-        <Stack ID="SettingsStack" Anchor="R,T" Size="parent,auto" StackGrowth="Down" Padding="5" Offset="0,10">
+        <Stack ID="SettingsStack" Anchor="R,T" Size="parent,auto" StackGrowth="Down" Padding="5">
         </Stack>
       </ScrollPanel>
       <GridButton ID="RestoreDefaults" Size="150,22" Style="ShellButton" Anchor="R,B" Offset="8,2"
@@ -159,7 +169,7 @@
 
   <Instance Name="HeaderSetting">
     <Stack ID="Setting" Anchor="R,T" Size="parent,auto" StackGrowth="Down" StackPadding="5">
-      <Container Size="parent,15"/>
+      <Container ID="Spacer" Size="parent,15"/>
       <Grid Size="parent,21" Texture="Shell_SectionHeader" SliceCorner="154,10" SliceTextureSize="308,21" Color="20,144,140,100">
         <Label ID="Header" Anchor="C,C" Style="ShellOptionText" WrapWidth="320"/>
       </Grid>
