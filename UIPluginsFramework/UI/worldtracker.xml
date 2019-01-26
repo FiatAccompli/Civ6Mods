@@ -68,7 +68,7 @@
          mouse is inside the world tracker panel.-->
     <GridButton ID="MainPanel" Size="296,auto" AutoSizePadding="0,2" Texture="world_tracker_additional_panel_border.dds" SliceCorner="25,4" SliceTextureSize="110,9">
       <Stack StackGrowth="Down" Size="parent-4, auto" Offset="2,2">
-        <Box Size="parent,22" Color="30,32,64,228">
+        <Box Size="parent,22" Color="15,38,64,228">
           <Button ID="PanelHeader" Size="parent,parent" NoStateChange="true">
             <Label ID="PanelName" Style="PanelHeaderText" Offset="0,1" Size="auto,auto" Anchor="C,C" />
             <Image ID="ExpanderIcon" Anchor="R,T" Offset="0,0" Size="22,22" Texture="Controls_ExpandButton" TextureOffset="0,22" NoStateChange="true"/>

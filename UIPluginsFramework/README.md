@@ -98,7 +98,7 @@ For world tracker plugins you also need to:
 * Specify a `Name="something"` on the top-level `Context` element in the UI xml file. 
   This string (after localization) is used as the name of the panel in its header 
   (and also the name of the panel within the dropdown menu for the world tracker).
-* Use a background color of `30,32,64,228`.  Or not.  That's the color used in the 
+* Use a background color of `15,38,64,228`.  Or not.  That's the color used in the 
   header so using it will give your panel a nice seamless look.  Not a requirement though, 
   if you want a different look you can do so.
 
