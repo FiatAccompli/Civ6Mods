@@ -36,7 +36,7 @@ You also need to install [UI Plugins Framework](https://github.com/FiatAccompli/
 ([Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1632664596)).
 
 ### Compatibility
-This mod should be compatible with all other mods. However, as with any mod, unforeseen 
+This mod should be compatible with most other mods. However, as with any mod, unforeseen 
 conflicts may occur.
 
 ### Disclaimer

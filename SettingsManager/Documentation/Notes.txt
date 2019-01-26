@@ -1,0 +1,8 @@
+SettingsManager image:
+Gear icon from Civ IV SDK pantry.
+
+SettingsManagerAccessButton:
+In-game screenshot and paint
+
+SettingsManagerExamplePage:
+In-game screenshot
