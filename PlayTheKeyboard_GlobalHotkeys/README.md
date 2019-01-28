@@ -25,8 +25,27 @@ Using the keybindings to change volume or one of the other settings that does no
 window with the current settings in the center of the screen.
 ![Status Window](Documentation/StatusWindow.jpg)
 
-### Installation
-Get it from the [Steam workshop]()
+### Installation 
+* [Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1637792345) 
+* [Manual install](https://github.com/FiatAccompli/Civ6Mods/releases)
 
+You also need to install:
+* [Settings Manager](https://github.com/FiatAccompli/Civ6Mods/tree/master/SettingsManager) ([Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)).
+* [UI Plugins Framework](https://github.com/FiatAccompli/Civ6Mods/tree/master/UIPluginsFramework) ([Steam workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1632664596)).
 
-To use this mod you also need to have [Settings Manager](../SettingsManager) ([Steam workshop link](https://steamcommunity.com/sharedfiles/filedetails/?id=1564628360)).
+### Compatibility
+This mod should be compatible with most other mods. However, as with any mod, unforeseen 
+conflicts may occur.
+
+### Disclaimer
+Sid Meier's Civilization VI, Civ, Civilization, 2K Games, Firaxis Games, and 
+Take-Two Interactive Software are all trademarks and/or registered trademarks of 
+Take-Two Interactive Software, Inc who do not sponsor, endorse, authorize or are 
+in any other way associated with this mod.
+
+This mod is provided "as is", without warranty of any kind, express or implied, 
+including but not limited to the warranties of merchantability, fitness for a 
+particular purpose and noninfringement. In no event shall the authors or copyright 
+holders be liable for any claim, damages or other liability, whether in an action 
+of contract, tort or otherwise, arising from, out of or in connection with the mod
+or the use or other dealings in the mod.

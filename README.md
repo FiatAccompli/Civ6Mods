@@ -8,8 +8,7 @@ A collection of civ 6 mods.
 * [Unit Attrition](UnitAttritiion) - Units take damage every turn when they are not sufficiently close to a friendly city.  This significantly slows down the rate of map exploration.
 
 ### UI Mods
-* [Global Hotkeys](GlobalKeyBindings) - Adds key bindings to control minimap size, volume levels, ambient time of day and toggle quick movement/combat.
-* [Keyboard Navigation and Unit Action Hotkeys](MoreKeyBindings) - Allows you to navigate the world map with the keyboard and adds keyboard bindings for all unit actions.
+* [Play the Keyboard: Global Hotkeys](PlayTheKeyboard_GlobalHotkeys) - Adds key bindings to control minimap size, volume levels, ambient time of day and toggle quick movement/combat.
 * [Map Tacks +](MapTacksPlus) - It's map tacks, but with even more icon options.  What a plus!
 
 ### Modding mods
