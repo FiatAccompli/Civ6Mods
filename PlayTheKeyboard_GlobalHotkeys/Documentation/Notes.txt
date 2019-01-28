@@ -1,0 +1,5 @@
+PlayTheKeyboardGlobalHotkeys image:
+Photo of my keyboard and in-game screenshot
+
+StatusWindow image:
+Portion of in-game screenshot.
