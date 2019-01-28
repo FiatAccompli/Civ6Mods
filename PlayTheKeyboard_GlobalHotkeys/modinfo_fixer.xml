@@ -4,71 +4,39 @@
   <xsl:output method="xml" encoding="utf-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   
+  <xsl:include href="../modinfo_fixer_base.xml"/>
+
   <xsl:template match="/Mod/Properties">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
     <LocalizedText>
-      <Text id="LOC_GLOBAL_KEY_BINDINGS_MOD_NAME">
-        <en_US>Play the Keyboard: Global Hotkeys</en_US>
-        <de_DE>Play the Keyboard: Global Hotkeys</de_DE>
-        <es_ES>Play the Keyboard: Global Hotkeys</es_ES>
-        <fr_FR>Play the Keyboard: Global Hotkeys</fr_FR>
-        <it_IT>Play the Keyboard: Global Hotkeys</it_IT>
-        <pl_PL>Play the Keyboard: Global Hotkeys</pl_PL>
-        <pt_BR>Play the Keyboard: Global Hotkeys</pt_BR>
-        <ru_RU>Play the Keyboard: Global Hotkeys</ru_RU>
-        <ja_JP>Play the Keyboard: Global Hotkeys</ja_JP>
-        <ko_KR>Play the Keyboard: Global Hotkeys</ko_KR>
-        <zh_Hans_CN>Play the Keyboard: Global Hotkeys</zh_Hans_CN>
-        <zh_Hant_HK>Play the Keyboard: Global Hotkeys</zh_Hant_HK>
-      </Text>
-      <Text id="LOC_GLOBAL_KEY_BINDINGS_TEASER">
-        <en_US>Adds keybindings to quickly control global settings.</en_US>
-        <de_DE>Adds keybindings to quickly control global settings.</de_DE>
-        <es_ES>Adds keybindings to quickly control global settings.</es_ES>
-        <fr_FR>Adds keybindings to quickly control global settings.</fr_FR>
-        <it_IT>Adds keybindings to quickly control global settings.</it_IT>
-        <pl_PL>Adds keybindings to quickly control global settings.</pl_PL>
-        <pt_BR>Adds keybindings to quickly control global settings.</pt_BR>
-        <ru_RU>Adds keybindings to quickly control global settings.</ru_RU>
-        <ja_JP>Adds keybindings to quickly control global settings.</ja_JP>
-        <ko_KR>Adds keybindings to quickly control global settings.</ko_KR>
-        <zh_Hans_CN>Adds keybindings to quickly control global settings.</zh_Hans_CN>
-        <zh_Hant_HK>Adds keybindings to quickly control global settings.</zh_Hant_HK>
-      </Text>
-      <Text id="LOC_GLOBAL_KEY_BINDINGS_DESCRIPTION">
-        <en_US>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</en_US>
-        <de_DE>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</de_DE>
-        <es_ES>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</es_ES>
-        <fr_FR>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</fr_FR>
-        <it_IT>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</it_IT>
-        <pl_PL>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</pl_PL>
-        <pt_BR>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</pt_BR>
-        <ru_RU>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</ru_RU>
-        <ja_JP>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</ja_JP>
-        <ko_KR>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</ko_KR>
-        <zh_Hans_CN>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</zh_Hans_CN>
-        <zh_Hant_HK>Adds keybindings to[NEWLINE][ICON_BULLET]Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)[NEWLINE][ICON_BULLET]Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)[NEWLINE][ICON_BULLET]Control ambient in-game time of day (Ctrl+Home/Ctrl+End)[NEWLINE][ICON_BULLET]Increase/decrease minimap size (Shift+Home/Shift+End)[NEWLINE][ICON_BULLET]Toggle city banners (Alt+W)[NEWLINE][ICON_BULLET]Toggle map tacks (Alt+E)[NEWLINE][ICON_BULLET]Toggle unit icons (Alt+R)[NEWLINE][ICON_BULLET]Toggle HUD UI (screenshot mode) (Alt+T)</zh_Hant_HK>
-      </Text>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_GLOBAL_KEY_BINDINGS_MOD_NAME</xsl:with-param>
+        <xsl:with-param name="is_mod_name" select="true()"/>
+        <xsl:with-param name="base">Play the Keyboard: Global Hotkeys</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_GLOBAL_KEY_BINDINGS_TEASER</xsl:with-param>
+        <xsl:with-param name="base">Adds keybindings to quickly control global settings.</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="GenerateText">
+        <xsl:with-param name="identifier">LOC_GLOBAL_KEY_BINDINGS_DESCRIPTION</xsl:with-param>
+        <xsl:with-param name="base">Adds keybindings to
+* Toggle quick unit combat (Ctrl+Alt+Q) and movement (Alt+Q)
+* Increase/decrease/mute volume (Page Up/Page Down/Ctrl+Page Down)
+* Control ambient in-game time of day (Ctrl+Home/Ctrl+End)
+* Increase/decrease minimap size (Shift+Home/Shift+End)
+* Toggle city banners (Alt+W)
+* Toggle map tacks (Alt+E)
+* Toggle unit icons (Alt+R)
+* Toggle HUD UI (screenshot mode) (Alt+T)</xsl:with-param>
+      </xsl:call-template>
     </LocalizedText>
-  </xsl:template>
-
-  <!-- Inserted by the above block, so remove it if it's already there (i.e. this transform is applied twice). -->
-  <xsl:template match="/Mod/LocalizedText"/>
-
-  <!-- Modbuddy writes priority (lowercase) attribute, but the game looks for Priority (uppercase).  
-       Because I guess even the most cursory testing is unnecessary for Firaxis. -->
-  <xsl:template match="@priority">
-    <xsl:attribute name="Priority">
-      <xsl:value-of select="."/>
-    </xsl:attribute>
-  </xsl:template>
-
-  <!--Identity template, provides default behavior that copies all content into the output -->
-  <xsl:template match="@*|node()">
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:copy>
+    <xsl:if test="$release">
+      <Dependencies>
+        <Mod id="1cb1beaf-0428-4aad-b11d-e3168429c071" title="Settings Manager" />
+      </Dependencies>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
