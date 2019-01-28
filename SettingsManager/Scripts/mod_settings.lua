@@ -221,6 +221,7 @@ local KeyBindingSetting = {
   -- Whether that's the case or not, these translations exist, so I'll use them.)
   -- This list also serves to define the valid keys that can be bound.
   KeyLocalizations = { 
+    [-1] = "LOC_MOD_SETTINGS_MANAGER_UNBOUND_KEY_BINDING",
     [Keys["0"]] = "LOC_OPTIONS_KEY_0",
     [Keys["1"]] = "LOC_OPTIONS_KEY_1",
     [Keys["2"]] = "LOC_OPTIONS_KEY_2",
@@ -403,6 +404,8 @@ function KeyBindingSetting.MakeValue(keyCode:number, modifiers:table)
   end
 end
 
+KeyBindingSetting.UNBOUND = KeyBindingSetting.MakeValue(-1);
+
 function KeyBindingSetting.ValueToString(value:table)
   return (value.IsShift and (Locale.Lookup("LOC_OPTIONS_KEY_SHIFT") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
          (value.IsControl and (Locale.Lookup("LOC_OPTIONS_KEY_CONTROL") .. Locale.Lookup("LOC_MOD_SETTINGS_MANAGER_KEY_BINDING_MODIFIER_COMBINER")) or "" ) ..
@@ -422,7 +425,7 @@ end
 
 function KeyBindingSetting:ParseValue(value:string)
   if value == "" then 
-    return nil;
+    return KeyBindingSetting.UNBOUND;
   end
 
   return KeyBindingSetting.MakeValue(tonumber(value:sub(5,-1)) or Keys[value:sub(5,-1)], 

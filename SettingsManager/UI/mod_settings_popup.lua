@@ -212,7 +212,7 @@ end
 
 function ClearActiveKeyBinding()
   if (activeKeyBindingUIHandler) then 
-    activeKeyBindingUIHandler:SetBinding(nil);
+    activeKeyBindingUIHandler:SetBinding(ModSettings.KeyBinding.UNBOUND);
 	end
   StopActiveKeyBinding();	
 end

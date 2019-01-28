@@ -40,6 +40,10 @@
       <Text>Some key bindings are bound to multiple actions. They may not work as intended!</Text>
     </Row>
 
+    <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_UNBOUND_KEY_BINDING">
+      <Text>&lt;Unbound&gt;</Text>
+    </Row>
+
     <Row Language="en_US" Tag="LOC_MOD_SETTINGS_MANAGER_SETTING_LABEL_FORMATTER">
       <Text>{1}:</Text>
     </Row>

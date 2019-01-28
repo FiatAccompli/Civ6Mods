@@ -207,7 +207,7 @@ setting = ModSettings.KeyBinding:new(defaultValue, categoryName, settingName, to
   
 The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsControl`, and `IsAlt`.
     
-##### Methods
+##### Members
 * `ModSettings.KeyBinding.MakeValue(keyCode, modifiers)` - 
   A static method to construct a data table to be used as the value of a key binding setting. 
   `keyCode` should be one of the values from the `Keys` table. (Note that not all keys in the `Keys`
@@ -216,6 +216,8 @@ The `Value` of the setting is a table with members `KeyCode`, `IsShift`, `IsCont
 * `ModSettings.KeyBinding.ValueToString(value)` - 
   A static method to turn a value from `MakeValue` into a nicely localized string suitable for 
   displaying to the user.
+* `ModSettings.KeyBinding.UNBOUND` - Constant to use if you don't want to bind a key by default.
+  Never matches input.
 * `KeyBindingHelper.InputMatches(value, input, options)` - From `mod_settings_key_binding_helper.lua`. 
   Returns true if `input` is a key event that matches the `value` of a key binding.
   * `value` is the `.Value` of a keybind setting.
