@@ -279,7 +279,7 @@ function ToggleControlVisibility(control:table, additionalControls:table)
   end
 end
 
-function OnInputHandler(input)
+function OnInputHandler(input:table)
   if KeyBindingHelper.InputMatches(volumeIncreaseKeyBinding(), input, volumeChangeKeyDownMatchOptions) then
     volumeToDeMute = -1;
     local volume = UpdateVolume("Master Volume", 1, Controls.MasterVolumeBar);
@@ -439,6 +439,10 @@ function Initialize()
   -- day length.  Firaxis must have been involved at some point.
   Events.UserOptionChanged.Add(UpdateUI);
   ContextPtr:SetInputHandler(OnInputHandler, true);
+
+  -- Addin UIs are hidden by default with the Gathering Storm update.  Need to be "visible" to 
+  -- recieve input events.
+  ContextPtr:SetHide(false);
   UpdateUI();
 end
 

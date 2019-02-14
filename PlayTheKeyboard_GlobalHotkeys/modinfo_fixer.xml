@@ -6,9 +6,19 @@
   
   <xsl:include href="../modinfo_fixer_base.xml"/>
 
+  <xsl:template match="/Mod/@id">
+    <xsl:attribute name="id">
+      <xsl:choose>
+        <xsl:when test="$release">f1709152-9bbe-43e1-b9f0-82171e3aeca7</xsl:when>
+        <xsl:otherwise>a6741a3c-d15d-4d13-ba38-fb2d0293f88a</xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+  </xsl:template>
+
   <xsl:template match="/Mod/Properties">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
+      <xsl:call-template name="AddCompatibleVersions"/>
     </xsl:copy>
     <LocalizedText>
       <xsl:call-template name="GenerateText">
