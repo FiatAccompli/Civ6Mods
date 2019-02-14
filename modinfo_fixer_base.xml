@@ -12,6 +12,13 @@
       <xsl:value-of select="."/>
     </xsl:attribute>
   </xsl:template>
+  
+  <xsl:template name="AddCompatibleVersions">
+    <CompatibleVersions>2.0</CompatibleVersions>
+  </xsl:template>
+  
+  <xsl:template match="/Mod/Properties/CompatibleVersions">
+  </xsl:template>
 
   <!--Identity template, provides default behavior that copies all content into the output -->
   <xsl:template match="@*|node()">
