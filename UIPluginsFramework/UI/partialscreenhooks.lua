@@ -1,8 +1,10 @@
 -- ===========================================================================
 --	HUD Partial Screen Hooks
+--	Hooks to buttons in the upper right of the main screen HUD.
 -- ===========================================================================
 include("GameCapabilities");
 include("InstanceManager");
+
 
 -- ===========================================================================
 --	Action Hotkeys
@@ -14,12 +16,18 @@ local m_ToggleTradeId	:number = Input.GetActionId("ToggleTradeRoutes");
 
 
 -- ===========================================================================
+--	GLOBALS
+-- ===========================================================================
+
+
+-- ===========================================================================
 --	CONSTANTS
 -- ===========================================================================
 local MIN_BG_SIZE				: number = 226;		-- Minimum size for the non-tiling component of the launch container
 local BG_PADDING				: number = 116;		-- Additional pad the background PAST the size of the hooks
 local BG_TILE_PADDING			: number = 20;		-- Inner padding to give the tile of the hook bar so that it does not show behind the hook bar itself
 local BG_TOTAL_OFFSCREEN_OFFSET	: number = -126;	-- Amount of negative offset to totally remove the partial hook bar from the screen.  Used so that we can add back the size of the hook stack to the bar when we have < 2 hooks visible
+
 
 -- ===========================================================================
 --	VARIABLES
@@ -28,10 +36,15 @@ local m_isEspionageUnlocked		:boolean = false;
 local m_isTradeRoutesUnlocked	:boolean = false;
 local m_isCityStatesUnlocked	:boolean = false;
 local m_isDebug					:boolean = false;
-
 local m_ScreenHookIM:table = InstanceManager:new("ScreenHookInstance", "ScreenHookStack", Controls.ButtonStack);
+local m_kPartialScreens			:table = {}	-- Screens that are considered "partial" and mutually exclusive in showing.
 
 local m_extraButtonsInfo:table = {};
+
+-- ===========================================================================
+--	FUNCITONS
+-- ===========================================================================
+
 
 -- ===========================================================================
 --	Checks all the screens or if a screen name is checked in, will check that
@@ -40,11 +53,12 @@ local m_extraButtonsInfo:table = {};
 -- ===========================================================================
 function IsPartialScreenOpen( optionalScreenName:string )
   if optionalScreenName then
-		local pContextControl :table = ContextPtr:LookUpControl("/InGame/" .. optionalScreenName );
+		local pContextControl :table = ContextPtr:LookUpControl("/InGame/" .. contextName );		if pContextControl == nil then
+			pContextControl = ContextPtr:LookUpControl("/InGame/AdditionalUserInterfaces/" .. contextName );	-- Cascade check
+		end
 		if pContextControl == nil then
 			UI.DataError("Cannot determine if partial screen \"/InGame/"..contextName.."\" is visible because it wasn't found at that path.");
-		else 
-      return not pContextControl:IsHidden();
+			return true;
 		end
 	end
   -- Since we don't track additional screens (or even whether those actually behave in the 
@@ -66,10 +80,25 @@ end
 -- ===========================================================================
 --	UI Control Callback
 -- ===========================================================================
+function OnToggleReportsList()
+	if IsPartialScreenOpen("ReportsList") then
+		LuaEvents.PartialScreenHooks_CloseReportsList();
+	else		
+		if IsPartialScreenOpen() then				-- Only play open sound if no partial screen is open.
+			LuaEvents.PartialScreenHooks_CloseAllExcept("ReportsList");
+		end		
+		LuaEvents.PartialScreenHooks_OpenReportsList();
+	end	
+end
+
+-- ===========================================================================
+--	UI Control Callback
+-- ===========================================================================
 function OnToggleEspionage()		
 	if IsPartialScreenOpen("EspionageOverview") then
 		LuaEvents.PartialScreenHooks_CloseEspionage();
 	else		
+		LuaEvents.MinimapPanel_CloseAllLenses();
 		if IsPartialScreenOpen() then				-- Only play open sound if no partial screen is open.
 			LuaEvents.PartialScreenHooks_CloseAllExcept("EspionageOverview");
 		end		
@@ -84,6 +113,7 @@ function OnToggleCityStates()
 	if IsPartialScreenOpen("CityStates") then
 		LuaEvents.PartialScreenHooks_CloseCityStates();
 	else		
+		LuaEvents.MinimapPanel_CloseAllLenses();
 		if IsPartialScreenOpen() then				-- Only play open sound if no partial screen is open.
 			LuaEvents.PartialScreenHooks_CloseAllExcept("CityStates");
 		end		
@@ -98,6 +128,7 @@ function OnToggleTradeOverview()
 	if IsPartialScreenOpen("TradeOverview") then
 		LuaEvents.PartialScreenHooks_CloseTradeOverview();
 	else		
+		LuaEvents.MinimapPanel_CloseAllLenses();
 		if IsPartialScreenOpen() then				-- Only play open sound if no partial screen is open.
 			LuaEvents.PartialScreenHooks_CloseAllExcept("TradeOverview");
 		end		
@@ -112,6 +143,7 @@ function OnToggleWorldRankings()
 	if IsPartialScreenOpen("WorldRankings") then
 		LuaEvents.PartialScreenHooks_CloseWorldRankings();
 	else		
+		LuaEvents.MinimapPanel_CloseAllLenses();
 		if IsPartialScreenOpen() then				-- Only play open sound if no partial screen is open.
 			LuaEvents.PartialScreenHooks_CloseAllExcept("WorldRankings");
 		end		
@@ -127,12 +159,16 @@ function OnOpenDiplomacy()
 end
 
 -- ===========================================================================
+--	Add content and size.
 -- ===========================================================================
-function Resize()
-	-- Reset screen hooks instances
-	m_ScreenHookIM:ResetInstances();
+function Realize()
+
+	m_ScreenHookIM:ResetInstances();	-- Reset screen hooks instances
+	m_kPartialScreens = {};				-- Fresh table
 
 	AddScreenHooks();
+
+	table.insert(m_kPartialScreens, "WorldRankings");	-- Staticly definted in XML
 
 	-- The Launch Bar width should accomodate how many hooks are currently in the stack.  
 	Controls.ButtonStack:CalculateSize();
@@ -146,68 +182,105 @@ function Resize()
 	end
 	Controls.LaunchBackingDropShadow:SetSizeX(Controls.ButtonStack:GetSizeX() + BG_TILE_PADDING);
 	Controls.LaunchBackingTile:SetSizeX(Controls.ButtonStack:GetSizeX() - BG_TILE_PADDING);
-	LuaEvents.PartialScreenHooks_Resize();
+
+	LuaEvents.PartialScreenHooks_Realize();	-- Signal resize occurred.
 end
 
 -- ===========================================================================
+--	Add any dynamic screen hooks which get displayed in the order that they are added.
+--	Most every screen hooks are dynamic except those that needed explict 
+--	tutorial tags within them.
+-- ===========================================================================
 function AddScreenHooks()
-	if (m_isCityStatesUnlocked and HasCapability("CAPABILITY_CITY_STATES_VIEW")) then
-		AddScreenHook("LaunchBar_Hook_CityStates", "LOC_PARTIALSCREEN_CITYSTATES_TOOLTIP", function() OnToggleCityStates(); end);
-	end
-	if (m_isTradeRoutesUnlocked and HasCapability("CAPABILITY_TRADE_VIEW")) then
-		AddScreenHook("LaunchBar_Hook_Trade", "LOC_PARTIALSCREEN_TRADEROUTES_TOOLTIP", function() OnToggleTradeOverview(); end);
-	end
-	if (m_isEspionageUnlocked and HasCapability("CAPABILITY_ESPIONAGE_VIEW")) then
-		AddScreenHook("LaunchBar_Hook_Espionage", "LOC_PARTIALSCREEN_ESPIONAGE_TOOLTIP", function() OnToggleEspionage(); end);
-	end
+	AddCityStateHook();
+	AddTradeHook();
+	AddEspionageHook();
+	AddReportsHook();
+
   for id, buttonInfo in pairs(m_extraButtonsInfo) do 
     AddAdditionalScreenHook(id, buttonInfo);
   end
 end
 
--- ===========================================================================   
+-- ===========================================================================
+function AddCityStateHook()
+	if (m_isCityStatesUnlocked and HasCapability("CAPABILITY_CITY_STATES_VIEW")) then
+		AddScreenHook("CityStates", "LaunchBar_Hook_CityStates", "LOC_PARTIALSCREEN_CITYSTATES_TOOLTIP", OnToggleCityStates );
+	end
+end
+
+-- ===========================================================================
+function AddTradeHook()
+	if (m_isTradeRoutesUnlocked and HasCapability("CAPABILITY_TRADE_VIEW")) then
+		AddScreenHook("TradeOverview", "LaunchBar_Hook_Trade", "LOC_PARTIALSCREEN_TRADEROUTES_TOOLTIP", OnToggleTradeOverview );
+	end
+end
+
+-- ===========================================================================
+function AddEspionageHook()
+	if (m_isEspionageUnlocked and HasCapability("CAPABILITY_ESPIONAGE_VIEW")) then
+		AddScreenHook("EspionageOverview", "LaunchBar_Hook_Espionage", "LOC_PARTIALSCREEN_ESPIONAGE_TOOLTIP", OnToggleEspionage );
+	end
+end
+
+-- ===========================================================================
+function AddReportsHook()
+	if ( HasCapability("CAPABILITY_REPORTS_LIST") ) then
+		AddScreenHook("ReportsList", "LaunchBar_Hook_Reports", "LOC_PARTIALSCREEN_REPORTS_TOOLTIP", OnToggleReportsList );
+	end
+end
+
+-- ===========================================================================
+--	Add a button to the partial screen hooks.
+--
+--	contextName,	Name of the context which will be shown.
+--	texture,		Texture to show on the button.
+--	tooltip,		Tooltip when mouse hovered (or 2nd finger touch)
+--	callback,		The function executed when activated.
+-- ===========================================================================
+function AddScreenHook( contextName:string, texture:string, tooltip:string, callback:ifunction)
+	
+	if m_kPartialScreens[contextName] == nil then
+		table.insert(m_kPartialScreens, contextName);
+	else
+		UI.DataError("Attempt to add a screen hook '"..contextName.."' which already exists!");
+		return;
+	end
+	
+	local screenHookInst:table = m_ScreenHookIM:GetInstance();
+	screenHookInst.ScreenHookImage:SetTexture(texture);
+	screenHookInst.ScreenHookButton:SetToolTipString(Locale.Lookup(tooltip));
+	screenHookInst.ScreenHookButton:RegisterCallback( Mouse.eLClick, callback );
+	screenHookInst.ScreenHookButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
+end
+
 function AddAdditionalScreenHook(id:string, buttonInfo:table)
   AddScreenHook(buttonInfo.Texture, buttonInfo.Tooltip, function() OnAdditionalScreenHookClicked(id) end, buttonInfo.Icon, buttonInfo.Color);
 end
 
 -- ===========================================================================
-function AddScreenHook(texture:string, tooltip:string, callback:ifunction, icon:string, color:number)
-	local screenHookInst:table = m_ScreenHookIM:GetInstance();
-  if icon then 
-    screenHookInst.ScreenHookImage:SetIcon(icon);
-  else
-	  screenHookInst.ScreenHookImage:SetTexture(texture);
-  end
-  if color then
-    screenHookInst.ScreenHookImage:SetColor(color);
-  end
-	screenHookInst.ScreenHookButton:LocalizeAndSetToolTip(tooltip or "");
-	screenHookInst.ScreenHookButton:RegisterCallback( Mouse.eLClick, callback );
-	screenHookInst.ScreenHookButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
-end
-
+--	Event
+--	Capture the meet civ event to see if we have encountered a city-state
 -- ===========================================================================
---	Refresh Data and View
--- ===========================================================================
--- Capture the meet civ event to see if we have encountered a city-state
 function OnDiplomacyMeet(player1ID:number, player2ID:number)
 	if(not m_isCityStatesUnlocked) then
-		local localPlayerID:number = Game.GetLocalPlayer();
+		local LocalPlayerID:number = Game.GetLocalPlayer();
 		-- Have a local player?
-		if(localPlayerID ~= -1) then
+		if(LocalPlayerID ~= -1) then
 			-- Was the local player involved, and was it a minor civ that was met?
 			local metPlayer = Players[player2ID];
-			if (player1ID == localPlayerID and metPlayer:IsMinor()) then
+			if (player1ID == LocalPlayerID and metPlayer:IsMinor()) then
 				m_isCityStatesUnlocked = true;
-				Resize();
+				Realize();
 			end
 		end
 	end
 end
 
-function CheckTradeCapacity(localPlayer)
+-- ===========================================================================
+function CheckTradeCapacity( pLocalPlayer:table )
 	if (not m_isTradeRoutesUnlocked) then
-		local playerTrade	:table	= localPlayer:GetTrade();
+		local playerTrade	:table	= pLocalPlayer:GetTrade();
 		local routesCapacity:number = playerTrade:GetOutgoingRouteCapacity();
 		if (routesCapacity > 0) then
 			m_isTradeRoutesUnlocked = true;
@@ -215,9 +288,10 @@ function CheckTradeCapacity(localPlayer)
 	end
 end
 
-function CheckSpyCapacity(localPlayer)
+-- ===========================================================================
+function CheckSpyCapacity( pLocalPlayer:table )
 	if (not m_isEspionageUnlocked) then
-		local playerDiplo	:table = localPlayer:GetDiplomacy();
+		local playerDiplo	:table = pLocalPlayer:GetDiplomacy();
 		local spyCapacity:number = playerDiplo:GetSpyCapacity();
 		if (spyCapacity > 0) then
 			m_isEspionageUnlocked = true;
@@ -225,53 +299,61 @@ function CheckSpyCapacity(localPlayer)
 	end
 end
 
+-- ===========================================================================
+--	Event
 -- Capture spies or traders becoming unlocked
+-- ===========================================================================
 function OnCivicCompleted( player:number, civic:number, isCanceled:boolean)
 	if player == Game.GetLocalPlayer() and (not m_isEspionageUnlocked or not m_isTradeRoutesUnlocked) then
-		local localPlayer = Players[player];
-		if (localPlayer == nil) then
+		local pLocalPlayer :table = Players[player];
+		if (pLocalPlayer == nil) then
 			return;
 		end
-		CheckTradeCapacity(localPlayer);
-		CheckSpyCapacity(localPlayer);
+		CheckTradeCapacity(pLocalPlayer);
+		CheckSpyCapacity(pLocalPlayer);
 
-		Resize();
+		Realize();
 	end
 end
 
 -- ===========================================================================
+--	Event
+-- ===========================================================================
 function OnResearchCompleted( player:number, tech:number )
 	if player == Game.GetLocalPlayer() and not m_isTradeRoutesUnlocked then
-		local localPlayer = Players[player];
-		if localPlayer then
+		local pLocalPlayer = Players[player];
+		if pLocalPlayer then
 			return;
 		end
-		CheckTradeCapacity(localPlayer);
+		CheckTradeCapacity(pLocalPlayer);
 
-		Resize();
+		Realize();
 	end
 end
 
--- Check trade, spy, and partial screen hooks OnTurnBegin
+-- ===========================================================================
+--	Event
+--	Check trade, spy, and partial screen hooks
+-- ===========================================================================
 function OnTurnBegin()
 	local ePlayer:number = Game.GetLocalPlayer();
 	if ePlayer == -1 then
 		return;
 	end
-	localPlayer = Players[ePlayer];  
+	pLocalPlayer = Players[ePlayer];  
 
-	CheckTradeCapacity(localPlayer);
-	CheckSpyCapacity(localPlayer);
-	CheckCityStatesUnlocked(localPlayer);
+	CheckTradeCapacity(pLocalPlayer);
+	CheckSpyCapacity(pLocalPlayer);
+	CheckCityStatesUnlocked(pLocalPlayer);
 
-	Resize();
+	Realize();
 end
 
 -- ===========================================================================
-function CheckCityStatesUnlocked(localPlayer:table)
+function CheckCityStatesUnlocked( pLocalPlayer:table )
 	--	Check to see if the player has met any city-states
 	if (not m_isCityStatesUnlocked) then
-		local localDiplomacy:table = localPlayer:GetDiplomacy();
+		local localDiplomacy:table = pLocalPlayer:GetDiplomacy();
 		local aPlayers = PlayerManager.GetAliveMinors();
 		for _, pPlayer in ipairs(aPlayers) do
 			if (pPlayer:IsMinor() and localDiplomacy:HasMet(pPlayer:GetID())) then
@@ -296,22 +378,27 @@ end
 
 -- ===========================================================================
 --	Input Hotkey Event
+--	actionId,	A number from the engine which represents a hotkey pressed.
 -- ===========================================================================
-function OnInputActionTriggered( actionId )
-	if m_isCityStatesUnlocked and actionId == m_ToggleCSId then
+function OnInputActionTriggered( actionId:number )
+
+	if actionId == m_ToggleRankingsId and HasCapability("CAPABILITY_WORLD_RANKINGS") then
+        OnToggleWorldRankings();
+        UI.PlaySound("Play_UI_Click");
+	end
+	
+	if m_isCityStatesUnlocked and actionId == m_ToggleCSId and HasCapability("CAPABILITY_CITY_STATES_VIEW") then
         OnToggleCityStates();
         UI.PlaySound("Play_UI_Click");
 	end
+
 	if m_isEspionageUnlocked and actionId == m_ToggleEspId and HasCapability("CAPABILITY_ESPIONAGE_VIEW") then
         if UI.QueryGlobalParameterInt("DISABLE_ESPIONAGE_HOTKEY") ~= 1 then
             OnToggleEspionage();
             UI.PlaySound("Play_UI_Click");
         end
 	end
-	if actionId == m_ToggleRankingsId and HasCapability("CAPABILITY_WORLD_RANKINGS") then
-        OnToggleWorldRankings();
-        UI.PlaySound("Play_UI_Click");
-	end
+
 	if m_isTradeRoutesUnlocked and actionId == m_ToggleTradeId and HasCapability("CAPABILITY_TRADE_VIEW") then
         OnToggleTradeOverview();
         UI.PlaySound("Play_UI_Click");
@@ -319,6 +406,7 @@ function OnInputActionTriggered( actionId )
 end
 
 -- ===========================================================================
+--	Event
 --	Reset the hooks that are visible for hotseat
 -- ===========================================================================
 function OnLocalPlayerChanged()
@@ -333,21 +421,25 @@ end
 --	Tutorial system is requesting any partial screens open, to be closed.
 -- ===========================================================================
 function OnTutorialCloseAll()
-	if IsPartialScreenOpen("EspionageOverview") then	LuaEvents.PartialScreenHooks_CloseEspionage(); end
-	if IsPartialScreenOpen("CityStates") then		LuaEvents.PartialScreenHooks_CloseCityStates(); end
-	if IsPartialScreenOpen("TradeOverview") then		LuaEvents.PartialScreenHooks_CloseTradeOverview(); end
-	if IsPartialScreenOpen("WorldRankings") then		LuaEvents.PartialScreenHooks_CloseWorldRankings(); end
+	LuaEvents.PartialScreenHooks_CloseAllExcept("_AllTheThings");
 end
+
 
 -- ===========================================================================
 function OnAddScreenHook(buttonInfo:table)
   m_extraButtonsInfo[buttonInfo.Id] = buttonInfo;
-  Resize();
+  Realize();
 end
 
+--	Any initial state functions called here; may be "added" or "replaced" by
+--	a MOD (such as an expansion).
+-- ===========================================================================
+function LateInitialize()
+	OnTurnBegin();
+end
 -- ===========================================================================
 function OnInit(isReload:boolean)
-  OnTurnBegin();
+  LateInitialize();
   if isReload then
     TriggerCustomButtonAddition();
   end
@@ -358,14 +450,22 @@ function TriggerCustomButtonAddition()
 end
 
 -- ===========================================================================
+--	Called after all contexts (this and replacement contexts) are loaded.
+-- ===========================================================================
+function OnInit( isReload:boolean )
+	LateInitialize();
+end
+
+-- ===========================================================================
 function Initialize()
 
+	ContextPtr:SetInitHandler( OnInit );
 	Controls.WorldRankingsButton:RegisterCallback( Mouse.eLClick,	OnToggleWorldRankings );
 	Controls.WorldRankingsButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 
 	Events.CivicCompleted.Add(OnCivicCompleted);
 	Events.ResearchCompleted.Add(OnResearchCompleted);
-	Events.DiplomacyMeet.Add( function() OnDiplomacyMeet(); end);
+	Events.DiplomacyMeet.Add( OnDiplomacyMeet );
 	Events.InputActionTriggered.Add( OnInputActionTriggered );
 	Events.InterfaceModeChanged.Add( OnInterfaceModeChanged );
 	Events.LocalPlayerChanged.Add( OnLocalPlayerChanged );

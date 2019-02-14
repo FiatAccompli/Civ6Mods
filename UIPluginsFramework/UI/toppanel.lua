@@ -5,18 +5,22 @@ include( "InstanceManager" );
 include( "SupportFunctions" ); -- Round
 include( "ToolTipHelper_PlayerYields" );
 
+
 -- ===========================================================================
--- Yield handles
+--	CONSTANTS
+-- ===========================================================================
+META_PADDING	= 100;	-- The amount of padding to give the meta area to make enough room for the (+) when there is resource overflow
+FONT_MULTIPLIER	= 11;	-- The amount to multiply times the string length to approximate the width in pixels of the label control
+
+
+-- ===========================================================================
+-- VARIABLES
 -- ===========================================================================
 m_YieldButtonSingleManager = InstanceManager:new( "YieldButton_SingleLabel", "Top", Controls.YieldStack );
 m_YieldButtonDoubleManager = InstanceManager:new( "YieldButton_DoubleLabel", "Top", Controls.YieldStack );
-
--- ===========================================================================
-local m_kResourceIM	:table = InstanceManager:new( "ResourceInstance", "ResourceText", Controls.ResourceStack );
-local META_PADDING		= 100;	-- The amount of padding to give the meta area to make enough room for the (+) when there is resource overflow
-local FONT_MULTIPLIER	= 11;	-- The amount to multiply times the string length to approximate the width in pixels of the label control
+m_kResourceIM				= InstanceManager:new( "ResourceInstance", "ResourceText", Controls.ResourceStack );
 local m_OpenPediaId;
-local m_viewReportsX :number = 0;	-- With of view report button
+
 
 -- ===========================================================================
 -- Yield handles
@@ -27,17 +31,12 @@ local m_GoldYieldButton:table = nil;
 local m_TourismYieldButton:table = nil;
 local m_FaithYieldButton:table = nil;
 
+
 -- ===========================================================================
 --	Game Engine Event
 -- ===========================================================================
-function OnCityInitialized(owner, ID)
-	if owner == Game.GetLocalPlayer() then
-		local player = Players[owner];
-		local pPlayerCities	:table = player:GetCities();
-		if table.count(pPlayerCities) == 1 then			
-			-- Remove?
-			--Controls.YieldStack:SetHide(false);		-- Once the first city is founded, then display the corner.
-		end
+function OnCityInitialized( playerID:number, cityID:number )
+	if playerID == Game.GetLocalPlayer() then
 		RefreshYields();
 	end	
 end
@@ -54,7 +53,7 @@ end
 
 -- ===========================================================================
 function OnMenu()
-    UIManager:QueuePopup( LookUpControl( "/InGame/TopOptionsMenu" ), PopupPriority.Utmost );
+	LuaEvents.InGame_OpenInGameOptionsMenu();
 end
 
 -- ===========================================================================
@@ -88,7 +87,6 @@ end
 
 -- ===========================================================================
 function Resize()
-	--Controls.ViewReports:SetSizeToText(9,9);
 	Controls.Backing:ReprocessAnchoring();
 	Controls.Backing2:ReprocessAnchoring();
 	Controls.RightContents:ReprocessAnchoring();	
@@ -98,7 +96,6 @@ end
 --	Refresh Data and View
 -- ===========================================================================
 function RefreshYields()
-
 	local ePlayer		:number = Game.GetLocalPlayer();
 	local localPlayer	:table= nil;
 	if ePlayer ~= -1 then
@@ -314,7 +311,7 @@ function RefreshResources()
 		local infoStackX		= Controls.StaticInfoStack:GetSizeX();
 		local metaStackX		= Controls.RightContents:GetSizeX();
 		local screenX, _:number = UIManager:GetScreenSizeVal();
-		local maxSize = screenX - yieldStackX - infoStackX - metaStackX - m_viewReportsX - META_PADDING;
+		local maxSize = screenX - yieldStackX - infoStackX - metaStackX - META_PADDING;
 		if (maxSize < 0) then maxSize = 0; end
 		local currSize = 0;
 		local isOverflow = false;
@@ -380,7 +377,6 @@ function OnRefreshTimeTick()
 	Controls.TimeCallback:SetToBeginning();
 	Controls.TimeCallback:Play();
 end
-Controls.TimeCallback:RegisterEndCallback(OnRefreshTimeTick);
 
 -- ===========================================================================
 function RefreshTurnsRemaining()
@@ -498,12 +494,9 @@ function OnLoadGameViewStateDone()
 	RefreshAll();
 end
 
-function OnInputActionTriggered( actionId )
-end
-
 
 -- ===========================================================================
-function Initialize()	
+function LateInitialize()	
 	-- Support for Modded Add-in UI's
 	for _, addin in ipairs(Modding.GetUserInterfaces("InGame_TopPanel")) do
 		print("Loading InGame_TopPanel UI - " .. addin.ContextPath);
@@ -515,17 +508,14 @@ function Initialize()
   Controls.PluginsStack:CalculateSize();
   Controls.PluginsStack:ReprocessAnchoring();
 
-	m_viewReportsX = Controls.ViewReports:GetSizeX();
 	Resize();
 
 	-- UI Callbacks
-	ContextPtr:SetRefreshHandler( OnRefresh );
 	Controls.CivpediaButton:RegisterCallback( Mouse.eLClick, function() LuaEvents.ToggleCivilopedia(); end);
 	Controls.CivpediaButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 	Controls.MenuButton:RegisterCallback( Mouse.eLClick, OnMenu );
 	Controls.MenuButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
-	Controls.ViewReports:RegisterCallback( Mouse.eLClick, OnToggleReportsScreen );
-  Controls.ViewReports:RegisterCallback( Mouse.eMouseEnter,	function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
+	Controls.TimeCallback:RegisterEndCallback( OnRefreshTimeTick );
 
 	-- Game Events
 	Events.AnarchyBegins.Add(				OnRefreshYields );
@@ -560,7 +550,25 @@ function Initialize()
 	Events.UnitRemovedFromMap.Add(			OnRefreshYields );
 	Events.VisualStateRestored.Add(			OnTurnBegin );
 	Events.WMDCountChanged.Add(				OnWMDUpdate );	
-  Events.InputActionTriggered.Add( OnInputActionTriggered );
-	OnTurnBegin();
+	Events.CityProductionChanged.Add(		OnRefreshResources);
+
+	-- If no expansions function are in scope, ready to refresh and show values.
+	if not XP1_LateInitialize then
+		RefreshYields();
+  end
+end
+
+
+-- ===========================================================================
+function OnInit( isReload:boolean )
+	LateInitialize();
+end
+
+
+-- ===========================================================================
+function Initialize()	
+	-- UI Callbacks	
+	ContextPtr:SetInitHandler( OnInit );	
+	ContextPtr:SetRefreshHandler( OnRefresh );
 end
 Initialize();
