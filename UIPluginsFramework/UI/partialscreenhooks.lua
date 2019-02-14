@@ -53,12 +53,14 @@ local m_extraButtonsInfo:table = {};
 -- ===========================================================================
 function IsPartialScreenOpen( optionalScreenName:string )
   if optionalScreenName then
-		local pContextControl :table = ContextPtr:LookUpControl("/InGame/" .. contextName );		if pContextControl == nil then
+		local pContextControl :table = ContextPtr:LookUpControl("/InGame/" .. optionalScreenName );
+    if pContextControl == nil then
 			pContextControl = ContextPtr:LookUpControl("/InGame/AdditionalUserInterfaces/" .. contextName );	-- Cascade check
 		end
 		if pContextControl == nil then
 			UI.DataError("Cannot determine if partial screen \"/InGame/"..contextName.."\" is visible because it wasn't found at that path.");
-			return true;
+		else 
+      return not pContextControl:IsHidden();
 		end
 	end
   -- Since we don't track additional screens (or even whether those actually behave in the 
@@ -142,7 +144,7 @@ end
 function OnToggleWorldRankings()
 	if IsPartialScreenOpen("WorldRankings") then
 		LuaEvents.PartialScreenHooks_CloseWorldRankings();
-	else		
+	else
 		LuaEvents.MinimapPanel_CloseAllLenses();
 		if IsPartialScreenOpen() then				-- Only play open sound if no partial screen is open.
 			LuaEvents.PartialScreenHooks_CloseAllExcept("WorldRankings");
@@ -197,6 +199,10 @@ function AddScreenHooks()
 	AddEspionageHook();
 	AddReportsHook();
 
+  AddCustomButtons();
+end
+
+function AddCustomButtons()
   for id, buttonInfo in pairs(m_extraButtonsInfo) do 
     AddAdditionalScreenHook(id, buttonInfo);
   end
@@ -238,7 +244,7 @@ end
 --	tooltip,		Tooltip when mouse hovered (or 2nd finger touch)
 --	callback,		The function executed when activated.
 -- ===========================================================================
-function AddScreenHook( contextName:string, texture:string, tooltip:string, callback:ifunction)
+function AddScreenHook( contextName:string, texture:string, tooltip:string, callback:ifunction, icon:string, color:number)
 	
 	if m_kPartialScreens[contextName] == nil then
 		table.insert(m_kPartialScreens, contextName);
@@ -248,14 +254,21 @@ function AddScreenHook( contextName:string, texture:string, tooltip:string, call
 	end
 	
 	local screenHookInst:table = m_ScreenHookIM:GetInstance();
-	screenHookInst.ScreenHookImage:SetTexture(texture);
-	screenHookInst.ScreenHookButton:SetToolTipString(Locale.Lookup(tooltip));
+  if icon then 
+    screenHookInst.ScreenHookImage:SetIcon(icon);
+  else
+    screenHookInst.ScreenHookImage:SetTexture(texture);
+  end
+  if color then
+    screenHookInst.ScreenHookImage:SetColor(color);
+  end
+	screenHookInst.ScreenHookButton:LocalizeAndSetToolTip(tooltip or "");
 	screenHookInst.ScreenHookButton:RegisterCallback( Mouse.eLClick, callback );
 	screenHookInst.ScreenHookButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 end
 
 function AddAdditionalScreenHook(id:string, buttonInfo:table)
-  AddScreenHook(buttonInfo.Texture, buttonInfo.Tooltip, function() OnAdditionalScreenHookClicked(id) end, buttonInfo.Icon, buttonInfo.Color);
+  AddScreenHook(id, buttonInfo.Texture, buttonInfo.Tooltip, function() OnAdditionalScreenHookClicked(id) end, buttonInfo.Icon, buttonInfo.Color);
 end
 
 -- ===========================================================================
@@ -436,13 +449,6 @@ end
 -- ===========================================================================
 function LateInitialize()
 	OnTurnBegin();
-end
--- ===========================================================================
-function OnInit(isReload:boolean)
-  LateInitialize();
-  if isReload then
-    TriggerCustomButtonAddition();
-  end
 end
 
 function TriggerCustomButtonAddition()
@@ -452,8 +458,11 @@ end
 -- ===========================================================================
 --	Called after all contexts (this and replacement contexts) are loaded.
 -- ===========================================================================
-function OnInit( isReload:boolean )
-	LateInitialize();
+function OnInit(isReload:boolean)
+  LateInitialize();
+  if isReload then
+    TriggerCustomButtonAddition();
+  end
 end
 
 -- ===========================================================================

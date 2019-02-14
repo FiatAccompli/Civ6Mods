@@ -534,8 +534,7 @@ function CreateAdditionalPanel(addin:table)
   local panel = {};
   ContextPtr:BuildInstanceForControl("AdditionalPanel", panel, Controls.PanelStack);
 
-	local newContext = ContextPtr:LoadNewContext(addin.ContextPath);
-	newContext:ChangeParent(panel.PanelHost);
+  local newContext = ContextPtr:LoadNewContext(addin.ContextPath, panel.PanelHost);
   newContext:ReprocessAnchoring();
 
   local id = newContext:GetID();
@@ -661,4 +660,5 @@ function Initialize()
 	-- Initialize Unread Chat Messages Count
 	UpdateUnreadChatMsgs();
 end
-]]
+
+Initialize();

@@ -17,6 +17,9 @@ civilization, and other db level mods).  It will likely conflict with mods that 
 the same parts of the UI that this mod does (and do not use the framework provided by 
 this mod).  As with any mod, unforeseen conflicts may occur.
 
+### Version History
+* 1.0.1 - Update for Gathering Storm release.
+
 ### Disclaimer
 Sid Meier's Civilization VI, Civ, Civilization, 2K Games, Firaxis Games, and 
 Take-Two Interactive Software are all trademarks and/or registered trademarks of 

@@ -5,7 +5,7 @@
     <Name>LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME</Name>
     <Guid>c8e215b9-b317-4fae-a9b5-907570575893</Guid>
     <ProjectGuid>04c4fb25-e148-4705-ac05-e967c5864002</ProjectGuid>
-    <ModVersion>100</ModVersion>
+    <ModVersion>101</ModVersion>
     <Teaser>LOC_MOD_UI_PLUGINS_FRAMEWORK_TEASER</Teaser>
     <Description>LOC_MOD_UI_PLUGINS_FRAMEWORK_DESCRIPTION</Description>
     <Authors>FiatAccompli</Authors>
@@ -17,7 +17,7 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>UIPluginsFramework</AssemblyName>
     <RootNamespace>UIPluginsFramework</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ImportLua"><Properties><LoadOrder>10100</LoadOrder></Properties><File>UI/toppanel.lua</File><File>UI/toppanel.xml</File><File>UI/launchbar.lua</File><File>UI/launchbar.xml</File><File>UI/ingame_uiplugins_replacement.lua</File><File>UI/partialscreenhooks.lua</File><File>UI/partialscreenhooks.xml</File><File>UI/worldtracker.lua</File><File>UI/worldtracker.xml</File><File>UI/worldtracker_expansion1.lua</File><File>UI/minimap_toolbar_plugins_handler.lua</File></ImportFiles><ImportFiles id="ImportTextures"><File>Textures/world_tracker_additional_panel_border.dds</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/ui_plugins_text.xml</File></UpdateText><AddUserInterfaces id="AddMinimapToolbarPluginsHandler"><Properties><Context>InGame</Context></Properties><File>UI/minimap_toolbar_plugins_handler.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ImportLua"><Properties><LoadOrder>10100</LoadOrder></Properties><File>UI/toppanel.lua</File><File>UI/toppanel.xml</File><File>UI/launchbar.lua</File><File>UI/launchbar.xml</File><File>UI/ingame_uiplugins_replacement.lua</File><File>UI/partialscreenhooks.lua</File><File>UI/partialscreenhooks.xml</File><File>UI/worldtracker.lua</File><File>UI/worldtracker.xml</File><File>UI/worldtracker_expansion1.lua</File><File>UI/minimap_toolbar_plugins_handler.lua</File><File>UI/partialscreenhooks_expansion1.lua</File></ImportFiles><ImportFiles id="ImportTextures"><File>Textures/world_tracker_additional_panel_border.dds</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/ui_plugins_text.xml</File></UpdateText><AddUserInterfaces id="AddMinimapToolbarPluginsHandler"><Properties><Context>InGame</Context></Properties><File>UI/minimap_toolbar_plugins_handler.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
     <FrontEndActionData><![CDATA[<FrontEndActions />]]></FrontEndActionData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
@@ -33,6 +33,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="UI\minimap_toolbar_plugins_handler.xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\partialscreenhooks_expansion1.lua">
       <SubType>Content</SubType>
     </Content>
     <Content Include="UI\worldtracker_expansion1.lua">

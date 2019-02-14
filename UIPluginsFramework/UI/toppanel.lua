@@ -500,8 +500,8 @@ function LateInitialize()
 	-- Support for Modded Add-in UI's
 	for _, addin in ipairs(Modding.GetUserInterfaces("InGame_TopPanel")) do
 		print("Loading InGame_TopPanel UI - " .. addin.ContextPath);
-		local newContext = ContextPtr:LoadNewContext(addin.ContextPath);
-		newContext:ChangeParent(Controls.PluginsStack);
+    local id = addin.ContextPath:sub( -(string.find( string.reverse(addin.ContextPath), '/') - 1) );		-- grab id from end of path
+		local newContext = ContextPtr:LoadNewContext(addin.ContextPath, Controls.PluginsStack, id, false);
     newContext:ReprocessAnchoring();
 	end
   Controls.PluginsStack:DoAutoSize();
