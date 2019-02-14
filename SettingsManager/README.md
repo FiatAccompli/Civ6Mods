@@ -39,6 +39,9 @@ You also need to install [UI Plugins Framework](https://github.com/FiatAccompli/
 This mod should be compatible with most other mods. However, as with any mod, unforeseen 
 conflicts may occur.
 
+### Version History
+* 1.0.1 - Update for Gathering Storm release.
+
 ### Disclaimer
 Sid Meier's Civilization VI, Civ, Civilization, 2K Games, Firaxis Games, and 
 Take-Two Interactive Software are all trademarks and/or registered trademarks of 

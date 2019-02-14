@@ -60,6 +60,7 @@ function Initialize()
   -- Register button (if this is a reload of this context the MinimapBar_RegisterAdditions
   -- event will not be forthcoming).
   OnRegisterMinimapBarAdditions();
+  ContextPtr:SetHide(false);
 end
 
 Initialize();

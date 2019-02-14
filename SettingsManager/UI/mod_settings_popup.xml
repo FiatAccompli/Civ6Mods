@@ -17,7 +17,7 @@
         <!--Options Tabs-->
         <Grid Style="SubContainerFill" Size="210,parent-6" Offset="3,3" Color="6,36,57,150">
           <Grid Style="SubContainer3" Size="parent-6,parent-6" Anchor="C,C" Color="13,70,82,255">
-            <ScrollPanel ID="TabScrollPanel" Size="parent, parent-54" AutoScrollBar="1" Vertical="1" Anchor="L,T">
+            <ScrollPanel ID="TabScrollPanel" Size="parent,parent-54" AutoScrollBar="1" Vertical="1" Anchor="L,T">
               <Stack ID="CategoriesStack" StackGrowth="Down" Anchor="C,T" Padding="10"/>
               <ScrollBar Style="Slider_Blue" Anchor="R,C" AnchorSide="O,I"/>
             </ScrollPanel>
