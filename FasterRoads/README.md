@@ -1,4 +1,4 @@
-## Faster Roads v1.0.0
+## Faster Roads v1.0.1
 
 Changes the movement costs of roads in order to make the existence of roads (or lack
 thereof) more impactful in the early game and to facilitate faster unit movement in the late game.
@@ -18,6 +18,9 @@ both from a gameplay perspective.
 ### Compatibility
 Should be compatible with all other mods.  However, as with any mod, unforeseen conflicts may occur.
 
+### Version History
+* 1.0.1 - Update for Gathering Storm release.
+
 ### Disclaimer
 Sid Meier's Civilization VI, Civ, Civilization, 2K Games, Firaxis Games, and 
 Take-Two Interactive Software are all trademarks and/or registered trademarks of 
@@ -30,3 +33,4 @@ particular purpose and noninfringement. In no event shall the authors or copyrig
 holders be liable for any claim, damages or other liability, whether in an action 
 of contract, tort or otherwise, arising from, out of or in connection with the mod
  or the use or other dealings in the mod.
+

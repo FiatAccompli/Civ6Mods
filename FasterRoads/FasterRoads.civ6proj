@@ -5,7 +5,7 @@
     <Name>LOC_FASTER_ROADS_MOD_NAME</Name>
     <Guid>f4ec1a94-2912-4261-a1c1-c3f0893087d9</Guid>
     <ProjectGuid>7562de76-162e-4ce4-a042-fa2b7fa0c46b</ProjectGuid>
-    <ModVersion>100</ModVersion>
+    <ModVersion>101</ModVersion>
     <Teaser>LOC_FASTER_ROADS_TEASER</Teaser>
     <Description>LOC_FASTER_ROADS_DESCRIPTION</Description>
     <AffectsSavedGames>true</AffectsSavedGames>

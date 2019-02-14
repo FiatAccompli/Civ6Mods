@@ -9,6 +9,7 @@
   <xsl:template match="/Mod/Properties">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
+      <xsl:call-template name="AddCompatibleVersions"/>
     </xsl:copy>
     <LocalizedText>
       <xsl:call-template name="GenerateText">
