@@ -187,6 +187,10 @@ end
 -- ===========================================================================
 function UpdateCivicsPanel(hideCivics:boolean)
 
+	local ePlayer:number = Game.GetLocalPlayer();
+	if ePlayer == -1 then return; end	-- Autoplayer
+
+
 	if not HasCapability("CAPABILITY_CIVICS_CHOOSER") then
 		hideCivics = true;
 		Controls.CivicsCheck:SetHide(true);
@@ -206,12 +210,11 @@ function UpdateCivicsPanel(hideCivics:boolean)
 	local iCivic :number = m_currentCivicID;
 	if iCivic == -1 then 
 		iCivic = m_lastCivicCompletedID; 
-	end
-	local ePlayer		:number = Game.GetLocalPlayer();
+	end	
 	local pPlayer		:table  = Players[ePlayer];
 	local pPlayerCulture:table	= pPlayer:GetCulture();
 	local kCivic		:table	= (iCivic ~= -1) and GameInfo.Civics[ iCivic ] or nil;
-	local kCivicData :table = GetCivicData( ePlayer, pPlayerCulture, kCivic );
+	local kCivicData	:table = GetCivicData( ePlayer, pPlayerCulture, kCivic );
 	if iCivic ~= -1 then
 		if m_currentCivicID == iCivic then
 			kCivicData.IsCurrent = true;
@@ -257,7 +260,9 @@ end
 
 -- ===========================================================================
 function UpdateUnreadChatMsgs()
-	if(m_unreadChatMsgs > 0) then
+	if(GameConfiguration.IsPlayByCloud()) then
+		Controls.ChatCheck:GetTextButton():SetText(Locale.Lookup("LOC_PLAY_BY_CLOUD_PANEL"));
+	elseif(m_unreadChatMsgs > 0) then
 		Controls.ChatCheck:GetTextButton():SetText(Locale.Lookup("LOC_HIDE_CHAT_PANEL_UNREAD_MESSAGES", m_unreadChatMsgs));
 	else
 		Controls.ChatCheck:GetTextButton():SetText(Locale.Lookup("LOC_HIDE_CHAT_PANEL"));
@@ -322,7 +327,7 @@ function OnCityInitialized( playerID:number, cityID:number )
 end
 
 -- ===========================================================================
-function OnBuildingChanged( plotX:number, plotY:number, buildingIndex:number, playerID:number, iPercentComplete:number )
+function OnBuildingChanged( plotX:number, plotY:number, buildingIndex:number, playerID:number, cityID:number, iPercentComplete:number )
 	if playerID == Game.GetLocalPlayer() then	
 		m_needsRefresh = true; -- Buildings can change culture/science yield which can effect "turns to complete" values
 	end
@@ -504,6 +509,19 @@ function Tutorial_ShowTrackerOptions()
 end
 
 -- ===========================================================================
+-- Handling chat panel expansion
+-- ===========================================================================
+function OnChatPanel_OpenExpandedPanels()
+	Controls.ChatPanel:SetSizeY(199);
+	RealizeStack();
+end
+
+function OnChatPanel_CloseExpandedPanels()
+	Controls.ChatPanel:SetSizeY(99);
+	RealizeStack();
+end
+
+-- ===========================================================================
 function Initialize()
 	
 	if not GameCapabilities.HasCapability("CAPABILITY_WORLD_TRACKER") then
@@ -581,9 +599,12 @@ function Initialize()
 	LuaEvents.Tutorial_EndTutorialRestrictions.Add(		Tutorial_ShowTrackerOptions);
 	LuaEvents.TutorialGoals_Showing.Add(				OnTutorialGoalsShowing );
 	LuaEvents.TutorialGoals_Hiding.Add(					OnTutorialGoalsHiding );
+	LuaEvents.ChatPanel_OpenExpandedPanels.Add(			OnChatPanel_OpenExpandedPanels);
+	LuaEvents.ChatPanel_CloseExpandedPanels.Add(		OnChatPanel_CloseExpandedPanels);
 
 		-- InitChatPanel
-	if(GameConfiguration.IsNetworkMultiplayer() and UI.HasFeature("Chat")) then
+	if(UI.HasFeature("Chat") 
+		and (GameConfiguration.IsNetworkMultiplayer() or GameConfiguration.IsPlayByCloud()) ) then
 		UpdateChatPanel(false);
 	else
 		UpdateChatPanel(true);

@@ -1,17 +1,23 @@
 -- ===========================================================================
---	HUD Launch Bar
---	Controls raising full-screen and "choosers"
+--	HUD's Launch Bar
+--	Copyright (c) 2017-2018 Firaxis Games
+--
+--	Controls raising full-screen and "choosers" found in upper-left of HUD.
 -- ===========================================================================
-
 include( "GameCapabilities" );
 
-local m_numOpen:number = 0;
-local isTechTreeOpen	:boolean = false;
-local isCivicsTreeOpen	:boolean = false;
-local isGreatPeopleOpen	:boolean = false;
-local isGreatWorksOpen	:boolean = false;
-local isReligionOpen	:boolean = false;
-local isGovernmentOpen	:boolean = false;
+
+-- ===========================================================================
+--	MEMBERS
+-- ===========================================================================
+local m_numOpen					:number = 0;
+
+local isTechTreeOpen			:boolean = false;
+local isCivicsTreeOpen			:boolean = false;
+local isGreatPeopleOpen			:boolean = false;
+local isGreatWorksOpen			:boolean = false;
+local isReligionOpen			:boolean = false;
+local isGovernmentOpen			:boolean = false;
 
 local m_isGreatPeopleUnlocked	:boolean = false;
 local m_isGreatWorksUnlocked	:boolean = false;
@@ -27,8 +33,11 @@ local m_isGreatWorksAvailable	:boolean = false;
 
 local isDebug			:boolean = false;			-- Set to true to force all hook buttons to show on game start	
 
+
 -- ===========================================================================
 --	Callbacks
+-- ===========================================================================
+
 -- ===========================================================================
 function OnOpenGovernment()
 	local ePlayer		:number = Game.GetLocalPlayer();
@@ -126,65 +135,72 @@ function OnOpenCulture()
 end
 
 -- ===========================================================================
-function OnOpenOldCityStates()
-	LuaEvents.TopPanel_OpenOldCityStatesPopup();
-end
-
 function SetCivicsTreeOpen()
 	isCivicsTreeOpen = true;
 	OnOpen();
 end
 
+-- ===========================================================================
 function SetTechTreeOpen()
 	isTechTreeOpen = true;
 	OnOpen();
 end
 
+-- ===========================================================================
 function SetGreatPeopleOpen()
 	isGreatPeopleOpen = true;
 	OnOpen();
 end
 
+-- ===========================================================================
 function SetGreatWorksOpen()
 	isGreatWorksOpen = true;
 	OnOpen();
 end
 
+-- ===========================================================================
 function SetReligionOpen()
 	isReligionOpen = true;
 	OnOpen();
 end
 
+-- ===========================================================================
 function SetGovernmentOpen()
 	isGovernmentOpen = true;
 	OnOpen();
 end
 
+-- ===========================================================================
 function SetCivicsTreeClosed()
 	isCivicsTreeOpen = false;
 	OnClose();
 end
 
+-- ===========================================================================
 function SetTechTreeClosed()
 	isTechTreeOpen = false;
 	OnClose();
 end
 
+-- ===========================================================================
 function SetGreatPeopleClosed()
 	isGreatPeopleOpen = false;
 	OnClose();
 end
 
+-- ===========================================================================
 function SetGreatWorksClosed()
 	isGreatWorksOpen = false;
 	OnClose();
 end
 
+-- ===========================================================================
 function SetReligionClosed()
 	isReligionOpen = false;
 	OnClose();
 end
 
+-- ===========================================================================
 function SetGovernmentClosed()
 	isGovernmentOpen = false;
 	OnClose();
@@ -252,6 +268,7 @@ end
 -- *****************************************************************************
 --	Religion Hook 
 --	1/2) OnFaithChanged - triggered off of the FaithChanged game event
+
 function OnFaithChanged()
 	if (m_isReligionUnlocked) then
 		return;
@@ -361,9 +378,15 @@ function RefreshGreatPeople()
 	RealizeHookVisibility();
 end
 
--- *****************************************************************************
---	Government Hook 
---	1/2) OnCivicCompleted - triggered off of the CivicCompleted event - check to see if the unlocked civic unlocked our first policy
+-- ===========================================================================
+function ShowFreePolicyFlag( isFree:boolean )
+	Controls.PoliciesAvailableIndicator:SetShow( isFree );
+	Controls.PoliciesAvailableIndicator:SetToolTipString( isFree and Locale.Lookup("LOC_HUD_GOVT_FREE_CHANGES") or nil );
+end
+
+-- ===========================================================================
+--	Game Event
+-- ===========================================================================
 function OnCivicCompleted(player:number, civic:number, isCanceled:boolean)
 	local ePlayer:number = Game.GetLocalPlayer();
 	if ePlayer == -1 then
@@ -378,22 +401,12 @@ function OnCivicCompleted(player:number, civic:number, isCanceled:boolean)
 	end
 end
 
---	2/2) RefreshGovernment - Check against the number of policies unlocked
+-- ===========================================================================
 function RefreshGovernment()
-	local ePlayer:number = Game.GetLocalPlayer();
-	if ePlayer == -1 then
-		-- Likely auto playing.
-		return;
-	end
+	local playerID:number = Game.GetLocalPlayer();
+	if playerID == -1 then return; end
 
-	local fnSetFreePolicyFlag = function( bIsFree:boolean )
-			Controls.PoliciesAvailableIndicator:SetShow(bIsFree);
-			Controls.PoliciesAvailableIndicator:SetToolTipString(
-				bIsFree and Locale.Lookup("LOC_HUD_GOVT_FREE_CHANGES") or nil );
-		end
-
-	-- GOVERNMENT BUTTON
-	local kCulture:table = Players[ePlayer]:GetCulture();
+	local kCulture:table = Players[playerID]:GetCulture();
 	if ( kCulture:GetNumPoliciesUnlocked() <= 0 ) then
 		Controls.GovernmentButton:SetToolTipString(Locale.Lookup("LOC_GOVERNMENT_DOESNT_UNLOCK"));
 		Controls.GovernmentButton:GetTextControl():SetColor(0xFF666666);
@@ -406,14 +419,12 @@ function RefreshGovernment()
 			Controls.GovernmentButton:SetDisabled(true);
 			Controls.GovernmentIcon:SetColorByName("Civ6Red");
 			Controls.GovernmentButton:SetToolTipString("[COLOR_RED]".. Locale.Lookup("LOC_GOVERNMENT_ANARCHY_TURNS", iAnarchyTurns) .. "[ENDCOLOR]");
-			fnSetFreePolicyFlag( false );
-
+			ShowFreePolicyFlag( false );
 		else
 			Controls.GovernmentButton:SetDisabled(false);
 			Controls.GovernmentIcon:SetColorByName("White");
 			Controls.GovernmentButton:SetToolTipString(Locale.Lookup("LOC_GOVERNMENT_MANAGE_GOVERNMENT_AND_POLICIES"));
-			fnSetFreePolicyFlag( kCulture:GetCostToUnlockPolicies() == 0 );
-			
+			ShowFreePolicyFlag( kCulture:GetCostToUnlockPolicies() == 0 and kCulture:PolicyChangeMade() == false);
 		end
 	end
 	RealizeHookVisibility();
@@ -423,14 +434,15 @@ end
 function RefreshView()
 	-- The Launch Bar width should accomodate how many hooks are currently in the stack.  
 	Controls.ButtonStack:CalculateSize();
-	Controls.ButtonStack:ReprocessAnchoring();
 	Controls.LaunchBacking:SetSizeX(Controls.ButtonStack:GetSizeX()+116);
 	Controls.LaunchBackingTile:SetSizeX(Controls.ButtonStack:GetSizeX()-20);
 	Controls.LaunchBarDropShadow:SetSizeX(Controls.ButtonStack:GetSizeX());
+	
 	-- When we change size of the LaunchBar, we send this LuaEvent to the Diplomacy Ribbon, so that it can change scroll width to accommodate it
 	LuaEvents.LaunchBar_Resize(Controls.ButtonStack:GetSizeX());
 end
 
+-- ===========================================================================
 function UpdateTechMeter( localPlayer:table )
 	if ( localPlayer ~= nil and Controls.ScienceHookWithMeter:IsVisible() ) then
 		local playerTechs				= localPlayer:GetTechs();
@@ -487,7 +499,11 @@ end
 
 -- ===========================================================================
 function OnTurnBegin()
-	local localPlayer				= Players[Game.GetLocalPlayer()];
+	local localPlayerID :number = Game.GetLocalPlayer();
+	if localPlayerID  == -1 then
+		return;
+	end
+	local localPlayer = Players[localPlayerID];
 	if (localPlayer == nil) then
 		return;
 	end
@@ -502,6 +518,7 @@ function OnTurnBegin()
 	RefreshView();
 end
 
+-- ===========================================================================
 function OnOpen()
 	m_numOpen = m_numOpen+1;
 	local screenX, screenY:number = UIManager:GetScreenSizeVal();
@@ -511,6 +528,7 @@ function OnOpen()
 	LuaEvents.LaunchBar_CloseChoosers();
 end
 
+-- ===========================================================================
 function OnClose()
 	m_numOpen = m_numOpen-1;
 	if(m_numOpen < 0 )then
@@ -527,11 +545,13 @@ function OnToggleResearchPanel(hideResearch)
 	UpdateTechMeter(Players[Game.GetLocalPlayer()]);
 end
 
+-- ===========================================================================
 function OnToggleCivicPanel(hideResearch)
 	Controls.CultureHookWithMeter:SetHide(not hideResearch);
 	UpdateCivicMeter(Players[Game.GetLocalPlayer()]);
 end
 
+-- ===========================================================================
 -- Reset the hooks when the player changes for hotseat.
 function OnLocalPlayerChanged()	
 	m_isGreatPeopleUnlocked	= false;
@@ -585,15 +605,28 @@ function OnInputActionTriggered( actionId )
 	end
 end
 
-
-
 -- ===========================================================================
 function PlayMouseoverSound()
 	UI.PlaySound("Main_Menu_Mouse_Over");
 end
 
 -- ===========================================================================
+function LateInitialize()
+	OnTurnBegin();	
+end
+
+-- ===========================================================================
+--	Called after all contexts (this and replacement contexts) are loaded.
+-- ===========================================================================
+function OnInit( isReload:boolean )
+	LateInitialize();
+end
+
+-- ===========================================================================
 function Initialize()
+
+	ContextPtr:SetInitHandler( OnInit );
+
 	Controls.CultureButton:RegisterCallback(Mouse.eLClick, OnOpenCulture);
 	Controls.CultureButton:RegisterCallback( Mouse.eMouseEnter, PlayMouseoverSound);
 	Controls.GovernmentButton:RegisterCallback( Mouse.eLClick, OnOpenGovernment );
@@ -606,7 +639,7 @@ function Initialize()
 	Controls.ReligionButton:RegisterCallback( Mouse.eMouseEnter, PlayMouseoverSound);
 	Controls.ScienceButton:RegisterCallback(Mouse.eLClick, OnOpenResearch);
 	Controls.ScienceButton:RegisterCallback( Mouse.eMouseEnter, PlayMouseoverSound);
-	
+
 	Events.TurnBegin.Add( OnTurnBegin );
 	Events.VisualStateRestored.Add( OnTurnBegin );
 	Events.CivicCompleted.Add( OnCivicCompleted );				-- To capture when we complete Code of Laws
@@ -625,7 +658,10 @@ function Initialize()
 	Events.DiplomacyDealEnacted.Add( OnDiplomacyDealEnacted );
 	Events.CityOccupationChanged.Add( OnCityCaptured ); -- kinda bootleg, but effective
 
-	LuaEvents.CivicsTree_CloseCivicsTree.Add(SetCivicsTreeClosed);
+	-- Wrapped in an anonymous function, because OnInputActionTriggered may be overriden elsewhere (like XP1)
+	Events.InputActionTriggered.Add( function(actionId) OnInputActionTriggered(actionId) end );
+
+	LuaEvents.CivicsTree_CloseCivicsTree.Add( SetCivicsTreeClosed );
 	LuaEvents.CivicsTree_OpenCivicsTree.Add( SetCivicsTreeOpen );	
 	LuaEvents.Government_CloseGovernment.Add( SetGovernmentClosed );
 	LuaEvents.Government_OpenGovernment.Add( SetGovernmentOpen );	
@@ -640,16 +676,10 @@ function Initialize()
 	LuaEvents.Tutorial_CloseAllLaunchBarScreens.Add( OnTutorialCloseAll );
 
 	if HasCapability("CAPABILITY_TECH_TREE") then
-		LuaEvents.WorldTracker_ToggleResearchPanel.Add(OnToggleResearchPanel);
+		LuaEvents.WorldTracker_ToggleResearchPanel.Add( OnToggleResearchPanel );
 	end
 	if HasCapability("CAPABILITY_CIVICS_TREE") then
-		LuaEvents.WorldTracker_ToggleCivicPanel.Add(OnToggleCivicPanel);
+		LuaEvents.WorldTracker_ToggleCivicPanel.Add( OnToggleCivicPanel );
 	end
-
-	-- Hotkeys!
-	-- Yes, it needs to be wrapped in an anonymous function, because OnInputActionTriggered is overriden elsewhere (like XP1)
-	Events.InputActionTriggered.Add( function(actionId) OnInputActionTriggered(actionId) end );
-
-	OnTurnBegin();	
 end
 Initialize();

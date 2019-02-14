@@ -70,8 +70,6 @@
     <Grid    ID="Resources" Style="SubContainerSmall2"  Size="48,24">
       <Stack ID="ResourceStack" StackGrowth="Right" StackPadding="4" Anchor="L,C" />
     </Grid>
-
-		<GridButton ID="ViewReports" Style="FontNormal16"  FontStyle="Glow" TextAnchor="C,C" TextOffset="-1,0" Texture="Controls_ButtonControl_Reports"	SliceCorner="12,12"	SliceSize="1,1"	SliceTextureSize="29,29" StateOffsetIncrement="0,29" String="LOC_HUD_REPORTS_VIEW_REPORTS" ToolTip="LOC_HUD_REPORTS_VIEW_REPORTS_TT" Size="29,29" Offset="1,-2" />
 	</Stack>
 
 	<Tutorial ID="TechYieldPointer" Style="TutorialContainer" Anchor="L,T" Offset="46, 70" TriggerBy="TutorialTechYieldPointer">
@@ -125,8 +123,8 @@
       <Image Anchor="C,C" Offset="45,0" Size="auto,24" Texture="TopBar_YieldBacking.dds"		/>
       <GridButton	ID="YieldBacking" Size="auto,24" AutoSizePadding="1,0" Style="YieldBacking" Color="24,156,216,255">
         <Stack		ID="YieldButtonStack" Anchor="L,C" Offset="0,2"	StackGrowth="Right">
-          <Label	ID="YieldIconString" Anchor="L,B" Offset="0,4"/>
-          <Label	ID="YieldBalance" Anchor="C,T" Style="FontNormal18" ColorSet="ResFaithLabelCS" String="?"/>
+          <Label	ID="YieldIconString" Anchor="L,B" Offset="0,3"/>
+          <Label	ID="YieldBalance" Anchor="C,T" Offset="0,-1" Style="FontNormal18" ColorSet="ResFaithLabelCS" String="?"/>
           <Label	ID="YieldPerTurn" Offset="2,-2" Style="FontNormal14" ColorSet="ResFaithLabelCS" FontStyle="Stroke" String="0"/>
         </Stack>
       </GridButton>
