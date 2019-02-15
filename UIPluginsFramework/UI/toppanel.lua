@@ -18,7 +18,7 @@ FONT_MULTIPLIER	= 11;	-- The amount to multiply times the string length to appro
 -- ===========================================================================
 m_YieldButtonSingleManager = InstanceManager:new( "YieldButton_SingleLabel", "Top", Controls.YieldStack );
 m_YieldButtonDoubleManager = InstanceManager:new( "YieldButton_DoubleLabel", "Top", Controls.YieldStack );
-m_kResourceIM				= InstanceManager:new( "ResourceInstance", "ResourceText", Controls.ResourceStack );
+m_kResourceIM				= InstanceManager:new( "ResourceInstance", "Top", Controls.ResourceStack );
 local m_OpenPediaId;
 
 
@@ -54,23 +54,6 @@ end
 -- ===========================================================================
 function OnMenu()
 	LuaEvents.InGame_OpenInGameOptionsMenu();
-end
-
--- ===========================================================================
---	UI Callback
---	Send signal to open/close the Reports Screen
--- ===========================================================================
-function OnToggleReportsScreen()
-	local pReportsScreen :table = ContextPtr:LookUpControl( "/InGame/ReportScreen" );
-	if pReportsScreen == nil then
-		UI.DataError("Unable to toggle Reports Screen.  Not found in '/InGame/ReportScreen'.");
-		return;
-	end
-	if pReportsScreen:IsHidden() then
-		LuaEvents.TopPanel_OpenReportsScreen();
-	else
-		LuaEvents.TopPanel_CloseReportsScreen();
-	end
 end
 
 -- ===========================================================================

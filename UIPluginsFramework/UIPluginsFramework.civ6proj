@@ -17,7 +17,7 @@
     <SupportsHotSeat>true</SupportsHotSeat>
     <AssemblyName>UIPluginsFramework</AssemblyName>
     <RootNamespace>UIPluginsFramework</RootNamespace>
-    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ImportLua"><Properties><LoadOrder>10100</LoadOrder></Properties><File>UI/toppanel.lua</File><File>UI/toppanel.xml</File><File>UI/launchbar.lua</File><File>UI/launchbar.xml</File><File>UI/ingame_uiplugins_replacement.lua</File><File>UI/partialscreenhooks.lua</File><File>UI/partialscreenhooks.xml</File><File>UI/worldtracker.lua</File><File>UI/worldtracker.xml</File><File>UI/worldtracker_expansion1.lua</File><File>UI/minimap_toolbar_plugins_handler.lua</File><File>UI/partialscreenhooks_expansion1.lua</File></ImportFiles><ImportFiles id="ImportTextures"><File>Textures/world_tracker_additional_panel_border.dds</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/ui_plugins_text.xml</File></UpdateText><AddUserInterfaces id="AddMinimapToolbarPluginsHandler"><Properties><Context>InGame</Context></Properties><File>UI/minimap_toolbar_plugins_handler.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
+    <InGameActionData><![CDATA[<InGameActions><ImportFiles id="ImportLua"><Properties><LoadOrder>10100</LoadOrder></Properties><File>UI/toppanel.lua</File><File>UI/toppanel.xml</File><File>UI/launchbar.lua</File><File>UI/launchbar.xml</File><File>UI/ingame_uiplugins_replacement.lua</File><File>UI/partialscreenhooks.lua</File><File>UI/partialscreenhooks.xml</File><File>UI/worldtracker.lua</File><File>UI/worldtracker.xml</File><File>UI/worldtracker_expansion1.lua</File><File>UI/minimap_toolbar_plugins_handler.lua</File><File>UI/partialscreenhooks_expansion1.lua</File><File>UI/toppanel_expansion1.lua</File><File>UI/toppanel_expansion2.lua</File></ImportFiles><ImportFiles id="ImportTextures"><File>Textures/world_tracker_additional_panel_border.dds</File></ImportFiles><UpdateText id="TextUpdates"><File>Text/ui_plugins_text.xml</File></UpdateText><AddUserInterfaces id="AddMinimapToolbarPluginsHandler"><Properties><Context>InGame</Context></Properties><File>UI/minimap_toolbar_plugins_handler.xml</File></AddUserInterfaces></InGameActions>]]></InGameActionData>
     <FrontEndActionData><![CDATA[<FrontEndActions />]]></FrontEndActionData>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
@@ -36,6 +36,12 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="UI\partialscreenhooks_expansion1.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel_expansion1.lua">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UI\toppanel_expansion2.lua">
       <SubType>Content</SubType>
     </Content>
     <Content Include="UI\worldtracker_expansion1.lua">

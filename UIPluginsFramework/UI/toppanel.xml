@@ -101,7 +101,10 @@
 	</ToolTipType>
 
 	<Instance Name="ResourceInstance">
-		<Label	ID="ResourceText" Style="FontNormal14" ColorSet="TopBarValueCS"/>
+		<Container ID="Top" Anchor="L,C" Offset="0,2" Size="auto,auto">
+      <Label ID="ResourceText" Style="FontNormal14" ColorSet="TopBarValueCS"/>
+      <Image ID="ResourceVelocity" Offset="10,-1" Anchor="L,B" Size="12,12" Hidden="1"/>
+    </Container>
 	</Instance>
 	
 	<Instance Name="TopBarButtonInstance">
