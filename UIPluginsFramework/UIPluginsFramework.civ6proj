@@ -5,7 +5,7 @@
     <Name>LOC_MOD_UI_PLUGINS_FRAMEWORK_NAME</Name>
     <Guid>c8e215b9-b317-4fae-a9b5-907570575893</Guid>
     <ProjectGuid>04c4fb25-e148-4705-ac05-e967c5864002</ProjectGuid>
-    <ModVersion>101</ModVersion>
+    <ModVersion>102</ModVersion>
     <Teaser>LOC_MOD_UI_PLUGINS_FRAMEWORK_TEASER</Teaser>
     <Description>LOC_MOD_UI_PLUGINS_FRAMEWORK_DESCRIPTION</Description>
     <Authors>FiatAccompli</Authors>

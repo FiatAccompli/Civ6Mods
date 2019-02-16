@@ -18,6 +18,7 @@ the same parts of the UI that this mod does (and do not use the framework provid
 this mod).  As with any mod, unforeseen conflicts may occur.
 
 ### Version History
+* 1.0.2 - Fixed display of resources in top panel in Gathering Storm games.
 * 1.0.1 - Update for Gathering Storm release.
 
 ### Disclaimer
