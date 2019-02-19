@@ -22,7 +22,6 @@ local m_FavorYieldButton:table = nil;
 --	OVERRIDE
 -- ===========================================================================
 function RefreshResources()
-  print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK Doing the refresh resources thing KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
 	local localPlayerID = Game.GetLocalPlayer();
 	local localPlayer = Players[localPlayerID];
 	if (localPlayerID ~= -1) then
@@ -40,7 +39,6 @@ function RefreshResources()
 		local plusInstance:table;
 		for resource in GameInfo.Resources() do
 			if (resource.ResourceClassType ~= nil and resource.ResourceClassType ~= "RESOURCECLASS_BONUS" and resource.ResourceClassType ~="RESOURCECLASS_LUXURY" and resource.ResourceClassType ~="RESOURCECLASS_ARTIFACT") then
-       print("Found a resource", resource.ResourceType);
 				local stockpileAmount:number = pPlayerResources:GetResourceAmount(resource.ResourceType);
 				local stockpileCap:number = pPlayerResources:GetResourceStockpileCap(resource.ResourceType);
 				local reservedAmount:number = pPlayerResources:GetReservedResourceAmount(resource.ResourceType);
